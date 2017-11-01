@@ -1,3 +1,4 @@
+import { Message } from '../models/message';
 import { Request, Response, NextFunction } from 'express';
 
 /**
@@ -5,7 +6,7 @@ import { Request, Response, NextFunction } from 'express';
  * and add the connection to the db fields of the request object.
  */
 const models = () => (req : Request, res : Response, next : NextFunction) => {
-  req.parseUserMessage = () => Promise.resolve(req.body);
+  req.parseUserMessage = () => Promise.resolve(req.body as Message);
   next();
 };
 

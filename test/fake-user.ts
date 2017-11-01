@@ -16,14 +16,18 @@ export default class FakeUser {
   post(path: string): Test {
     return this.app.post(path).set('x-pifuxelck-auth', this.token);
   }
+
+  put(path: string): Test {
+    return this.app.put(path).set('x-pifuxelck-auth', this.token);
+  }
 }
 
 export async function newUser(
-    app: SuperTest<Test>, 
-    user: string, 
+    app: SuperTest<Test>,
+    user: string,
     password = '12345678'): Promise<FakeUser> {
   const token = await app.post('/api/2/account/register')
-      .send({display_name: user, password})
+      .send({user: {display_name: user, password}})
       .expect(200)
       .then((response: any) => response.body.meta.auth);
   return new FakeUser(app, token);

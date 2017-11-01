@@ -5,7 +5,7 @@ declare global {
   namespace Express {
     export interface Request {
       db: mysql.Connection
-      parseUserMessage: () => Promise<any>
+      parseUserMessage: () => Promise<Message>
     }
 
     export interface Response {

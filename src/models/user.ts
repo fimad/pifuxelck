@@ -76,3 +76,14 @@ export async function lookupByPassword(
   winston.info('Lookup success!');
   return results[0]['id'];
 }
+
+/** Takes a User object and updates their password. */
+export async function setPassword(db: Connection, user: User): Promise<User> {
+  const hash = await hashPassword(user.password);
+  winston.info(`Updating password in db of user ${user.display_name}.`);
+  await query(
+      db, 'UPDATE Accounts SET password_hash = ? WHERE id = ?',
+      [hash, user.id]);
+  user.password = '';
+  return user;
+}

@@ -1,13 +1,14 @@
 import * as express from 'express';
 import * as winston from 'winston';
 import asyncRoute from './async-route';
-import { createUser, lookupByPassword } from '../models/user';
+import authRoute from './auth-route';
+import { createUser, lookupByPassword, setPassword } from '../models/user';
 import { newAuthToken } from '../models/auth';
 
 const account = express.Router();
 
 account.post('/login', asyncRoute(async (req, res) => {
-  const user = await req.parseUserMessage();
+  const {user} = await req.parseUserMessage();
 
   winston.info(`Attempting to look up user ${user.display_name}.`);
   const id = await lookupByPassword(req.db, user);
@@ -23,7 +24,7 @@ account.post('/login', asyncRoute(async (req, res) => {
 }));
 
 account.post('/register', asyncRoute(async (req, res) => {
-  const origUser = await req.parseUserMessage();
+  const {user: origUser} = await req.parseUserMessage();
 
   winston.info(`Attempting to register new user ${origUser.display_name}.`);
   const user = await createUser(req.db, origUser);
@@ -36,8 +37,17 @@ account.post('/register', asyncRoute(async (req, res) => {
       res.success({meta: {auth}, user});
 }));
 
-account.put('/', asyncRoute(async (req, res) => {
-  throw new Error('TODO: Not implemented.');
+account.put('/', authRoute(async (userId, req, res) => {
+  let {user} = await req.parseUserMessage();
+  winston.info(`Attempting to update password for ${user.display_name}.`);
+
+  // Override any ID given in the JSON request body with the actual
+  // authenticated user ID.
+  user.id = userId;
+  user = await setPassword(req.db, user);
+
+  winston.info(`Successfully updated password of ${user.display_name}.`);
+  res.success({user});
 }));
 
 export default account;
