@@ -11,13 +11,13 @@ account.post('/login', asyncRoute(async (req, res) => {
 
   winston.info(`Attempting to look up user ${user.display_name}.`);
   const id = await lookupByPassword(req.db, user);
- 
+
   winston.info(`Creating new auth token for ${user.display_name}.`);
   const auth = await newAuthToken(req.db, id);
- 
+
   winston.info(`Successfully logged in as user ${user.display_name}.`);
   res.success({
-    auth,
+    meta: {auth},
     user: {id, display_name: user.display_name},
   });
 }));
@@ -33,7 +33,7 @@ account.post('/register', asyncRoute(async (req, res) => {
 
   winston.info(
       `Successfully registered new user ${user.display_name} (${user.id}).`);
-  res.success({auth, user});
+      res.success({meta: {auth}, user});
 }));
 
 account.put('/', asyncRoute(async (req, res) => {

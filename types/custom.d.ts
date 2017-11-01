@@ -1,4 +1,5 @@
 import * as mysql from 'mysql';
+import { Message } from '../src/models/message';
 
 declare global {
   namespace Express {
@@ -8,7 +9,7 @@ declare global {
     }
 
     export interface Response {
-      success: (message: any) => void
+      success: (message: Message) => void
     }
   }
 }

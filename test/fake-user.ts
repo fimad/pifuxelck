@@ -25,6 +25,6 @@ export async function newUser(
   const token = await app.post('/api/2/account/register')
       .send({display_name: user, password})
       .expect(200)
-      .then((response: any) => response.body.auth);
+      .then((response: any) => response.body.meta.auth);
   return new FakeUser(app, token);
 }

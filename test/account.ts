@@ -12,13 +12,16 @@ describe('Accounts', () => {
         .send({display_name: 'test', password: '12345678'})
         .expect('Content-Type', /json/)
         .expect(200)
-        .expect((res: any) => expect(res.body).to.have.property('auth')))
+        .expect(
+            (res: any) =>
+                expect(res.body).to.have.property('meta') &&
+                expect(res.body.meta).to.have.property('auth')))
 
     it('should reject too short passwords', async () => agent(await server())
         .post('/api/2/account/register')
         .send({display_name: 'test', password: '123'})
         .expect(500)
-        .expect((res: any) => expect(res.body).to.not.have.property('auth')));
+        .expect((res: any) => expect(res.body).to.not.have.property('meta')));
 
     it('should reject double registration', async () => {
       const app = agent(await server());
@@ -28,7 +31,7 @@ describe('Accounts', () => {
       await app.post('/api/2/account/register')
           .send({display_name: 'test', password: 'abcdefgh'})
           .expect(500)
-          .expect((res: any) => expect(res.body).to.not.have.property('auth'));
+          .expect((res: any) => expect(res.body).to.not.have.property('meta'));
     });
   });
 
@@ -41,7 +44,10 @@ describe('Accounts', () => {
       await app.post('/api/2/account/login')
           .send({display_name: 'test', password: '12345678'})
           .expect(200)
-          .expect((res: any) => expect(res.body).to.have.property('auth'));
+          .expect(
+              (res: any) =>
+                  expect(res.body).to.have.property('meta') &&
+                  expect(res.body.meta).to.have.property('auth'));
     });
 
     it('should deny invalid passwords', async () => {
@@ -52,7 +58,7 @@ describe('Accounts', () => {
       await app.post('/api/2/account/login')
           .send({display_name: 'test', password: '1234567'})
           .expect(500)
-          .expect((res: any) => expect(res.body).to.not.have.property('auth'));
+          .expect((res: any) => expect(res.body).to.not.have.property('meta'));
     });
 
     it('should deny invalid users', async () => {
@@ -63,7 +69,7 @@ describe('Accounts', () => {
       await app.post('/api/2/account/login')
           .send({display_name: 'not-valid', password: '12345678'})
           .expect(500)
-          .expect((res: any) => expect(res.body).to.not.have.property('auth'));
+          .expect((res: any) => expect(res.body).to.not.have.property('meta'));
     });
   });
 });
