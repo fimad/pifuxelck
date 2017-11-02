@@ -133,6 +133,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
+"@types/shuffle-array@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@types/shuffle-array/-/shuffle-array-0.0.28.tgz#a1e10d20a409f6528992c4791fa852ffb10e6996"
+
 "@types/superagent@*":
   version "3.5.6"
   resolved "https://registry.yarnpkg.com/@types/superagent/-/superagent-3.5.6.tgz#9cf2632c075ba9e601f6a610aadc23992d02394c"
@@ -3077,6 +3081,10 @@ shelljs@^0.7:
     glob "^7.0.0"
     interpret "^1.0.0"
     rechoir "^0.6.2"
+
+shuffle-array@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/shuffle-array/-/shuffle-array-1.0.1.tgz#c4ff3cfe74d16f93730592301b25e6577b12898b"
 
 signal-exit@^3.0.0, signal-exit@^3.0.1, signal-exit@^3.0.2:
   version "3.0.2"

@@ -10,3 +10,25 @@ export async function query(
     });
   });
 };
+
+export function transact<T>(
+    db: Connection,
+    f: () => Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    db.beginTransaction((error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      f().then((result) => {
+        db.commit((error) => {
+          if (error) {
+            db.rollback(() => reject(error));
+          } else {
+            resolve(result);
+          }
+        });
+      }).catch((error) => db.rollback(() => reject(error)));
+    });
+  });
+}
