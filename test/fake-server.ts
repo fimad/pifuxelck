@@ -10,16 +10,16 @@ export default async function fakeServer() {
   // clearing tate in between tests.
   const sqlDb = await new Promise<Connection>((resolve, reject) => {
     const connection = createConnection({
-      ...dbConfig, 
+      ...dbConfig,
       multipleStatements: true,
     });
     connection.connect((err) => err ? reject(err) : resolve(connection));
   });
-  const schema = await new Promise((resolve, reject) => 
+  const schema = await new Promise((resolve, reject) =>
       readFile(
-          'sql/schema-current.sql', 'utf8', 
+          'sql/schema-current.sql', 'utf8',
           (err, val) => err ? reject(err) : resolve(val)));
-  await new Promise((resolve, reject) => 
+  await new Promise((resolve, reject) =>
       sqlDb.query(schema.toString(), (err) => err ? reject(err) : resolve()));
   sqlDb.end();
 

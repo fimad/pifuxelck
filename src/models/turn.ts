@@ -63,18 +63,25 @@ export async function getInboxEntryByGameId(
           T.is_drawing AS is_drawing
        FROM Turns AS T
        INNER JOIN (
-         SELECT MIN(CT.id), CT.game_id, CT.account_id
+         SELECT MIN(CT.id) AS current_turn_id, CT.game_id
          FROM Turns AS CT
          WHERE is_complete = 0
          GROUP BY CT.game_id
        ) AS CT ON CT.game_id = T.game_id
+       INNER JOIN (
+         SELECT MIN(UT.id) AS user_turn_id, UT.game_id
+         FROM Turns AS UT
+         WHERE is_complete = 0
+           AND UT.account_id = ?
+         GROUP BY UT.game_id
+       ) AS UT ON UT.game_id = T.game_id
        INNER JOIN (
          SELECT MAX(PT.id) as previous_turn_id, PT.game_id
          FROM Turns AS PT
          WHERE is_complete = 1
          GROUP BY PT.game_id
        ) AS PT ON PT.previous_turn_id = T.id
-       WHERE CT.account_id = ? AND CT.game_id = ?`,
+       WHERE CT.game_id = ? AND CT.current_turn_id = UT.user_turn_id`,
       [userId, gameId]);
   if (results.length < 1) {
     throw new Error('No entry for that ID.');
@@ -101,18 +108,25 @@ export async function getInboxEntriesForUser(
           T.is_drawing AS is_drawing
        FROM Turns AS T
        INNER JOIN (
-         SELECT MIN(CT.id), CT.game_id, CT.account_id
+         SELECT MIN(CT.id) AS current_turn_id, CT.game_id
          FROM Turns AS CT
          WHERE is_complete = 0
          GROUP BY CT.game_id
        ) AS CT ON CT.game_id = T.game_id
+       INNER JOIN (
+         SELECT MIN(UT.id) AS user_turn_id, UT.game_id
+         FROM Turns AS UT
+         WHERE is_complete = 0
+           AND UT.account_id = ?
+         GROUP BY UT.game_id
+       ) AS UT ON UT.game_id = T.game_id
        INNER JOIN (
          SELECT MAX(PT.id) as previous_turn_id, PT.game_id
          FROM Turns AS PT
          WHERE is_complete = 1
          GROUP BY PT.game_id
        ) AS PT ON PT.previous_turn_id = T.id
-       WHERE CT.account_id = ?`,
+       WHERE CT.current_turn_id = UT.user_turn_id`,
       [userId]);
   const entries = [];
   for (let i = 0; i < results.length; i++) {
@@ -166,7 +180,7 @@ export async function updateLabelTurn(
     userId: string,
     gameId: string,
     label: string): Promise<void> {
-  winston.info(`User ${userId} updating drawing in game ${gameId}.`);
+  winston.info(`User ${userId} updating label in game ${gameId}.`);
   const results = await query(
       db,
       `UPDATE Turns, Games

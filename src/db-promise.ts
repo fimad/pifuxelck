@@ -11,10 +11,10 @@ export async function query(
   });
 };
 
-export function transact<T>(
+export async function transact<T>(
     db: Connection,
     f: () => Promise<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
+  const tryTransaction = () => new Promise<T>((resolve, reject) => {
     db.beginTransaction((error) => {
       if (error) {
         reject(error);
@@ -31,4 +31,10 @@ export function transact<T>(
       }).catch((error) => db.rollback(() => reject(error)));
     });
   });
+  let result = tryTransaction();
+  // Retry the transaction up to 3 times.
+  for (let i = 0; i < 3; i++) {
+    result = result.catch(tryTransaction);
+  }
+  return result;
 }

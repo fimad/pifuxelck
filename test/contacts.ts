@@ -1,10 +1,7 @@
-import * as winston from 'winston';
 import server from './fake-server';
 import { agent } from 'supertest';
 import { expect } from 'chai';
 import { newUser } from './fake-user';
-
-// winston.remove(winston.transports.Console);
 
 describe('Contacts', () => {
   describe('Lookup', () => {

@@ -111,7 +111,7 @@ export async function updateGameCompletedAtTime(
 async function updateGameCompletedAtTimeInTransaction(
     db: Connection,
     gameId: string): Promise<void> {
-  winston.debug(`Checking if game ${gameId} needs a completed at id.`);
+  winston.info(`Checking if game ${gameId} needs a completed at id.`);
   // This query is a conditional insert that will create an entry in the
   // GamesCompletedAt table if and only if the game with id gameId is complete
   // AND there is not already an entry in GamesCompletedAt for this game.
@@ -136,9 +136,12 @@ async function updateGameCompletedAtTimeInTransaction(
   // If there is not last inserted ID, then the game was not over. This is
   // fine, just return nil as a success.
   const completedAtId = results.insertId;
-  if (completedAtId == null) {
+  if (completedAtId == null || results.affectedRows == 0) {
+    winston.info(`Did not insert completed at ID.`);
     return;
   }
+
+  winston.info(`Did insert completed at ID??? ${completedAtId}.`);
 
   // If there IS a completed at id, then update the game to point to this new
   // entry.
@@ -146,6 +149,8 @@ async function updateGameCompletedAtTimeInTransaction(
       db,
       'UPDATE Games SET completed_at_id = ? WHERE id = ?',
       [completedAtId, gameId]);
+
+  winston.info(`Marked ${gameId} as finished.`);
 }
 
 /**
@@ -272,11 +277,11 @@ async function rowsToGames(rows: any): Promise<Game[]> {
 }
 
 /** Returns a game given its ID. */
-export async function gameByID(
+export async function gameById(
     db: Connection,
     userId: string,
     gameId: string): Promise<Game> {
-  const results = query(
+  const results = await query(
       db,
       `SELECT
           Games.id AS game_id,

@@ -12,7 +12,7 @@ import {
 import {
   completedGames,
   createGame,
-  gameByID,
+  gameById,
   reapExpiredTurns,
   updateGameCompletedAtTime,
 } from '../models/game';
@@ -20,7 +20,7 @@ import {
 const games = Router();
 
 games.get('/', authRoute(async (userId, req, res) => {
-  const sinceId = req.query.since;
+  const sinceId = req.query.since || '0';
   winston.info(`User ${userId} is requesting history since ${sinceId}.`);
   const games = await completedGames(req.db, userId, sinceId);
   winston.info(`User ${userId} looked up history since ${sinceId}.`);
@@ -30,13 +30,13 @@ games.get('/', authRoute(async (userId, req, res) => {
 games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
   const gameId = req.params.id;
   winston.info(`User ${userId} is requesting game ${gameId}.`);
-  const game = await gameByID(req.db, userId, gameId);
+  const game = await gameById(req.db, userId, gameId);
   winston.info(`User ${userId} looked up game ${gameId}.`);
   res.success({game});
 }));
 
 games.get('/inbox', authRoute(async (userId, req, res) => {
-  reapExpiredTurns(req.db);
+  await reapExpiredTurns(req.db);
   winston.info(`Attempting to query user ${userId} inbox.`);
   const entries = await getInboxEntriesForUser(req.db, userId);
   winston.info(`User ${userId} retrieved inbox.`);

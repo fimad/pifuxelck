@@ -5,11 +5,11 @@ import { Request, Response, NextFunction } from 'express';
  * Middleware that adds the success function to the response object.
  */
 const error = () => (
-    error: Error, 
-    req: Request, 
-    res: Response, 
+    error: Error,
+    req: Request,
+    res: Response,
     next: NextFunction) => {
-  // winston.debug(error.stack);
+  // winston.info(error.stack);
   res.status(500).send(error.stack).end();
 };
 
