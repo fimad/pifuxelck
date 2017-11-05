@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "custom-router-762"
+    "default": "custom-router-762",
+    "canary": "pifuxelck-canary"
   }
 }
