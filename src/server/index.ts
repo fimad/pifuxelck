@@ -1,5 +1,5 @@
 import * as winston from 'winston';
-import config from '../config/prod';
+import config from '../../config/prod';
 import server from './server';
 
 const LoggingWinston = require('@google-cloud/logging-winston');

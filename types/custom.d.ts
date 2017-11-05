@@ -1,5 +1,5 @@
 import * as mysql from 'mysql';
-import { Message } from '../src/models/message';
+import { Message } from '../src/common/models/message';
 
 declare global {
   namespace Express {

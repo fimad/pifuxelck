@@ -1,27 +1,8 @@
 import * as winston from 'winston';
 import { Connection } from 'mysql';
-import { Drawing } from './drawing';
+import { Drawing } from '../../common/models/drawing';
+import { InboxEntry, Turn } from '../../common/models/turn';
 import { query } from '../db-promise';
-
-/**
- * A struct that contains all the information of a single step in a pifuxelck
- * game.
- */
-export type Turn = {
-  player: string
-  is_drawing: boolean
-  drawing: Drawing
-  label: string
-}
-
-/**
- * A struct that contains all the information that a user needs in order to take
- * a turn.
- */
-export type InboxEntry = {
-  game_id: string
-  previous_turn: Turn
-}
 
 async function rowToInboxEntry(row: any): Promise<InboxEntry> {
   const drawingJson = row['drawing'];

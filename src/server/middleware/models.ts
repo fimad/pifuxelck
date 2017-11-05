@@ -1,4 +1,4 @@
-import { Message } from '../models/message';
+import { Message } from '../../common/models/message';
 import { Request, Response, NextFunction } from 'express';
 
 /**

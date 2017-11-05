@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import { Connection } from 'mysql';
-import { User } from '../models/user';
+import { User } from '../../common/models/user';
 import { query } from '../db-promise';
 
 /** Looks up a user given a display name. */

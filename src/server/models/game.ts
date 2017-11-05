@@ -1,25 +1,9 @@
 import * as shuffle from 'shuffle-array';
 import * as winston from 'winston';
 import { Connection } from 'mysql';
-import { Turn } from './turn';
+import { Game, NewGame } from '../../common/models/game';
+import { Turn } from '../../common/models/turn';
 import { transact, query } from '../db-promise';
-
-export type Game = {
-  id: string
-  turns: Turn[]
-  completed_at: string
-  completed_at_id: string
-}
-
-export type NewGame = {
-  label:  string
-  players: string[]
-}
-
-export type NewGameError = {
-  label: string[]
-  players: string[]
-}
 
 /*
 

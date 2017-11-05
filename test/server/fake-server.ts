@@ -1,5 +1,5 @@
-import config from '../config/test';
-import server from '../src/server';
+import config from '../../config/test';
+import server from '../../src/server/server';
 import { Connection, createConnection } from 'mysql';
 import { readFile } from 'fs';
 

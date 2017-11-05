@@ -2,23 +2,7 @@ import * as winston from 'winston';
 import { Connection } from 'mysql';
 import { genSalt, hash, compare } from 'bcrypt';
 import { query } from '../db-promise';
-
-/** User contains all of the identifying information of a pifuxelck player. */
-export type User = {
-  id?: string,
-  display_name?: string,
-  password?: string,
-}
-
-/**
- * UserError is an error type that is returned when there is a problem
- * validating a user value.
- */
-export type UserError = {
-  id: string
-  display_name: string[]
-  password: string[]
-}
+import { User, UserError } from '../../common/models/user';
 
 async function hashPassword(password: string): Promise<string> {
   if (password.length < 8) {

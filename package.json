@@ -1,7 +1,7 @@
 {
   "name": "pifuxelck-server-node",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/server/index.js",
   "repository": "https://github.com/fimad/pifuxelck-server-node",
   "author": "Will Coster <willcoster@gmail.com>",
   "license": "MIT",

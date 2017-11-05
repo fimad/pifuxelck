@@ -28,4 +28,3 @@ export type Errors = {
   user?: UserError
   new_game?: NewGameError
 }
-
