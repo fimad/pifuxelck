@@ -1,3 +1,4 @@
+import * as cors from 'cors';
 import * as express from 'express';
 import account from './routes/account';
 import contacts from './routes/contacts';
@@ -14,7 +15,8 @@ type Config = {
 
 export default function(config: Config) {
   const app = express();
-  app.use(express.json());
+  app.use(cors());
+  app.use(express.json({'type': '*/*'}));
   app.use(models());
   app.use(success());
   app.use(db(config.db));

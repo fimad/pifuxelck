@@ -273,7 +273,7 @@ async function rowsToGames(rows: any): Promise<Game[]> {
     }
     game.turns.push(turn);
   }
-  return Object.values(gameIdToGame);
+  return Object.keys(gameIdToGame).map((x) => gameIdToGame[x]);
 }
 
 /** Returns a game given its ID. */
