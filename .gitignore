@@ -1,4 +1,5 @@
 .nyc_output/
 coverage/
 dist/
+dist-web/
 node_modules/
