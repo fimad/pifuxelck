@@ -1,10 +1,21 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as actions from './actions';
+import * as storage from 'redux-storage'
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
-import { applyMiddleware, createStore, combineReducers, Reducer } from 'redux';
 import { createBrowserHistory } from 'history';
-import { reducers } from './state';
+import { logger } from 'redux-logger';
+import { reducers } from './reducers';
+
+import {
+  Reducer,
+  applyMiddleware,
+  combineReducers,
+  compose,
+  createStore,
+} from 'redux';
 
 const {
   ConnectedRouter,
@@ -15,25 +26,36 @@ const {
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory();
 
-// Add the reducer to your store on the `routing` key
-const store = createStore(
-  combineReducers({
-    ...reducers,
-    routing: routerReducer as Reducer<any>,
-  }),
-  applyMiddleware(routerMiddleware(history)),
-);
+const middlewares = [thunk, routerMiddleware(history)];
+// TODO(will): Disable the logger in production...
+middlewares.push(logger);
+
+const reducer = storage.reducer(combineReducers({
+  ...reducers,
+  routing: routerReducer as Reducer<any>,
+}));
+const engine = require('redux-storage-engine-indexed-db').default('my-save-key');
+middlewares.push(storage.createMiddleware(engine));
+const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+const store = createStoreWithMiddleware(reducer);
+// TODO(will): Need to handle errors here...
+// TODO(will): Add migration that wipes all data except the auth token...
+storage.createLoader(engine)(store);
 
 (window as any)['store'] = store;
+(window as any)['actions'] = actions;
 
 ReactDOM.render(
   <Provider store={store}>
-    { /* Tell the Router to use our enhanced history */ }
-    <ConnectedRouter history={history}>
-    </ConnectedRouter>
+  <div>Test</div>
   </Provider>,
   document.getElementById('content')
 );
+// It is important not to attach this component until after the storage layer
+// has loaded, otherwise it is possible to save any empty state, thus blowing
+// away all prior state.
+//    <ConnectedRouter history={history}>
+//    </ConnectedRouter>
       //      <Route path="/" component={App}>
       //        <Route path="foo" component={Foo}/>
       //        <Route path="bar" component={Bar}/>

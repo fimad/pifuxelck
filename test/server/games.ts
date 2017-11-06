@@ -78,7 +78,7 @@ describe('Games', () => {
               {
                 game_id: 1,
                 previous_turn: {
-                  is_drawing: 0,
+                  is_drawing: false,
                   label: 'start',
                 },
               },
@@ -102,7 +102,7 @@ describe('Games', () => {
             inbox_entry: {
               game_id: 1,
               previous_turn: {
-                is_drawing: 0,
+                is_drawing: false,
                 label: 'start1',
               },
             },
@@ -113,7 +113,7 @@ describe('Games', () => {
             inbox_entry: {
               game_id: 2,
               previous_turn: {
-                is_drawing: 0,
+                is_drawing: false,
                 label: 'start2',
               },
             },
@@ -164,12 +164,12 @@ describe('Games', () => {
               turns: [
                 {
                   player: 'user1',
-                  is_drawing: 0,
+                  is_drawing: false,
                   label: 'start',
                 },
                 {
                   player: 'user2',
-                  is_drawing: 1,
+                  is_drawing: true,
                   drawing: {
                     background_color: {
                       alpha: 1,
@@ -226,11 +226,11 @@ describe('Games', () => {
                   id: 1,
                   turns: [
                     {
-                      is_drawing: 0,
+                      is_drawing: false,
                       label: 'start',
                     },
                     {
-                      is_drawing: 1,
+                      is_drawing: true,
                       drawing: {
                         background_color: {
                           alpha: 1,
@@ -242,7 +242,7 @@ describe('Games', () => {
                       },
                     },
                     {
-                      is_drawing: 0,
+                      is_drawing: false,
                       label: 'end',
                     },
                   ],

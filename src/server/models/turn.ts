@@ -9,7 +9,7 @@ async function rowToInboxEntry(row: any): Promise<InboxEntry> {
   const entry = {
     game_id: row['game_id'],
     previous_turn: {
-      is_drawing: row['is_drawing'],
+      is_drawing: !!row['is_drawing'],
       label: row['label'],
     },
   } as InboxEntry;

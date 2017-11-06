@@ -231,7 +231,7 @@ async function rowsToGames(rows: any): Promise<Game[]> {
     const turn = {
       label: rows[i]['label'],
       player: rows[i]['display_name'],
-      is_drawing: rows[i]['is_drawing'],
+      is_drawing: !!rows[i]['is_drawing'],
     } as Turn;
 
     // Only attempt to unmarshal the drawing if it is a drawing turn. Otherwise
@@ -329,7 +329,7 @@ export async function completedGames(
           ) AS T ON T.game_id = Games.id
           WHERE Games.completed_at_id > ?
           ORDER BY completed_at_id ASC
-          LIMIT 10
+          LIMIT 25
        ) AS Games ON Turns.game_id = Games.id
        INNER JOIN (
           SELECT id, display_name

@@ -5,9 +5,12 @@ import { Drawing } from './drawing';
  * game.
  */
 export type Turn = {
-  player: string
-  is_drawing: boolean
+  player?: string
+  is_drawing: true
   drawing: Drawing
+} | {
+  player?: string
+  is_drawing: false
   label: string
 }
 

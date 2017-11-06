@@ -64,7 +64,7 @@ games.put('/play/:gameId(\\d+)', authRoute(async (userId, req, res) => {
   const {gameId} = req.params;
   winston.info(`User ${userId} is taking their turn in game ${gameId}.`);
 
-  if (turn.is_drawing) {
+  if (turn.is_drawing == true) {
     await updateDrawingTurn(req.db, userId, gameId, turn.drawing);
   } else {
     await updateLabelTurn(req.db, userId, gameId, turn.label);
