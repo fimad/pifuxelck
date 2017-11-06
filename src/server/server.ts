@@ -5,6 +5,7 @@ import contacts from './routes/contacts';
 import db, { DbConfig } from './middleware/db';
 import error from './middleware/error';
 import games from './routes/games';
+import log from './middleware/log';
 import models from './middleware/models';
 import success from './middleware/success';
 import { ConnectionConfig } from 'mysql';
@@ -17,6 +18,7 @@ export default function(config: Config) {
   const app = express();
   app.use(cors());
   app.use(express.json({'type': '*/*'}));
+  app.use(log());
   app.use(models());
   app.use(success());
   app.use(db(config.db));

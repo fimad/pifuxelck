@@ -8,6 +8,7 @@ declare global {
       parseGameMessage: () => Promise<Message>
       parseTurnMessage: () => Promise<Message>
       parseUserMessage: () => Promise<Message>
+      context: {[key: string]: any}
     }
 
     export interface Response {

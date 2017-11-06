@@ -1,3 +1,4 @@
+import * as winston from 'winston';
 import { Message } from '../../common/models/message';
 import { Request, Response, NextFunction } from 'express';
 
@@ -6,6 +7,7 @@ import { Request, Response, NextFunction } from 'express';
  */
 const success = () => (req : Request, res : Response, next : NextFunction) => {
   res.success = (response: Message) => {
+    winston.info('Successful request.', req.context);
     res.status(200).type('application/json').send(response || {}).end();
   };
   next();

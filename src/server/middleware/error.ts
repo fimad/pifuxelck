@@ -9,7 +9,7 @@ const error = () => (
     req: Request,
     res: Response,
     next: NextFunction) => {
-  // winston.info(error.stack);
+  winston.error(error.stack, req.context);
   res.status(500).send(error.stack).end();
 };
 

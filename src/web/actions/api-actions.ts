@@ -47,7 +47,7 @@ export function getHistory() {
     const getSinceId = (history?: Game[]) =>
         (history || Object.values(getState().entities.history))
         .map((x) => x.id)
-        .sort()
+        .sort(compareStringsAsInts)
         .pop() || 0;
     const getHistoryStep: any = (history?: Game[]) => api.get({
       failure: GET_HISTORY_STOP,

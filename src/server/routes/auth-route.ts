@@ -11,6 +11,7 @@ type AuthHandler = (
 const authRoute = (fn: AuthHandler) => asyncRoute(async (req, res, next) => {
   const auth = req.get('x-pifuxelck-auth');
   const userId = await authTokenLookup(req.db, auth);
+  req.context.user = userId;
   await fn(userId, req, res, next);
 });
 
