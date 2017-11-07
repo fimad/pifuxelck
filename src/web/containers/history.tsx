@@ -49,23 +49,22 @@ const gameToTile = ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) =
 const HistoryComponent = ({games, dispatch}: Props) => {
   const tiles = games
       .filter((game) => game.turns.length > 1)
-      .slice(0, 40)
       .map((game) => ({game, dispatch}))
       .map(gameToTile);
   return (
     <div>
       <Desktop>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={6}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
           {tiles}
         </GridList>
       </Desktop>
       <Tablet>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
           {tiles}
         </GridList>
       </Tablet>
       <Mobile>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={1}>
           {tiles}
         </GridList>
       </Mobile>

@@ -34,7 +34,12 @@ const drawLine = ({color, points, size}: models.Line, i: number) => {
 };
 
 const Drawing = ({drawing: {background_color, lines}}: Props) => (
-  <VisibilitySensor partialVisibility={true}>
+  <VisibilitySensor
+      delayedCall={true}
+      scrollCheck={true}
+      scrollDelay={0}
+      intervalDelay={500}
+      partialVisibility={true}>
   {
     ({isVisible}: {isVisible: boolean}) => (
       <svg viewBox="0 0 1 1">

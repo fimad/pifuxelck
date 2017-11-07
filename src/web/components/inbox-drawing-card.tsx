@@ -19,7 +19,7 @@ const InboxDrawingCard = ({drawing, onSend}: Props) => (
     <Divider />
     <CardActions>
       <TextField label="Description..." fullWidth />
-      <IconButton aria-label="Delete">
+      <IconButton>
         <SendIcon />
       </IconButton>
     </CardActions>

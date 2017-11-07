@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
 
 type Props = {
   label: string
@@ -14,6 +15,9 @@ const InboxLabelCard = ({label, onSend}: Props) => (
         {label}
       </Typography>
     </CardContent>
+    <CardActions>
+      <Button> Reply </Button>
+    </CardActions>
   </Card>
 );
 

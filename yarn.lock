@@ -1551,7 +1551,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.6.0:
+create-react-class@^15.5.1, create-react-class@^15.6.0, create-react-class@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.2.tgz#cf1ed15f12aad7f14ef5f2dfe05e6c42f91ef02a"
   dependencies:
@@ -2259,7 +2259,7 @@ faye-websocket@^0.10.0:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.9:
+fbjs@^0.8.1, fbjs@^0.8.14, fbjs@^0.8.16, fbjs@^0.8.9:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -5085,6 +5085,16 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-art@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/react-art/-/react-art-16.0.0.tgz#3d674aa5cba2ee6e36c3c1f87b8db1b30cc3e668"
+  dependencies:
+    create-react-class "^15.6.2"
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
+
 react-dom@^16.0.0:
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.0.0.tgz#9cc3079c3dcd70d4c6e01b84aab2a7e34c303f58"
@@ -5116,6 +5126,15 @@ react-jss@^7.2.0:
     jss-preset-default "^3.0.0"
     prop-types "^15.5.8"
     theming "^1.1.0"
+
+react-konva@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-1.1.6.tgz#d721a0e85d37ff01a6a088ff64a10d181816206d"
+  dependencies:
+    create-react-class "^15.6.0"
+    fbjs "^0.8.14"
+    object-assign "^4.1.1"
+    prop-types "^15.5.10"
 
 react-popper@^0.7.4:
   version "0.7.4"
