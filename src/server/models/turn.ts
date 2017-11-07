@@ -84,7 +84,7 @@ export async function getInboxEntriesForUser(
       `SELECT
           T.id AS id,
           T.game_id AS game_id,
-          T.drawing AS dawing,
+          T.drawing AS drawing,
           T.label AS label,
           T.is_drawing AS is_drawing
        FROM Turns AS T
