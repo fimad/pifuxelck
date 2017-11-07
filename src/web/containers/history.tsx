@@ -54,17 +54,17 @@ const HistoryComponent = ({games, dispatch}: Props) => {
   return (
     <div>
       <Desktop>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={6}>
           {tiles}
         </GridList>
       </Desktop>
       <Tablet>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
           {tiles}
         </GridList>
       </Tablet>
       <Mobile>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={1}>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
           {tiles}
         </GridList>
       </Mobile>
