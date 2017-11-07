@@ -4,6 +4,7 @@ import ArchiveIcon from 'material-ui-icons/Archive';
 import Game from './game';
 import History from './history';
 import HistoryIcon from 'material-ui-icons/History';
+import Inbox from './inbox';
 import InboxIcon from 'material-ui-icons/Inbox';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Dispatch } from 'redux';
@@ -11,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { connect } from 'react-redux';
-import { getHistory, getInbox, login } from '../actions';
+import { gotoInbox, gotoHistory, login } from '../actions';
 
 import MenuIcon from 'material-ui-icons/Menu';
 import {
@@ -45,20 +46,18 @@ class AppComponent extends React.Component<Props, any> {
   handleShowDrawer = (showDrawer: boolean) => this.setState({showDrawer});
 
   handleClickInbox = () => {
-    this.props.dispatch(push('/'));
-    this.props.dispatch(getInbox());
+    this.props.dispatch(gotoInbox());
     this.handleShowDrawer(false);
   }
 
   handleClickHistory = () => {
-    this.props.dispatch(push('/history'));
-    this.props.dispatch(getHistory());
+    this.props.dispatch(gotoHistory());
     this.handleShowDrawer(false);
   };
 
   render() {
     const fabStyle: any = {
-      position: 'absolute',
+      position: 'fixed',
       bottom: '32px',
       right: '32px',
     };
@@ -104,6 +103,7 @@ class AppComponent extends React.Component<Props, any> {
           <Route path='/'>
             <div>
               {appBar('Inbox')}
+              <Inbox />
               <Button fab style={fabStyle} aria-label="add" color={"accent"}>
                 <AddIcon />
               </Button>

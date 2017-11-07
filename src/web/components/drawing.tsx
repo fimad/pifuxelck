@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as models from '../../common/models/drawing';
 
+const VisibilitySensor = require('react-visibility-sensor');
+
 type Props = {
   drawing: models.Drawing,
 };
@@ -32,10 +34,16 @@ const drawLine = ({color, points, size}: models.Line, i: number) => {
 };
 
 const Drawing = ({drawing: {background_color, lines}}: Props) => (
-  <svg viewBox="0 0 1 1">
-    <rect width='1' height='1' fill={toColor(background_color)} />
-    {lines.map(drawLine)}
-  </svg>
+  <VisibilitySensor partialVisibility={true}>
+  {
+    ({isVisible}: {isVisible: boolean}) => (
+      <svg viewBox="0 0 1 1">
+        <rect width='1' height='1' fill={toColor(background_color)} />
+          {isVisible ?  lines.map(drawLine) : null}
+      </svg>
+    )
+  }
+  </VisibilitySensor>
 );
 
 export default Drawing;

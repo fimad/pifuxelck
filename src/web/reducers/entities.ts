@@ -1,6 +1,7 @@
 import {
   Action,
   GET_HISTORY_RECEIVE,
+  GET_INBOX_SUCCESS,
   LOGIN_START,
   LOGOUT,
   USER_LOOKUPUP_SUCCESS,
@@ -26,6 +27,14 @@ export default function(state: Entities = initialState, action: Action) {
       ...state,
       history: Object.assign(
           {}, state.history, mapFrom(action.message.games, (x) => x.id)),
+    };
+  }
+  if (action.type == GET_INBOX_SUCCESS &&
+      action.message && action.message.inbox_entries) {
+    return {
+      ...state,
+      inbox: Object.assign(
+          {}, mapFrom(action.message.inbox_entries, (x) => x.game_id)),
     };
   }
   if (action.type == LOGOUT || action.type == LOGIN_START) {

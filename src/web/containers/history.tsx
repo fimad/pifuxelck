@@ -4,7 +4,6 @@ import { StarBorder } from 'material-ui-icons';
 import { Dispatch } from 'redux';
 import { Game } from '../../common/models/game';
 import { Link } from 'react-router-dom';
-import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';

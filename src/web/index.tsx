@@ -46,6 +46,10 @@ const store = createStoreWithMiddleware(reducer);
 // TODO(will): Add migration that wipes all data except the auth token...
 storage.createLoader(engine)(store)
   .then(() => {
+    store.dispatch(actions.getInbox());
+    store.dispatch(actions.getHistory());
+  })
+  .then(() => {
     ReactDOM.render(
       <MuiThemeProvider>
         <Provider store={store}>
