@@ -50,6 +50,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     }
     return (
       <Paper style={style}>
+        <h3>pifuxelck</h3>
         <TextField
             onChange={this.onChange("user")}
             value={this.state.user}

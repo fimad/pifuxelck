@@ -9,6 +9,7 @@ import { State } from '../state';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
+import { Desktop, Tablet, Mobile } from '../components/media-query';
 
 const { push } = require('react-router-redux');
 
@@ -44,17 +45,35 @@ const gameToTile = (game: Game) => {
     <GridTile
       key={game.id}
       title={title}
+      style={{minHeight: '64px'}}
       subtitle={subtitle} >
       {drawing}
     </GridTile>
   );
 };
 
-const HistoryComponent = ({games}: Props) => (
-  <GridList cellHeight='auto'>
-    {games.map(gameToTile)}
-  </GridList>
-);
+const HistoryComponent = ({games}: Props) => {
+  const tiles = games.filter((game) => game.turns.length > 1).slice(0, 40).map(gameToTile);
+  return (
+    <div>
+      <Desktop>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={6}>
+          {tiles}
+        </GridList>
+      </Desktop>
+      <Tablet>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
+          {tiles}
+        </GridList>
+      </Tablet>
+      <Mobile>
+        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
+          {tiles}
+        </GridList>
+      </Mobile>
+    </div>
+  );
+};
 
 const compareGameByCompletion = (a: Game, b: Game) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);

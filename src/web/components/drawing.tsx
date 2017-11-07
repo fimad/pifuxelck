@@ -26,14 +26,9 @@ const drawLine = ({color, points, size}: models.Line, i: number) => {
         stroke={toColor(color)}
         strokeWidth={size}
         key={i}
-        points={points.map(({x, y}: models.Point) => `${x},${y}`).join(' ')}/>));
+        points={points.map(({x, y}: models.Point) => `${x},${y}`).join(' ')}/>
+  ));
   return children;
-//  <polyline
-//      fill='none'
-//      stroke={toColor(color)}
-//      strokeWidth={size}
-//      key={i}
-//      points={points.map(({x, y}: models.Point) => `${x},${y}`).join(' ')}/>
 };
 
 const Drawing = ({drawing: {background_color, lines}}: Props) => (

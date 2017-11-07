@@ -319,6 +319,12 @@
     "@types/react" "*"
     redux "^3.6.0"
 
+"@types/react-responsive@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-responsive/-/react-responsive-3.0.0.tgz#f874bdf36fba8fcfebf257047098acd41b202106"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-router-dom@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.2.0.tgz#0f2f11d1553bd5aafbd8f613317e8dc9291d7a34"
@@ -1657,6 +1663,10 @@ css-in-js-utils@^2.0.0:
   resolved "https://registry.yarnpkg.com/css-in-js-utils/-/css-in-js-utils-2.0.0.tgz#5af1dd70f4b06b331f48d22a3d86e0786c0b9435"
   dependencies:
     hyphenate-style-name "^1.0.2"
+
+css-mediaquery@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/css-mediaquery/-/css-mediaquery-0.1.2.tgz#6a2c37344928618631c54bd33cedd301da18bea0"
 
 csv-streamify@^3.0.4:
   version "3.0.4"
@@ -3151,7 +3161,7 @@ https-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.1.tgz#3f91365cabe60b77ed0ebba24b454e3e09d95a82"
 
-hyphenate-style-name@^1.0.2:
+hyphenate-style-name@^1.0.0, hyphenate-style-name@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.2.tgz#31160a36930adaf1fc04c6074f7eb41465d4ec4b"
 
@@ -3982,6 +3992,12 @@ map-visit@^1.0.0:
   resolved "https://registry.yarnpkg.com/map-visit/-/map-visit-1.0.0.tgz#ecdca8f13144e660f1b5bd41f12f3479d98dfb8f"
   dependencies:
     object-visit "^1.0.0"
+
+matchmediaquery@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/matchmediaquery/-/matchmediaquery-0.2.1.tgz#223c7005793de03e47ce92b13285a72c44ada2cf"
+  dependencies:
+    css-mediaquery "^0.1.2"
 
 material-ui@^0.19.4:
   version "0.19.4"
@@ -5094,6 +5110,14 @@ react-redux@^5.0.6:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
+
+react-responsive@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-responsive/-/react-responsive-3.0.0.tgz#26e895dbdf748d4473c76cf46d29cb9d824e02ec"
+  dependencies:
+    hyphenate-style-name "^1.0.0"
+    matchmediaquery "^0.2.1"
+    prop-types "^15.5.7"
 
 react-router-dom@^4.2.2:
   version "4.2.2"
