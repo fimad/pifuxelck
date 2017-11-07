@@ -1,5 +1,11 @@
 import * as React from 'react';
+import AddIcon from 'material-ui-icons/Add';
+import ArchiveIcon from 'material-ui-icons/Archive';
+import Game from './game';
 import History from './history';
+import HistoryIcon from 'material-ui-icons/History';
+import InboxIcon from 'material-ui-icons/Inbox';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
@@ -87,10 +93,20 @@ class AppComponent extends React.Component<Props, any> {
               <History />
             </div>
           </Route>
+          <Route path='/game/:id'>
+            {({match}) => (
+              <div>
+                {appBar('Game')}
+                <Game gameId={match.params.id} />
+              </div>
+            )}
+          </Route>
           <Route path='/'>
             <div>
               {appBar('Inbox')}
-              <Button fab style={fabStyle} aria-label="add" color={"accent"} />
+              <Button fab style={fabStyle} aria-label="add" color={"accent"}>
+                <AddIcon />
+              </Button>
             </div>
           </Route>
         </Switch>
@@ -100,8 +116,20 @@ class AppComponent extends React.Component<Props, any> {
             anchor="left"
             open={this.state.showDrawer}
             onRequestClose={this.handleToggleDrawer} >
-          <MenuItem onClick={this.handleClickInbox}>Inbox</MenuItem>
-          <MenuItem onClick={this.handleClickHistory}>History</MenuItem>
+          <List>
+            <ListItem button onClick={this.handleClickInbox}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inbox" />
+            </ListItem>
+            <ListItem button onClick={this.handleClickHistory}>
+              <ListItemIcon>
+                <HistoryIcon />
+              </ListItemIcon>
+              <ListItemText primary="History" />
+            </ListItem>
+          </List>
         </Drawer>
       </div>
     );

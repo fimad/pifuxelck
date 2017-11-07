@@ -21,7 +21,7 @@ type Props = {
   dispatch: Dispatch<State>,
 };
 
-const gameToTile = (game: Game) => {
+const gameToTile = ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
   let title = '';
   if (game.turns.length >= 1) {
     const turn = game.turns[0];
@@ -38,15 +38,21 @@ const gameToTile = (game: Game) => {
     }
   }
   return (
-    <GridListTile key={game.id}>
+    <GridListTile
+        key={game.id}
+        onClick={() => dispatch(push(`/game/${game.id}`))}>
       {drawing}
       <GridListTileBar title={title} subtitle={subtitle} />
     </GridListTile>
   );
 };
 
-const HistoryComponent = ({games}: Props) => {
-  const tiles = games.filter((game) => game.turns.length > 1).slice(0, 40).map(gameToTile);
+const HistoryComponent = ({games, dispatch}: Props) => {
+  const tiles = games
+      .filter((game) => game.turns.length > 1)
+      .slice(0, 40)
+      .map((game) => ({game, dispatch}))
+      .map(gameToTile);
   return (
     <div>
       <Desktop>
