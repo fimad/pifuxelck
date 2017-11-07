@@ -7,8 +7,9 @@ import { login } from '../actions';
 
 import {
   Paper,
-  RaisedButton,
+  Button,
   TextField,
+  Typography,
 } from 'material-ui';
 
 type Props = {
@@ -39,8 +40,8 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
   }
 
   onChange(key: string) {
-    return (event: any, value: string) => {
-      this.setState({[key]: value});
+    return (event: any) => {
+      this.setState({[key]: event.target.value});
     };
   }
 
@@ -48,25 +49,29 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     if (this.props.auth) {
       return (<Redirect to="/" />);
     }
+    const buttonStyle = {
+      marginTop: '8px',
+    };
     return (
       <Paper style={style}>
-        <h3>pifuxelck</h3>
+        <Typography type="display1" style={{textAlign: 'center'}}>
+          pifuxelck
+        </Typography>
         <TextField
             onChange={this.onChange("user")}
             value={this.state.user}
-            floatingLabelText="Username" />
+            label="Username" />
         <TextField
             onChange={this.onChange("password")}
             value={this.state.password}
-            floatingLabelText="Password"
+            label="Password"
             type="password" />
-        <RaisedButton
-            label="Login"
-            primary={true}
-            onClick={this.dispatchLogin} />
-        <RaisedButton
-            label="Register"
-            secondary={true} />
+        <Button raised color="primary" onClick={this.dispatchLogin} style={buttonStyle}>
+          Login
+        </Button>
+        <Button raised color="accent" style={buttonStyle}>
+          Register
+        </Button>
       </Paper>
     );
   }

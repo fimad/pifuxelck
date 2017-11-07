@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Drawing from '../components/drawing';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import { StarBorder } from 'material-ui-icons';
 import { Dispatch } from 'redux';
 import { Game } from '../../common/models/game';
 import { Link } from 'react-router-dom';
@@ -13,12 +13,8 @@ import { Desktop, Tablet, Mobile } from '../components/media-query';
 
 const { push } = require('react-router-redux');
 
-import {
-  GridList,
-  GridTile,
-  IconButton,
-  Subheader,
-} from 'material-ui';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import { IconButton } from 'material-ui';
 
 type Props = {
   games: Game[],
@@ -42,13 +38,10 @@ const gameToTile = (game: Game) => {
     }
   }
   return (
-    <GridTile
-      key={game.id}
-      title={title}
-      style={{minHeight: '64px'}}
-      subtitle={subtitle} >
+    <GridListTile key={game.id}>
       {drawing}
-    </GridTile>
+      <GridListTileBar title={title} subtitle={subtitle} />
+    </GridListTile>
   );
 };
 

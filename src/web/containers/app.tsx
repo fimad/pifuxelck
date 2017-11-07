@@ -1,5 +1,4 @@
 import * as React from 'react';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import History from './history';
 import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
@@ -8,14 +7,18 @@ import { State } from '../state';
 import { connect } from 'react-redux';
 import { getHistory, getInbox, login } from '../actions';
 
-const { push } = require('react-router-redux');
-
+import MenuIcon from 'material-ui-icons/Menu';
 import {
   AppBar,
-  FloatingActionButton,
+  Toolbar,
+  Button,
+  IconButton,
   Drawer,
   MenuItem,
+  Typography,
 } from 'material-ui';
+
+const { push } = require('react-router-redux');
 
 type Props = {
   dispatch: Dispatch<State>,
@@ -61,10 +64,19 @@ class AppComponent extends React.Component<Props, any> {
       height: '100%',
     };
     const appBar = (title: string) => (
-      <AppBar
-        title={title}
-        onLeftIconButtonTouchTap={this.handleToggleDrawer}
-        iconClassNameRight='muidocs-icon-navigation-expand-more' />
+      <div>
+      <AppBar position="fixed">
+        <Toolbar>
+          <IconButton onClick={this.handleToggleDrawer} color="contrast" aria-label="Menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography type="title" color="inherit">
+            {title}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <AppBar position="static"><Toolbar /></AppBar>
+      </div>
     );
     return (
       <div style={rootStyle}>
@@ -78,17 +90,16 @@ class AppComponent extends React.Component<Props, any> {
           <Route path='/'>
             <div>
               {appBar('Inbox')}
-              <FloatingActionButton style={fabStyle} secondary={true}>
-                <ContentAdd />
-              </FloatingActionButton>
+              <Button fab style={fabStyle} aria-label="add" color={"accent"} />
             </div>
           </Route>
         </Switch>
 
         <Drawer
+            type="temporary"
+            anchor="left"
             open={this.state.showDrawer}
-            docked={false}
-            onRequestChange={this.handleShowDrawer} >
+            onRequestClose={this.handleToggleDrawer} >
           <MenuItem onClick={this.handleClickInbox}>Inbox</MenuItem>
           <MenuItem onClick={this.handleClickHistory}>History</MenuItem>
         </Drawer>
