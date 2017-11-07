@@ -33,7 +33,7 @@ const gameToTile = ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) =
   if (game.turns.length >= 2) {
     const turn = game.turns[1];
     if (turn.is_drawing == true) {
-      drawing = (<Drawing drawing={turn.drawing} />);
+      drawing = (<Drawing drawing={turn.drawing} hideInivisible={true} />);
     }
   }
   return (
