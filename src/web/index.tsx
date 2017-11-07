@@ -2,9 +2,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as actions from './actions';
 import * as storage from 'redux-storage'
+import App from './containers/app';
+import Login from './containers/login';
+import LoginRedirect from './containers/login-redirect';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
+import { Router, Route, Switch } from 'react-router';
 import { createBrowserHistory } from 'history';
 import { logger } from 'redux-logger';
 import { reducers } from './reducers';
@@ -40,23 +44,33 @@ const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(reducer);
 // TODO(will): Need to handle errors here...
 // TODO(will): Add migration that wipes all data except the auth token...
-storage.createLoader(engine)(store);
+storage.createLoader(engine)(store)
+  .then(() => {
+    ReactDOM.render(
+      <MuiThemeProvider>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <div>
+              <LoginRedirect />
+              <Switch>
+                <Route path='/login' component={Login} />
+                <Route path='/' component={App} />
+              </Switch>
+            </div>
+          </ConnectedRouter>
+        </Provider>
+      </MuiThemeProvider>,
+      document.getElementById('content')
+    );
+  });
+
 
 (window as any)['store'] = store;
 (window as any)['actions'] = actions;
-
-ReactDOM.render(
-  <Provider store={store}>
-  <div>Test</div>
-  </Provider>,
-  document.getElementById('content')
-);
 // It is important not to attach this component until after the storage layer
 // has loaded, otherwise it is possible to save any empty state, thus blowing
 // away all prior state.
-//    <ConnectedRouter history={history}>
-//    </ConnectedRouter>
-      //      <Route path="/" component={App}>
-      //        <Route path="foo" component={Foo}/>
-      //        <Route path="bar" component={Bar}/>
+      //      <Route path='/' component={App}>
+      //        <Route path='foo' component={Foo}/>
+      //        <Route path='bar' component={Bar}/>
       //      </Route>

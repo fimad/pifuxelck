@@ -1,6 +1,6 @@
 import { Message } from '../../common/models/message';
 
-const API_HOST = 'https://canary.everythingissauce.com'
+const API_HOST = 'https://everythingissauce.com'
 
 export function get(url: string, body?: Message, token?: string): Promise<Message> {
   return call('GET', url, body, token);

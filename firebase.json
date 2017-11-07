@@ -1,5 +1,19 @@
 {
   "functions": {
     "source": "dist"
+  },
+  "hosting": {
+    "public": "dist-web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }

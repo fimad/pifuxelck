@@ -319,7 +319,15 @@
     "@types/react" "*"
     redux "^3.6.0"
 
-"@types/react-router@^4.0.16":
+"@types/react-router-dom@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.2.0.tgz#0f2f11d1553bd5aafbd8f613317e8dc9291d7a34"
+  dependencies:
+    "@types/history" "*"
+    "@types/react" "*"
+    "@types/react-router" "*"
+
+"@types/react-router@*", "@types/react-router@^4.0.16":
   version "4.0.16"
   resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-4.0.16.tgz#5153d07cb138a30c50aaaa33c8d654e8f321ae13"
   dependencies:
@@ -329,12 +337,6 @@
 "@types/react@*", "@types/react@^16.0.20":
   version "16.0.20"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.20.tgz#dc16feb9c0bdf50e439482c6fd3c43d5a1d9f3b1"
-
-"@types/redux-localstorage@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@types/redux-localstorage/-/redux-localstorage-1.0.7.tgz#1dad8cf6c32dd7daced71728cc34dca25167af12"
-  dependencies:
-    redux "^3.6.0"
 
 "@types/redux-logger@^3.0.5":
   version "3.0.5"
@@ -5093,6 +5095,17 @@ react-redux@^5.0.6:
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
 
+react-router-dom@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.2.2.tgz#c8a81df3adc58bba8a76782e946cbd4eae649b8d"
+  dependencies:
+    history "^4.7.2"
+    invariant "^2.2.2"
+    loose-envify "^1.3.1"
+    prop-types "^15.5.4"
+    react-router "^4.2.0"
+    warning "^3.0.0"
+
 react-router-redux@^5.0.0-alpha.8:
   version "5.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.8.tgz#5242c705730b2ac862aff7a8e90f870d0cf45e12"
@@ -5249,10 +5262,6 @@ redux-actions@^0.10.1:
   resolved "https://registry.yarnpkg.com/redux-actions/-/redux-actions-0.10.1.tgz#bb442ee37dd9643a94933e4071e089f435587135"
   dependencies:
     reduce-reducers "^0.1.0"
-
-redux-localstorage@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/redux-localstorage/-/redux-localstorage-0.4.1.tgz#faf6d719c581397294d811473ffcedee065c933c"
 
 redux-logger@^3.0.6:
   version "3.0.6"
