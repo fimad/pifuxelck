@@ -1,32 +1,29 @@
 import * as React from 'react';
+import * as models from '../../common/models/turn';
 import InboxDrawingCard from '../components/inbox-drawing-card';
+import InboxEntry from './inbox-entry';
 import InboxLabelCard from '../components/inbox-label-card';
-import { InboxEntry } from '../../common/models/turn';
 import { State } from '../state';
-import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
 
 type Props = {
-  inbox: InboxEntry[],
+  entries: string[],
 };
 
-const toCard = ({previous_turn}: InboxEntry) =>
-  previous_turn.is_drawing == true ?
-      (<InboxDrawingCard drawing={previous_turn.drawing} />) :
-      (<InboxLabelCard label={previous_turn.label} />);
-
-const InboxComponent = ({inbox}: Props) => (
+const InboxComponent = ({entries}: Props) => (
   <div style={{maxWidth: '75vh', margin: 'auto'}}>
-    {inbox.map(toCard)}
+    {entries.map((gameId) => (<InboxEntry gameId={gameId} />))}
   </div>
 );
 
-const compareByGameId = (a: InboxEntry, b: InboxEntry) =>
+const compareByGameId = (a: models.InboxEntry, b: models.InboxEntry) =>
     compareStringsAsInts(a.game_id, b.game_id);
 
 const mapStateToProps = ({entities: {inbox}}: State) => ({
-  inbox: Object.values(inbox).sort(compareByGameId),
+  entries: Object.values(inbox)
+      .sort(compareByGameId)
+      .map((entry) => entry.game_id),
 });
 
 const Inbox = connect(mapStateToProps)(InboxComponent);

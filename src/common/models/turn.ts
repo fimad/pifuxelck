@@ -22,3 +22,27 @@ export type InboxEntry = {
   game_id: string
   previous_turn: Turn
 }
+
+export function drawingOrDefault(turn: Turn): Drawing {
+  if (turn.is_drawing == true && turn.drawing) {
+    return turn.drawing;
+  } else {
+    return {
+      background_color: {
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 1,
+      },
+      lines: []
+    };
+  }
+}
+
+export function labelOrDefault(turn: Turn): string {
+  if (turn.is_drawing == false && turn.label) {
+    return turn.label;
+  } else {
+    return '';
+  }
+}

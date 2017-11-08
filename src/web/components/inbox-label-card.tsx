@@ -16,7 +16,7 @@ const InboxLabelCard = ({label, onSend}: Props) => (
       </Typography>
     </CardContent>
     <CardActions>
-      <Button> Reply </Button>
+      <Button>Draw</Button>
     </CardActions>
   </Card>
 );

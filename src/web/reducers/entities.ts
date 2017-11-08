@@ -12,32 +12,41 @@ import { mapFrom } from '../../common/utils';
 const initialState = {users: {}, history: {}, inbox: {}};
 
 export default function(state: Entities = initialState, action: Action) {
-  if (action.type == USER_LOOKUPUP_SUCCESS &&
-      action.message && action.message.user) {
-    return {
-      ...state,
-      users: Object.assign({}, state.users, {
-        [action.message.user.display_name]: action.message.user.id,
-      }),
-    };
-  }
-  if (action.type == GET_HISTORY_RECEIVE &&
-      action.message && action.message.games) {
-    return {
-      ...state,
-      history: Object.assign(
-          {}, state.history, mapFrom(action.message.games, (x) => x.id)),
-    };
-  }
-  if (action.type == GET_INBOX_SUCCESS &&
-      action.message && action.message.inbox_entries) {
-    return {
-      ...state,
-      inbox: Object.assign(
-          {}, mapFrom(action.message.inbox_entries, (x) => x.game_id)),
-    };
-  }
-  if (action.type == LOGOUT || action.type == LOGIN_START) {
+  switch (action.type) {
+    case 'USER_LOOKUP_SUCCESS':
+      if (action.message && action.message.user) {
+        return {
+          ...state,
+          users: {
+            ...state.users,
+            [action.message.user.display_name]: action.message.user.id,
+          },
+        };
+      }
+      break;
+    case 'GET_HISTORY_RECEIVE':
+      if (action.message && action.message.games) {
+        return {
+          ...state,
+          history: {
+            ...state.history,
+            ...mapFrom(action.message.games, (x) => x.id),
+          },
+        };
+      }
+      break;
+    case 'GET_INBOX_SUCCESS':
+      if (action.message && action.message.inbox_entries) {
+        return {
+          ...state,
+          inbox: {
+              ...mapFrom(action.message.inbox_entries, (x) => x.game_id)
+          },
+        };
+      }
+      break;
+    case 'LOGOUT':
+    case 'LOGIN_START':
       return initialState;
   }
   return state;
