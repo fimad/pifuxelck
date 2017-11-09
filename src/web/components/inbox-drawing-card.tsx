@@ -10,13 +10,14 @@ import Typography from 'material-ui/Typography';
 import { Turn } from '../../common/models/turn';
 
 type Props = {
+  gameId: string,
   drawing: models.Drawing
   label: string
-  onChange?: (turn: Turn) => void
-  onSend?: () => void
+  onChange: (turn: Turn) => void
+  onSubmit: () => void
 };
 
-const InboxDrawingCard = ({label, drawing, onChange, onSend}: Props) => (
+const InboxDrawingCard = ({label, drawing, onChange}: Props) => (
   <Card style={{margin: '8px'}}>
     <Drawing drawing={drawing} />
     <Divider />

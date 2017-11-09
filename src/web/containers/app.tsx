@@ -3,6 +3,7 @@ import AddIcon from 'material-ui-icons/Add';
 import ArchiveIcon from 'material-ui-icons/Archive';
 import Game from './game';
 import History from './history';
+import DrawReply from './draw-reply';
 import HistoryIcon from 'material-ui-icons/History';
 import Inbox from './inbox';
 import InboxIcon from 'material-ui-icons/Inbox';
@@ -67,6 +68,8 @@ class AppComponent extends React.Component<Props, any> {
       left: '0px',
       width: '100%',
       height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
     };
     const appBar = (title: string) => (
       <div>
@@ -97,6 +100,14 @@ class AppComponent extends React.Component<Props, any> {
               <div>
                 {appBar('Game')}
                 <Game gameId={match.params.id} />
+              </div>
+            )}
+          </Route>
+          <Route path='/draw/:gameId'>
+            {({match}) => (
+              <div style={{flex: "1 0 auto", display: 'flex', flexDirection: 'column'}}>
+                {appBar('Inbox')}
+                <DrawReply gameId={match.params.gameId} />
               </div>
             )}
           </Route>

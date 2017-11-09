@@ -1,3 +1,4 @@
+import { Color, Point } from '../common/models/drawing';
 import { Message } from '../common/models/message';
 import { Turn } from '../common/models/turn';
 
@@ -33,4 +34,22 @@ export type Action = ({
   type: 'UI_UPDATE_OUTBOX'
   gameId: string
   turn: Turn
+} | {
+  type: 'UI_CHOOSE_BRUSH_SIZE'
+  size: number
+} | {
+  type: 'UI_CHOOSE_BRUSH_COLOR'
+  color: Color
+} | {
+  type: 'UI_UPDATE_BACKGROUND_COLOR'
+  gameId: string
+  color: Color
+} | {
+  type: 'UI_APPEND_DRAWING_LINE'
+  gameId: string
+  point: Point
+} | {
+  type: 'UI_START_DRAWING_LINE'
+  gameId: string
+  point: Point
 });

@@ -1,11 +1,4 @@
-import {
-  Action,
-  GET_HISTORY_RECEIVE,
-  GET_INBOX_SUCCESS,
-  LOGIN_START,
-  LOGOUT,
-  USER_LOOKUPUP_SUCCESS,
-} from '../actions';
+import { Action } from '../actions';
 import { Entities } from '../state';
 import { mapFrom } from '../../common/utils';
 

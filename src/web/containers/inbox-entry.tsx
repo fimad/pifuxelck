@@ -9,16 +9,19 @@ import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
 import { updateOutbox } from '../actions';
 
+const { push } = require('react-router-redux');
+
 type ExternalProps = {
-  gameId: string;
+  gameId: string
 }
 
 type Props = ExternalProps & {
-  drawing: Drawing,
-  label: string,
-  onSubmit: () => void,
-  previousIsDrawing: boolean,
-  onChange: (turn: Turn) => void,
+  drawing: Drawing
+  label: string
+  onSubmit: () => void
+  previousIsDrawing: boolean
+  onChange: (turn: Turn) => void
+  onShowDrawing: (showDrawing: boolean) => void
 };
 
 const EntryComponent = (props: Props) =>
@@ -43,6 +46,7 @@ function mapStateToProps(
 
 const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
+  onShowDrawing: (showDrawing: boolean) => dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
   onSubmit: () => {},
 });
 

@@ -1,23 +1,28 @@
+import { Color } from '../common/models/drawing';
 import { Game } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
 
 export type Entities = {
   history: {
-    [id: string]: Game,
-  },
+    [id: string]: Game
+  }
   inbox: {
-    [id: string]: InboxEntry,
-  },
+    [id: string]: InboxEntry
+  }
   users: {
-    [displayName: string]: string,
-  },
+    [displayName: string]: string
+  }
 };
 
 export type Ui = {
   outbox: {
-    [gameId: string]: Turn,
-  },
+    [gameId: string]: Turn
+  }
+  drawing: {
+    brushSize: number
+    brushColor: Color
+  }
 };
 
 /**
