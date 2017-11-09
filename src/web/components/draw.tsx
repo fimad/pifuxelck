@@ -24,9 +24,28 @@ type Props = {
   showBrushSizeDialog: () => void
   showBrushColorDialog: () => void
   showBackgroundColorDialog: () => void
+  startLine: (point: models.Point) => void
+  appendLine: (point: models.Point) => void
+  stopLine: () => void
+  undoLastLine: () => void
+  lineInProgress: boolean
 };
 
-const Draw = ({gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog, showBackgroundColorDialog}: Props) => (
+const passPointTo =
+    (appendLine: (point: models.Point) => void, stopLine: () => void) =>
+    (event: React.MouseEvent<HTMLDivElement>) => {
+  const boundingBox = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+  const size = boundingBox.width;
+  const x = (event.clientX - boundingBox.left) / size;
+  const y = (event.clientY - boundingBox.top) / size;
+  appendLine({x, y});
+};
+
+const Draw = ({
+      gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
+      showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
+      lineInProgress,
+    }: Props) => (
   <div style={{
       display: 'flex',
       flex: '1 1',
@@ -45,11 +64,17 @@ const Draw = ({gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog
       </CardContent>
     </Card>
     <Card style={{flex: '0 1 auto'}}>
-      <Drawing drawing={drawing} />
+      <div
+          onMouseUp={lineInProgress ? stopLine : undefined}
+          onMouseLeave={lineInProgress ? stopLine : undefined}
+          onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
+          onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
+        <Drawing drawing={drawing} />
+      </div>
     </Card>
     <Card style={{flex: '0 0 auto'}}>
       <CardActions style={{justifyContent: 'space-evenly'}}>
-        <IconButton>
+        <IconButton onClick={undoLastLine}>
           <UndoIcon />
         </IconButton>
         <IconButton onClick={showBrushSizeDialog}>

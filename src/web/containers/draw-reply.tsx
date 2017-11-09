@@ -2,13 +2,13 @@ import * as React from 'react';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Draw from '../components/draw';
 import { Dispatch } from 'redux';
-import { Drawing } from '../../common/models/drawing';
+import { Drawing, Point } from '../../common/models/drawing';
 import { Redirect } from 'react-router';
 import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { Turn, drawingOrDefault, labelOrDefault } from '../../common/models/turn';
 import { connect } from 'react-redux';
-import { updateOutbox } from '../actions';
+import { updateOutbox, startDrawingLine, appendDrawingLine, stopDrawingLine, undoDrawingLine } from '../actions';
 
 const { push } = require('react-router-redux');
 
@@ -26,6 +26,11 @@ type Props = ExternalProps & {
   showBrushSizeDialog: () => void
   showBrushColorDialog: () => void
   showBackgroundColorDialog: () => void
+  startLine: (point: Point) => void
+  appendLine: (point: Point) => void
+  stopLine: () => void
+  undoLastLine: () => void
+  lineInProgress: boolean
 };
 
 const DrawComponent = (props: Props) =>
@@ -61,15 +66,16 @@ const DrawComponent = (props: Props) =>
       );
 
 function mapStateToProps(
-    {entities: {inbox}, ui: {outbox}}: State, {gameId}: ExternalProps) {
+    {entities: {inbox}, ui}: State, {gameId}: ExternalProps) {
   const previous = inbox[gameId].previous_turn;
   if (!previous || previous.is_drawing) {
     return {redirectToInbox: true} as Props;
   }
-  const current = outbox[gameId] || ({} as Turn);
+  const current = ui.outbox[gameId] || ({} as Turn);
   const drawing = drawingOrDefault(current);
   const label = labelOrDefault(previous);
-  return { redirectToInbox: false, label, drawing } as Props;
+  const lineInProgress = ui.drawing.inProgress;
+  return { redirectToInbox: false, label, drawing, lineInProgress } as Props;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
@@ -78,6 +84,10 @@ const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) 
   showBrushSizeDialog: () => dispatch(push(`/draw/${gameId}/brush/size`)),
   showBrushColorDialog: () => dispatch(push(`/draw/${gameId}/brush/color`)),
   showBackgroundColorDialog: () => dispatch(push(`/draw/${gameId}/bg/color`)),
+  startLine: (point: Point) => dispatch(startDrawingLine(gameId, point)),
+  appendLine: (point: Point) => dispatch(appendDrawingLine(gameId, point)),
+  stopLine: () => dispatch(stopDrawingLine()),
+  undoLastLine: () => dispatch(undoDrawingLine(gameId)),
 });
 
 const DrawReply = connect(mapStateToProps, mapDispatchToProps)(DrawComponent);

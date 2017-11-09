@@ -6,6 +6,7 @@ import { mapFrom } from '../../common/utils';
 const initialState = {
   outbox: {} ,
   drawing: {
+    inProgress: false,
     brushSize: .0125,
     brushColor: {
       red: 0,
@@ -73,12 +74,21 @@ export default function(state: Ui = initialState, action: Action) {
     };
   }
   if (action.type == 'UI_START_DRAWING_LINE') {
+    if (!Number.isFinite(action.point.x) || !Number.isFinite(action.point.y)) {
+      return state;
+    }
+
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
     if (turn.is_drawing != true) {
       return state;
     }
+
     return {
       ...state,
+      drawing: {
+        ...state.drawing,
+        inProgress: true,
+      },
       outbox: {
         ...state.outbox,
         [action.gameId]: {
@@ -99,14 +109,35 @@ export default function(state: Ui = initialState, action: Action) {
     };
   }
   if (action.type == 'UI_APPEND_DRAWING_LINE') {
+    if (!Number.isFinite(action.point.x) || !Number.isFinite(action.point.y)) {
+      return state;
+    }
+
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
     if (turn.is_drawing != true) {
       return state;
     }
+
     const lastLine = turn.drawing.lines[turn.drawing.lines.length - 1];
     if (!lastLine) {
       return state;
     }
+
+    const lastPoint = lastLine.points[lastLine.points.length - 1];
+    if (!lastPoint) {
+      return state;
+    }
+
+    // Ensure that the cursor has moved a significant distance from the previous
+    // point before appending a new point.
+    var dX = lastPoint.x - action.point.x;
+    var dY = lastPoint.y - action.point.y;
+    var sqrDiff = dX * dX + dY * dY;
+    var minDiff = 0.01;
+    if (sqrDiff < minDiff * minDiff) {
+      return state;
+    }
+
     return {
       ...state,
       outbox: {
@@ -125,6 +156,35 @@ export default function(state: Ui = initialState, action: Action) {
           }
         }
       }
+    };
+  }
+  if (action.type == 'UI_UNDO_DRAWING_LINE') {
+    const turn = state.outbox[action.gameId] || defaultDrawingTurn;
+    if (turn.is_drawing != true) {
+      return state;
+    }
+    return {
+      ...state,
+      outbox: {
+        ...state.outbox,
+        [action.gameId]: {
+          ...turn,
+          drawing: {
+            ...turn.drawing,
+            lines: [...turn.drawing.lines.slice(0, -1)],
+          }
+        }
+      }
+    };
+  }
+  if (action.type == '@@router/LOCATION_CHANGE' ||
+      action.type == 'UI_STOP_DRAWING_LINE') {
+    return {
+      ...state,
+      drawing: {
+        ...state.drawing,
+        inProgress: false,
+      },
     };
   }
   return state;

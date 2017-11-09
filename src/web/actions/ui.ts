@@ -24,3 +24,11 @@ export function appendDrawingLine(gameId: string, point: Point) {
 export function startDrawingLine(gameId: string, point: Point) {
   return {type: 'UI_START_DRAWING_LINE', gameId, point};
 }
+
+export function stopDrawingLine() {
+  return {type: 'UI_STOP_DRAWING_LINE'};
+}
+
+export function undoDrawingLine(gameId: string) {
+  return {type: 'UI_UNDO_DRAWING_LINE', gameId};
+}

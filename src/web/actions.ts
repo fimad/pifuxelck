@@ -11,7 +11,8 @@ export type Action = ({
   type: 'LOGIN_START' | 'LOGIN_FAILURE' | 'USER_LOOKUP_START' |
       'USER_LOOKUP_FAILURE' | 'GET_HISTORY_START' | 'GET_HISTORY_STOP' |
       'GET_INBOX_START' | 'GET_INBOX_FAILURE' | 'PLAY_GAME_START' |
-      'PLAY_GAME_FAILURE' | 'LOGOUT'
+      'PLAY_GAME_FAILURE' | 'LOGOUT' | '@@router/LOCATION_CHANGE' |
+      'UI_STOP_DRAWING_LINE'
 } | {
   type: 'LOGIN_SUCCESS'
   message: Message
@@ -52,4 +53,7 @@ export type Action = ({
   type: 'UI_START_DRAWING_LINE'
   gameId: string
   point: Point
+} | {
+  type: 'UI_UNDO_DRAWING_LINE'
+  gameId: string
 });

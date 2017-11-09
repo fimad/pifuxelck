@@ -22,6 +22,7 @@ export type Ui = {
   drawing: {
     brushSize: number
     brushColor: Color
+    inProgress: boolean
   }
 };
 
