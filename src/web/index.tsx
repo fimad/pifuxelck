@@ -4,7 +4,6 @@ import * as actions from './actions';
 import * as storage from 'redux-storage'
 import App from './containers/app';
 import Login from './containers/login';
-import LoginRedirect from './containers/login-redirect';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -42,7 +41,7 @@ const reducer = storage.reducer(combineReducers({
 }));
 const engine = filter(
     require('redux-storage-engine-indexed-db').default('my-save-key'),
-    [], ['entities', 'history']);
+    [], [['entities', 'history']]);
 middlewares.push(storage.createMiddleware(engine));
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(reducer);
@@ -59,7 +58,6 @@ storage.createLoader(engine)(store)
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <div>
-              <LoginRedirect />
               <Switch>
                 <Route path='/login' component={Login} />
                 <Route path='/' component={App} />

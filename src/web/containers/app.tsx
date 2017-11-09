@@ -1,13 +1,14 @@
 import * as React from 'react';
 import AddIcon from 'material-ui-icons/Add';
 import ArchiveIcon from 'material-ui-icons/Archive';
+import DrawReply from './draw-reply';
 import Game from './game';
 import History from './history';
-import DrawReply from './draw-reply';
 import HistoryIcon from 'material-ui-icons/History';
 import Inbox from './inbox';
 import InboxIcon from 'material-ui-icons/Inbox';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import LoginRedirect from './login-redirect';
 import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
@@ -30,6 +31,7 @@ const { push } = require('react-router-redux');
 
 type Props = {
   dispatch: Dispatch<State>,
+  isLoggedIn: boolean,
 };
 
 class AppComponent extends React.Component<Props, any> {
@@ -57,6 +59,9 @@ class AppComponent extends React.Component<Props, any> {
   };
 
   render() {
+    if (!this.props.isLoggedIn) {
+      return (<LoginRedirect />);
+    }
     const fabStyle: any = {
       position: 'fixed',
       bottom: '32px',
@@ -147,6 +152,10 @@ class AppComponent extends React.Component<Props, any> {
   }
 }
 
-const App = connect()(AppComponent as any);
+const mapStateToProps = ({auth}: State) => ({
+  isLoggedIn: !!auth,
+});
+
+const App = connect(mapStateToProps)(AppComponent as any);
 
 export default App;

@@ -54,32 +54,38 @@ const Draw = ({
       display: 'flex',
       flex: '1 1',
       flexDirection: 'column',
-      maxWidth: '65vh',
       width: '100%',
       margin: 'auto',
       marginTop: '8px',
       marginBottom: '0px',
-      placeContent: 'space-between',
+      alignItems: 'center',
+      justifyContent: 'space-between',
   }}>
     <Card style={{flex: '0 0 auto'}}>
       <CardContent>
-        <Typography type="headline" component="h2">
+        <Typography style={{textAlign: 'center'}} type="headline" component="h2">
           {label}
         </Typography>
       </CardContent>
     </Card>
-    <Card style={{flex: '0 1 auto'}}>
-      <div
-          onMouseUp={lineInProgress ? stopLine : undefined}
-          onMouseLeave={lineInProgress ? stopLine : undefined}
-          onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
-          onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}
-          onTouchEnd={lineInProgress ? stopLine : undefined}
-          onTouchStart={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
-          onTouchMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
-        <Drawing drawing={drawing} />
+    <div style={{flex: '1 1 0%', margin: '8px', paddingLeft: 'calc(100% - 16px)', position: 'relative'}}>
+      <div style={{position: 'absolute', top: '0px', bottom: '0px', left: '0px', right: '0px'}}
+              onMouseUp={lineInProgress ? stopLine : undefined}
+              onMouseLeave={lineInProgress ? stopLine : undefined}
+              onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
+              onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}
+              onTouchEnd={lineInProgress ? stopLine : undefined}
+              onTouchStart={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
+              onTouchMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
+        <Drawing style={{
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+            width: '100%',
+            height: '100%',
+        }} drawing={drawing} />
       </div>
-    </Card>
+    </div>
     <Card style={{flex: '0 0 auto'}}>
       <CardActions style={{justifyContent: 'space-evenly'}}>
         <IconButton onClick={undoLastLine}>

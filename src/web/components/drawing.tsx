@@ -33,8 +33,17 @@ const Drawing = ({style, drawing: {background_color, lines}, hideInivisible}: Pr
   {
     ({isVisible}: {isVisible: boolean}) => (
       <svg style={style} viewBox="0 0 1 1">
-        <rect width='1' height='1' fill={toColor(background_color)} />
+        <defs>
+          <rect id="bg" width='1' height='1' fill={toColor(background_color)} />
+          <clipPath id="clip">
+              <use xlinkHref="#bg" />
+          </clipPath>
+        </defs>
+        <use xlinkHref="#rect"/>
+        <g clipPath="url(#clip)">
+          <rect id="bg" width='1' height='1' fill={toColor(background_color)} />
           {!hideInivisible || isVisible ?  lines.map(drawLine) : null}
+        </g>
       </svg>
     )
   }
