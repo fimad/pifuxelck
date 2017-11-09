@@ -27,6 +27,8 @@ const {
   routerMiddleware,
 } = require('react-router-redux');
 
+import filter from 'redux-storage-decorator-filter';
+
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory();
 
@@ -38,7 +40,9 @@ const reducer = storage.reducer(combineReducers({
   ...reducers,
   routing: routerReducer as Reducer<any>,
 }));
-const engine = require('redux-storage-engine-indexed-db').default('my-save-key');
+const engine = filter(
+    require('redux-storage-engine-indexed-db').default('my-save-key'),
+    [], ['entities', 'history']);
 middlewares.push(storage.createMiddleware(engine));
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(reducer);
