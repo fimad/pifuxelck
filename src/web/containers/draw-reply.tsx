@@ -1,14 +1,26 @@
 import * as React from 'react';
+import BrushSizePicker from '../components/brush-size-picker';
+import ColorPicker from '../components/color-picker';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Draw from '../components/draw';
 import { Dispatch } from 'redux';
-import { Drawing, Point } from '../../common/models/drawing';
+import { Drawing, Point, Color} from '../../common/models/drawing';
 import { Redirect } from 'react-router';
 import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { Turn, drawingOrDefault, labelOrDefault } from '../../common/models/turn';
 import { connect } from 'react-redux';
-import { updateOutbox, startDrawingLine, appendDrawingLine, stopDrawingLine, undoDrawingLine } from '../actions';
+
+import {
+  appendDrawingLine,
+  chooseBrushColor,
+  chooseBrushSize,
+  startDrawingLine,
+  stopDrawingLine,
+  undoDrawingLine,
+  updateBackgroundColor,
+  updateOutbox,
+} from '../actions';
 
 const { push } = require('react-router-redux');
 
@@ -31,6 +43,10 @@ type Props = ExternalProps & {
   stopLine: () => void
   undoLastLine: () => void
   lineInProgress: boolean
+  brushColor: Color
+  onPickBrushSize: (size: number) => void
+  onPickBrushColor: (color: Color) => void
+  onPickBackgroundColor: (color: Color) => void
 };
 
 const DrawComponent = (props: Props) =>
@@ -41,25 +57,13 @@ const DrawComponent = (props: Props) =>
           <Draw {...props} />
           <Switch>
             <Route exact path='/draw/:id/brush/size'>
-              <Dialog open onRequestClose={props.hideDialog}>
-                <DialogContent>
-                  BRUSH SIZE
-                </DialogContent>
-              </Dialog>
+              <BrushSizePicker color={props.brushColor} onPickSize={props.onPickBrushSize} />
             </Route>
             <Route exact path='/draw/:id/brush/color'>
-              <Dialog open onRequestClose={props.hideDialog}>
-                <DialogContent>
-                  BRUSH COLOR
-                </DialogContent>
-              </Dialog>
+              <ColorPicker onPickColor={props.onPickBrushColor} />
             </Route>
             <Route exact path='/draw/:id/bg/color'>
-              <Dialog open onRequestClose={props.hideDialog}>
-                <DialogContent>
-                  BG COLOR
-                </DialogContent>
-              </Dialog>
+              <ColorPicker onPickColor={props.onPickBackgroundColor} />
             </Route>
           </Switch>
         </div>
@@ -72,10 +76,13 @@ function mapStateToProps(
     return {redirectToInbox: true} as Props;
   }
   const current = ui.outbox[gameId] || ({} as Turn);
-  const drawing = drawingOrDefault(current);
-  const label = labelOrDefault(previous);
-  const lineInProgress = ui.drawing.inProgress;
-  return { redirectToInbox: false, label, drawing, lineInProgress } as Props;
+  return {
+    redirectToInbox: false,
+    label: labelOrDefault(previous),
+    drawing: drawingOrDefault(current),
+    lineInProgress: ui.drawing.inProgress,
+    brushColor: ui.drawing.brushColor,
+  } as Props;
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
@@ -88,6 +95,18 @@ const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) 
   appendLine: (point: Point) => dispatch(appendDrawingLine(gameId, point)),
   stopLine: () => dispatch(stopDrawingLine()),
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
+  onPickBrushSize: (size: number) => {
+    dispatch(chooseBrushSize(size));
+    dispatch(push(`/draw/${gameId}`));
+  },
+  onPickBrushColor: (color: Color) => {
+    dispatch(chooseBrushColor(color));
+    dispatch(push(`/draw/${gameId}`));
+  },
+  onPickBackgroundColor: (color: Color) => {
+    dispatch(updateBackgroundColor(gameId, color));
+    dispatch(push(`/draw/${gameId}`));
+  },
 });
 
 const DrawReply = connect(mapStateToProps, mapDispatchToProps, null, {pure: false})(DrawComponent);

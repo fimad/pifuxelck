@@ -50,7 +50,7 @@ export function getHistory() {
       },
       url: `/api/2/games/?since=${getSinceId(history)}`,
     });
-    getHistoryStep()(dispatch, getState);
+//    getHistoryStep()(dispatch, getState);
   };
 }
 

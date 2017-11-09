@@ -33,11 +33,15 @@ type Props = {
 
 const passPointTo =
     (appendLine: (point: models.Point) => void, stopLine: () => void) =>
-    (event: React.MouseEvent<HTMLDivElement>) => {
+    (event: (React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>)) => {
   const boundingBox = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
   const size = boundingBox.width;
-  const x = (event.clientX - boundingBox.left) / size;
-  const y = (event.clientY - boundingBox.top) / size;
+  const touches = (event as React.TouchEvent<HTMLDivElement>).touches;
+  const mouseEvent = (event as React.MouseEvent<HTMLDivElement>);
+  const clientX = touches ? touches[0].clientX : mouseEvent.clientX;
+  const clientY = touches ? touches[0].clientY : mouseEvent.clientY;
+  const x = (clientX - boundingBox.left) / size;
+  const y = (clientY - boundingBox.top) / size;
   appendLine({x, y});
 };
 
@@ -50,7 +54,8 @@ const Draw = ({
       display: 'flex',
       flex: '1 1',
       flexDirection: 'column',
-      minWidth: '65vh',
+      maxWidth: '65vh',
+      width: '100%',
       margin: 'auto',
       marginTop: '8px',
       marginBottom: '0px',
@@ -68,7 +73,10 @@ const Draw = ({
           onMouseUp={lineInProgress ? stopLine : undefined}
           onMouseLeave={lineInProgress ? stopLine : undefined}
           onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
-          onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
+          onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}
+          onTouchEnd={lineInProgress ? stopLine : undefined}
+          onTouchStart={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
+          onTouchMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
         <Drawing drawing={drawing} />
       </div>
     </Card>
