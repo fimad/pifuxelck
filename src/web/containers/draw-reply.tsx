@@ -40,21 +40,21 @@ const DrawComponent = (props: Props) =>
         <div style={{flex: '1 1', display: 'flex', flexDirection: 'column'}}>
           <Draw {...props} />
           <Switch>
-            <Route path='/draw/:id/brush/size'>
+            <Route exact path='/draw/:id/brush/size'>
               <Dialog open onRequestClose={props.hideDialog}>
                 <DialogContent>
                   BRUSH SIZE
                 </DialogContent>
               </Dialog>
             </Route>
-            <Route path='/draw/:id/brush/color'>
+            <Route exact path='/draw/:id/brush/color'>
               <Dialog open onRequestClose={props.hideDialog}>
                 <DialogContent>
                   BRUSH COLOR
                 </DialogContent>
               </Dialog>
             </Route>
-            <Route path='/draw/:id/bg/color'>
+            <Route exact path='/draw/:id/bg/color'>
               <Dialog open onRequestClose={props.hideDialog}>
                 <DialogContent>
                   BG COLOR
@@ -90,6 +90,6 @@ const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) 
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
 });
 
-const DrawReply = connect(mapStateToProps, mapDispatchToProps)(DrawComponent);
+const DrawReply = connect(mapStateToProps, mapDispatchToProps, null, {pure: false})(DrawComponent);
 
 export default DrawReply;
