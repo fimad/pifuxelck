@@ -1,4 +1,5 @@
 import * as api from './redux-api';
+import * as idbKeyval from 'idb-keyval';
 import { Dispatch } from 'redux';
 import { Drawing } from '../../common/models/drawing';
 import { Game } from '../../common/models/game';
@@ -42,7 +43,9 @@ export function getHistory() {
       onSuccess: (message) => {
         const {games} = message;
         if (!games || games.length <= 0) {
-          dispatch({type: 'GET_HISTORY_STOP'});
+          idbKeyval.set('game-history', getState().entities.history).then(() => {
+            dispatch({type: 'GET_HISTORY_STOP'});
+          });
         } else {
           dispatch({type: 'GET_HISTORY_RECEIVE', message});
           getHistoryStep(games)(dispatch, getState);
@@ -50,7 +53,14 @@ export function getHistory() {
       },
       url: `/api/2/games/?since=${getSinceId(history)}`,
     });
-    getHistoryStep()(dispatch, getState);
+    // First pull any cached history out of IDB before requesting more history
+    // from the server.
+    idbKeyval.get('game-history').then((history) => {
+      if (history) {
+        dispatch({type: 'GET_HISTORY_RECEIVE', message: {games: Object.values(history)}});
+      }
+      getHistoryStep()(dispatch, getState);
+    });
   };
 }
 
