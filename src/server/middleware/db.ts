@@ -22,7 +22,7 @@ const db = (config : DbConfig) => {
         winston.error('Unable to connect to DB: ' + err.stack);
         return;
       }
-    
+
       winston.info('Connected to DB');
       resolve(connection);
     });
@@ -30,11 +30,19 @@ const db = (config : DbConfig) => {
   return (req : Request, res : Response, next : NextFunction) => {
     const db = dbPromise();
     onFinished(res, () => {
-      db.then((connection) => connection.end());
+      db.then((connection) => {
+        connection.end();
+        winston.info('Disconnected from DB');
+      })
     });
     db.then((connection) => req.db = connection)
       .then(() => next())
-      .catch((error) => res.send('FUCK UP'));
+      .catch((error) => {
+        if (req.db) {
+          req.db.end();
+        }
+        res.send('FUCK UP')
+      });
   };
 };
 
