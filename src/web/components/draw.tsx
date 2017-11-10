@@ -34,6 +34,9 @@ type Props = {
 const passPointTo =
     (appendLine: (point: models.Point) => void, stopLine: () => void) =>
     (event: (React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>)) => {
+  // This is required to prevent pull to refresh.
+  event.preventDefault();
+
   const boundingBox = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
   const size = Math.min(boundingBox.width, boundingBox.height);
   // The svg element may actually be a rectangle even though only the square in
