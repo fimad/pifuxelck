@@ -5,6 +5,7 @@ import * as storage from 'redux-storage'
 import App from './containers/app';
 import Login from './containers/login';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import stopPullToRefresh from './pull-to-refresh';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { Router, Route, Switch } from 'react-router';
@@ -70,6 +71,7 @@ storage.createLoader(engine)(store)
     );
   });
 
+stopPullToRefresh();
 
 (window as any)['store'] = store;
 (window as any)['actions'] = actions;
