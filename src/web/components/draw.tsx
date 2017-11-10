@@ -35,13 +35,18 @@ const passPointTo =
     (appendLine: (point: models.Point) => void, stopLine: () => void) =>
     (event: (React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>)) => {
   const boundingBox = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
-  const size = boundingBox.width;
+  const size = Math.min(boundingBox.width, boundingBox.height);
+  // The svg element may actually be a rectangle even though only the square in
+  // the center of the element is valid for drawing.
+  const sizeDifference = boundingBox.width - boundingBox.height;
+  const xAdjustment = sizeDifference > 0 ? sizeDifference * 0.5 : 0;
+  const yAdjustment = sizeDifference < 0 ? sizeDifference * -0.5 : 0;
   const touches = (event as React.TouchEvent<HTMLDivElement>).touches;
   const mouseEvent = (event as React.MouseEvent<HTMLDivElement>);
   const clientX = touches ? touches[0].clientX : mouseEvent.clientX;
   const clientY = touches ? touches[0].clientY : mouseEvent.clientY;
-  const x = (clientX - boundingBox.left) / size;
-  const y = (clientY - boundingBox.top) / size;
+  const x = (clientX - boundingBox.left - xAdjustment) / size;
+  const y = (clientY - boundingBox.top - yAdjustment) / size;
   appendLine({x, y});
 };
 
