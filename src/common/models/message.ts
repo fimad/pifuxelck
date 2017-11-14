@@ -1,3 +1,4 @@
+import { ContactGroup } from './contacts';
 import { Game, NewGame, NewGameError } from './game';
 import { InboxEntry, Turn } from './turn';
 import { Meta } from './meta';
@@ -17,6 +18,9 @@ export type Message = {
   new_game?: NewGame
   turn?: Turn
   user?: User
+  contacts?: User[]
+  contact_group?: ContactGroup
+  contact_groups?: ContactGroup[]
 }
 
 /**

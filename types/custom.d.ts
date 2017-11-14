@@ -5,6 +5,7 @@ declare global {
   namespace Express {
     export interface Request {
       db: mysql.Connection
+      parseContactGroupMessage: () => Promise<Message>
       parseGameMessage: () => Promise<Message>
       parseTurnMessage: () => Promise<Message>
       parseUserMessage: () => Promise<Message>

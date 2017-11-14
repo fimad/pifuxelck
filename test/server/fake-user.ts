@@ -20,6 +20,10 @@ export default class FakeUser {
   put(path: string): Test {
     return this.app.put(path).set('x-pifuxelck-auth', this.token);
   }
+
+  delete(path: string): Test {
+    return this.app.delete(path).set('x-pifuxelck-auth', this.token);
+  }
 }
 
 export async function newUser(

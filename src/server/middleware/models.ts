@@ -9,6 +9,7 @@ const models = () => (req : Request, res : Response, next : NextFunction) => {
   req.parseGameMessage = () => Promise.resolve(req.body as Message);
   req.parseTurnMessage = () => Promise.resolve(req.body as Message);
   req.parseUserMessage = () => Promise.resolve(req.body as Message);
+  req.parseContactGroupMessage = () => Promise.resolve(req.body as Message);
   next();
 };
 

@@ -1,7 +1,7 @@
 export default {
   db: {
     host: 'localhost',
-    user: 'will',
+    user: 'pifuxelck_test',
     database: 'pifuxelck_test',
   },
 };
