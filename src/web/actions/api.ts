@@ -14,6 +14,10 @@ export function put(url: string, body?: Message, token?: string): Promise<Messag
   return call('PUT', url, body, token);
 }
 
+export function del(url: string, body?: Message, token?: string): Promise<Message> {
+  return call('DELETE', url, body, token);
+}
+
 function call(
     method: string,
     url: string,

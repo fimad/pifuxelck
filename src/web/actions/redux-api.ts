@@ -24,6 +24,10 @@ export function put(params: Params) {
   return call(api.put, params);
 }
 
+export function del(params: Params) {
+  return call(api.del, params);
+}
+
 export function call(
     apiCall: (url: string, message: Message, token?: string) => Promise<Message>,
     params: Params) {

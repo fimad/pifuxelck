@@ -102,3 +102,58 @@ export function playLabelTurn(gameId: string, label: string) {
     body: {turn: {is_drawing: false, label}},
   });
 }
+
+export function getContacts() {
+  return api.get({
+    start: 'GET_CONTACTS_START',
+    success: 'GET_CONTACTS_SUCCESS',
+    failure: 'GET_CONTACTS_FAILURE',
+    url: `/api/2/contacts`,
+  });
+}
+
+export function addContact(contactId: string) {
+  return api.put({
+    start: 'ADD_CONTACT_START',
+    success: 'ADD_CONTACT_SUCCESS',
+    failure: 'ADD_CONTACT_FAILURE',
+    url: `/api/2/contacts/${contactId}`,
+  });
+}
+
+export function getContactGroups() {
+  return api.get({
+    start: 'GET_CONTACT_GROUPS_START',
+    success: 'GET_CONTACT_GROUPS_SUCCESS',
+    failure: 'GET_CONTACT_GROUPS_FAILURE',
+    url: `/api/2/contacts/group`,
+  });
+}
+
+export function createContactGroup(name: string) {
+  return api.post({
+    start: 'CREATE_CONTACT_GROUP_START',
+    success: 'CREATE_CONTACT_GROUP_SUCCESS',
+    failure: 'CREATE_CONTACT_GROUP_FAILURE',
+    url: `/api/2/contacts/group`,
+    body: {contact_group: {name}},
+  });
+}
+
+export function addContactToGroup(group: string, contact: string) {
+  return api.put({
+    start: 'ADD_CONTACT_TO_GROUP_START',
+    success: 'ADD_CONTACT_TO_GROUP_SUCCESS',
+    failure: 'ADD_CONTACT_TO_GROUP_FAILURE',
+    url: `/api/2/contacts/group/${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
+  });
+}
+
+export function removeContactToGroup(group: string, contact: string) {
+  return api.del({
+    start: 'REMOVE_CONTACT_TO_GROUP_START',
+    success: 'REMOVE_CONTACT_TO_GROUP_SUCCESS',
+    failure: 'REMOVE_CONTACT_TO_GROUP_FAILURE',
+    url: `/api/2/contacts/group/${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
+  });
+}
