@@ -1,4 +1,5 @@
 import { Color } from '../common/models/drawing';
+import { ContactGroup } from '../common/models/contacts';
 import { Game } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
@@ -9,6 +10,12 @@ export type Entities = {
   }
   inbox: {
     [id: string]: InboxEntry
+  }
+  contacts: {
+    [id: string]: User
+  }
+  contactGroups: {
+    [id: string]: ContactGroup
   }
   users: {
     [displayName: string]: string
@@ -23,6 +30,9 @@ export type Ui = {
     brushSize: number
     brushColor: Color
     inProgress: boolean
+  }
+  contacts: {
+    lookup: string
   }
 };
 

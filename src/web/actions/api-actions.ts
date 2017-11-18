@@ -23,9 +23,9 @@ export function login(user: string, password: string) {
 
 export function userLookup(user: string) {
   return api.get({
-    start: 'USER_LOOKUPUP_START',
-    success: 'USER_LOOKUPUP_SUCCESS',
-    failure: 'USER_LOOKUPUP_FAILURE',
+    start: 'USER_LOOKUP_START',
+    success: 'USER_LOOKUP_SUCCESS',
+    failure: 'USER_LOOKUP_FAILURE',
     url: `/api/2/contacts/lookup/${user}`,
   });
 }
@@ -113,12 +113,13 @@ export function getContacts() {
 }
 
 export function addContact(contactId: string) {
-  return api.put({
+  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     start: 'ADD_CONTACT_START',
     success: 'ADD_CONTACT_SUCCESS',
     failure: 'ADD_CONTACT_FAILURE',
+    onSuccess: () => dispatch(getContacts()),
     url: `/api/2/contacts/${contactId}`,
-  });
+  })(dispatch, getState);
 }
 
 export function getContactGroups() {

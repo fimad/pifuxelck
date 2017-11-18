@@ -32,3 +32,7 @@ export function stopDrawingLine() {
 export function undoDrawingLine(gameId: string) {
   return {type: 'UI_UNDO_DRAWING_LINE', gameId};
 }
+
+export function changeContactLookup(lookup: string) {
+  return {type: 'UI_CHANGE_CONTACT_LOOKUP', lookup};
+}

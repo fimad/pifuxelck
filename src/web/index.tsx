@@ -5,6 +5,7 @@ import * as storage from 'redux-storage'
 import App from './containers/app';
 import Login from './containers/login';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import ScrollToTop from './components/scroll-to-top';
 import stopPullToRefresh from './pull-to-refresh';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -58,12 +59,14 @@ storage.createLoader(engine)(store)
       <MuiThemeProvider>
         <Provider store={store}>
           <ConnectedRouter history={history}>
-            <div>
-              <Switch>
-                <Route path='/login' component={Login} />
-                <Route path='/' component={App} />
-              </Switch>
-            </div>
+            <ScrollToTop>
+              <div>
+                <Switch>
+                  <Route path='/login' component={Login} />
+                  <Route path='/' component={App} />
+                </Switch>
+              </div>
+            </ScrollToTop>
           </ConnectedRouter>
         </Provider>
       </MuiThemeProvider>,

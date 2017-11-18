@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { State } from '../state';
-import { getInbox, getHistory } from './api-actions';
+import { getContacts, getContactGroups, getInbox, getHistory } from './api-actions';
 
 const { push } = require('react-router-redux');
 
@@ -15,5 +15,13 @@ export function gotoInbox() {
   return (dispatch: Dispatch<State>) => {
     dispatch(push('/inbox'));
     dispatch(getInbox());
+  }
+}
+
+export function gotoContacts() {
+  return (dispatch: Dispatch<State>) => {
+    dispatch(push('/contacts'));
+    dispatch(getContacts());
+    dispatch(getContactGroups());
   }
 }

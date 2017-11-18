@@ -2,7 +2,13 @@ import { Action } from '../actions';
 import { Entities } from '../state';
 import { mapFrom } from '../../common/utils';
 
-const initialState = {users: {}, history: {}, inbox: {}};
+const initialState = {
+  contactGroups: {},
+  contacts: {},
+  history: {},
+  inbox: {},
+  users: {},
+};
 
 export default function(state: Entities = initialState, action: Action) {
   switch (action.type) {
@@ -35,6 +41,22 @@ export default function(state: Entities = initialState, action: Action) {
           inbox: {
               ...mapFrom(action.message.inbox_entries, (x) => x.game_id)
           },
+        };
+      }
+      break;
+    case 'GET_CONTACTS_SUCCESS':
+      if (action.message && action.message.contacts) {
+        return {
+          ...state,
+          contacts: action.message.contacts,
+        };
+      }
+      break;
+    case 'GET_CONTACTS_SUCCESS':
+      if (action.message && action.message.contact_groups) {
+        return {
+          ...state,
+          contactGroups: action.message.contact_groups,
         };
       }
       break;

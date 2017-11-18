@@ -15,6 +15,9 @@ const initialState = {
       alpha: 1,
     },
   },
+  contacts: {
+    lookup: '',
+  },
 };
 
 const defaultDrawingTurn: Turn = {
@@ -173,6 +176,14 @@ export default function(state: Ui = initialState, action: Action) {
             lines: [...turn.drawing.lines.slice(0, -1)],
           }
         }
+      }
+    };
+  }
+  if (action.type == 'UI_CHANGE_CONTACT_LOOKUP') {
+    return {
+      ...state,
+      contacts: {
+        lookup: action.lookup,
       }
     };
   }

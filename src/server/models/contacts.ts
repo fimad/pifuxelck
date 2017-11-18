@@ -165,5 +165,5 @@ export async function getContactGroups(
       id: results[i]['contact_id'],
     });
   }
-  return Object.values(groups);
+  return Object.keys(groups).map((id) => groups[id]);
 }

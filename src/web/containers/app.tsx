@@ -1,6 +1,8 @@
 import * as React from 'react';
 import AddIcon from 'material-ui-icons/Add';
 import ArchiveIcon from 'material-ui-icons/Archive';
+import Contacts from './contacts';
+import ContactsIcon from 'material-ui-icons/Contacts';
 import DrawReply from './draw-reply';
 import Game from './game';
 import History from './history';
@@ -14,7 +16,7 @@ import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { connect } from 'react-redux';
-import { gotoInbox, gotoHistory, login } from '../actions';
+import { gotoContacts, gotoInbox, gotoHistory, login } from '../actions';
 
 import MenuIcon from 'material-ui-icons/Menu';
 import {
@@ -55,6 +57,11 @@ class AppComponent extends React.Component<Props, any> {
 
   handleClickHistory = () => {
     this.props.dispatch(gotoHistory());
+    this.handleShowDrawer(false);
+  };
+
+  handleClickContacts = () => {
+    this.props.dispatch(gotoContacts());
     this.handleShowDrawer(false);
   };
 
@@ -116,6 +123,12 @@ class AppComponent extends React.Component<Props, any> {
               </div>
             )}
           </Route>
+          <Route path='/contacts'>
+            <div>
+              {appBar('Contacts')}
+              <Contacts />
+            </div>
+          </Route>
           <Route path='/'>
             <div>
               {appBar('Inbox')}
@@ -132,12 +145,19 @@ class AppComponent extends React.Component<Props, any> {
             anchor="left"
             open={this.state.showDrawer}
             onRequestClose={this.handleToggleDrawer} >
+          <div style={{width: '240px'}} />
           <List>
             <ListItem button onClick={this.handleClickInbox}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary="Inbox" />
+            </ListItem>
+            <ListItem button onClick={this.handleClickContacts}>
+              <ListItemIcon>
+                <ContactsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Contacts" />
             </ListItem>
             <ListItem button onClick={this.handleClickHistory}>
               <ListItemIcon>
