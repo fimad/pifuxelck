@@ -7,10 +7,11 @@ import { State } from '../state';
 import { compareStringsAsInts } from '../../common/utils';
 
 export function login(user: string, password: string) {
-  return api.post({
+  return (dispatch: Dispatch<State>, getState: () => State) => api.post({
     start: 'LOGIN_START',
     success: 'LOGIN_SUCCESS',
     failure: 'LOGIN_FAILURE',
+    onSuccess: () => dispatch(getAllData()),
     url: '/api/2/account/login',
     body: {
       user: {
@@ -18,7 +19,7 @@ export function login(user: string, password: string) {
         password,
       }
     }
-  });
+  })(dispatch, getState);
 }
 
 export function userLookup(user: string) {
@@ -157,4 +158,12 @@ export function removeContactToGroup(group: string, contact: string) {
     failure: 'REMOVE_CONTACT_TO_GROUP_FAILURE',
     url: `/api/2/contacts/group/${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
   });
+}
+
+export function getAllData() {
+  return (dispatch: Dispatch<State>) => {
+    dispatch(getContacts());
+    dispatch(getHistory());
+    dispatch(getInbox());
+  };
 }
