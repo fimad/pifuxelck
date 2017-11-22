@@ -85,23 +85,25 @@ export function newGame(players: string[], label: string) {
 }
 
 export function playDrawingTurn(gameId: string, drawing: Drawing) {
-  return api.post({
+  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     start: 'PLAY_GAME_START',
     success: 'PLAY_GAME_SUCCESS',
     failure: 'PLAY_GAME_FAILURE',
+    onSuccess: () => dispatch(getInbox()),
     url: `/api/2/games/play/${gameId}`,
     body: {turn: {is_drawing: true, drawing}},
-  });
+  })(dispatch, getState);
 }
 
 export function playLabelTurn(gameId: string, label: string) {
-  return api.post({
+  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     start: 'PLAY_GAME_START',
     success: 'PLAY_GAME_SUCCESS',
     failure: 'PLAY_GAME_FAILURE',
+    onSuccess: () => dispatch(getInbox()),
     url: `/api/2/games/play/${gameId}`,
     body: {turn: {is_drawing: false, label}},
-  });
+  })(dispatch, getState);
 }
 
 export function getContacts() {

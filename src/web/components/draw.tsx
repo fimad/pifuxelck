@@ -20,7 +20,7 @@ type Props = {
   drawing: models.Drawing
   label: string
   onChange: (turn: Turn) => void
-  onSubmit: () => void
+  onSubmit: (gameId: string, drawing: models.Drawing) => void
   showBrushSizeDialog: () => void
   showBrushColorDialog: () => void
   showBackgroundColorDialog: () => void
@@ -53,7 +53,7 @@ const passPointTo =
 const Draw = ({
       gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
       showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
-      lineInProgress,
+      lineInProgress, onSubmit
     }: Props) => (
   <div style={{
       display: 'flex',
@@ -105,7 +105,7 @@ const Draw = ({
         <IconButton onClick={showBackgroundColorDialog}>
           <LayersIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={() => onSubmit(gameId, drawing)}>
           <SendIcon />
         </IconButton>
       </CardActions>

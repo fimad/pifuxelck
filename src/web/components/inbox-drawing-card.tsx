@@ -14,10 +14,10 @@ type Props = {
   drawing: models.Drawing
   label: string
   onChange: (turn: Turn) => void
-  onSubmit: () => void
+  onSubmit: (gameId: string, turn: Turn) => void
 };
 
-const InboxDrawingCard = ({label, drawing, onChange}: Props) => (
+const InboxDrawingCard = ({gameId, label, drawing, onChange, onSubmit}: Props) => (
   <Card style={{margin: '8px'}}>
     <Drawing drawing={drawing} />
     <Divider />
@@ -27,7 +27,7 @@ const InboxDrawingCard = ({label, drawing, onChange}: Props) => (
           label="Description"
           value={label}
           fullWidth />
-      <IconButton>
+      <IconButton onClick={() => onSubmit(gameId, {is_drawing: false, label})} >
         <SendIcon />
       </IconButton>
     </CardActions>

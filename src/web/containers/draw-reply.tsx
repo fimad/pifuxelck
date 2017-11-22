@@ -15,6 +15,8 @@ import {
   appendDrawingLine,
   chooseBrushColor,
   chooseBrushSize,
+  gotoInbox,
+  playDrawingTurn,
   startDrawingLine,
   stopDrawingLine,
   undoDrawingLine,
@@ -32,7 +34,7 @@ type Props = ExternalProps & {
   redirectToInbox: boolean
   drawing: Drawing
   label: string
-  onSubmit: () => void
+  onSubmit: (gameId: string, drawing: Drawing) => void
   onChange: (turn: Turn) => void
   hideDialog: () => void
   showBrushSizeDialog: () => void
@@ -95,6 +97,10 @@ const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) 
   appendLine: (point: Point) => dispatch(appendDrawingLine(gameId, point)),
   stopLine: () => dispatch(stopDrawingLine()),
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
+  onSubmit: (gameId: string, drawing: Drawing) => {
+    dispatch(playDrawingTurn(gameId, drawing));
+    dispatch(gotoInbox());
+  },
   onPickBrushSize: (size: number) => {
     dispatch(chooseBrushSize(size));
     dispatch(push(`/draw/${gameId}`));

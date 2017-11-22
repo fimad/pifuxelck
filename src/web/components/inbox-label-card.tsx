@@ -19,7 +19,7 @@ type Props = {
   label: string
   onShowDrawing: (showDrawing: boolean) => void
   onChange: (turn: Turn) => void
-  onSubmit: () => void
+  onSubmit: (gameId: string, turn: Turn) => void
 };
 
 const InboxLabelCard = ({gameId, label, drawing, onShowDrawing}: Props) => (

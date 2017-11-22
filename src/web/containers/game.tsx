@@ -36,18 +36,18 @@ const DrawingTurn = ({drawing, player}: {drawing: any, player: any}) => (
   </Card>
 );
 
-const toTurn = (turn: Turn) => turn.is_drawing == true ?
-    (<DrawingTurn drawing={turn.drawing} player={turn.player} />) :
-    (<LabelTurn label={turn.label} player={turn.player} />);
+const toTurn = (turn: Turn, i: number) => turn.is_drawing == true ?
+    (<DrawingTurn key={i} drawing={turn.drawing} player={turn.player} />) :
+    (<LabelTurn key={i} label={turn.label} player={turn.player} />);
 
 const GameComponent = ({game}: Props) => (
   <div style={{maxWidth: '75vh', margin: 'auto'}}>
-    {game.turns.map(toTurn)}
+    {(game.turns || []).map(toTurn)}
   </div>
 );
 
 const mapStateToProps = ({entities: {history}}: State, {gameId}: Props) => ({
-  game: history[gameId],
+  game: history[gameId] || {},
 } as Props);
 
 const Game: any = connect(mapStateToProps)(GameComponent);

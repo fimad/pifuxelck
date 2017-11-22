@@ -7,7 +7,7 @@ import { State } from '../state';
 import { Turn, drawingOrDefault, labelOrDefault } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
-import { updateOutbox } from '../actions';
+import { updateOutbox, playLabelTurn, playDrawingTurn } from '../actions';
 
 const { push } = require('react-router-redux');
 
@@ -18,7 +18,7 @@ type ExternalProps = {
 type Props = ExternalProps & {
   drawing: Drawing
   label: string
-  onSubmit: () => void
+  onSubmit: (gameId: string, turn: Turn) => void
   previousIsDrawing: boolean
   onChange: (turn: Turn) => void
   onShowDrawing: (showDrawing: boolean) => void
@@ -47,7 +47,11 @@ function mapStateToProps(
 const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
   onShowDrawing: (showDrawing: boolean) => dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
-  onSubmit: () => {},
+  onSubmit: (gameId: string, turn: Turn) => {
+    dispatch(turn.is_drawing == true ?
+        playDrawingTurn(gameId, turn.drawing):
+        playLabelTurn(gameId, turn.label));
+  },
 });
 
 const InboxEntry = connect(mapStateToProps, mapDispatchToProps)(EntryComponent);
