@@ -36,3 +36,15 @@ export function undoDrawingLine(gameId: string) {
 export function changeContactLookup(lookup: string) {
   return {type: 'UI_CHANGE_CONTACT_LOOKUP', lookup};
 }
+
+export function newGameChangeTopic(topic: string) {
+  return {type: 'UI_NEW_GAME_CHANGE_TOPIC', topic};
+}
+
+export function newGameAddPlayer(playerId: string) {
+  return {type: 'UI_NEW_GAME_ADD_PLAYER', playerId};
+}
+
+export function newGameRemovePlayer(playerId: string) {
+  return {type: 'UI_NEW_GAME_REMOVE_PLAYER', playerId};
+}

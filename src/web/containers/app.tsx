@@ -11,6 +11,7 @@ import Inbox from './inbox';
 import InboxIcon from 'material-ui-icons/Inbox';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import LoginRedirect from './login-redirect';
+import NewGameDialog from '../containers/new-game-dialog';
 import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
@@ -65,6 +66,11 @@ class AppComponent extends React.Component<Props, any> {
     this.handleShowDrawer(false);
   };
 
+  handleShowNewGame = () => {
+    this.props.dispatch(push('/new'));
+    this.handleShowDrawer(false);
+  };
+
   render() {
     if (!this.props.isLoggedIn) {
       return (<LoginRedirect />);
@@ -83,16 +89,17 @@ class AppComponent extends React.Component<Props, any> {
       display: 'flex',
       flexDirection: 'column',
     };
-    const appBar = (title: string) => (
+    const appBar = (title: string, button?: JSX.Element) => (
       <div>
       <AppBar position="fixed">
         <Toolbar>
           <IconButton onClick={this.handleToggleDrawer} color="contrast" aria-label="Menu">
             <MenuIcon />
           </IconButton>
-          <Typography type="title" color="inherit">
+          <Typography type="title" style={{flex: '1 1 auto'}} color="inherit">
             {title}
           </Typography>
+          {button}
         </Toolbar>
       </AppBar>
       <AppBar position="static"><Toolbar /></AppBar>
@@ -131,11 +138,17 @@ class AppComponent extends React.Component<Props, any> {
           </Route>
           <Route path='/'>
             <div>
-              {appBar('Inbox')}
+              {appBar('Inbox', (
+                <Button color="contrast" onClick={this.handleShowNewGame}>
+                  New Game
+                </Button>)
+              )}
               <Inbox />
-              <Button fab style={fabStyle} aria-label="add" color={"accent"}>
-                <AddIcon />
-              </Button>
+              <Switch>
+                <Route path='/new'>
+                  <NewGameDialog />
+                </Route>
+              </Switch>
             </div>
           </Route>
         </Switch>

@@ -53,5 +53,14 @@ export type Action = ({
 } | {
   type: 'UI_CHANGE_CONTACT_LOOKUP'
   lookup: string
+} | {
+  type: 'UI_NEW_GAME_CHANGE_TOPIC'
+  topic: string
+} | {
+  type: 'UI_NEW_GAME_ADD_PLAYER'
+  playerId: string
+} | {
+  type: 'UI_NEW_GAME_REMOVE_PLAYER'
+  playerId: string
 });
 

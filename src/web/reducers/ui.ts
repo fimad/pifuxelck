@@ -18,6 +18,10 @@ const initialState = {
   contacts: {
     lookup: '',
   },
+  newGame: {
+    topic: '',
+    users: [] as string[],
+  },
 };
 
 const defaultDrawingTurn: Turn = {
@@ -187,6 +191,36 @@ export default function(state: Ui = initialState, action: Action) {
       }
     };
   }
+  if (action.type == 'UI_NEW_GAME_CHANGE_TOPIC') {
+    return {
+      ...state,
+      newGame: {
+        ...state.newGame,
+        topic: action.topic,
+      }
+    };
+  }
+  if (action.type == 'UI_NEW_GAME_ADD_PLAYER') {
+    return {
+      ...state,
+      newGame: {
+        ...state.newGame,
+        users: [
+          ...(state.newGame.users.filter((x) => x != action.playerId)),
+          action.playerId,
+        ],
+      },
+    };
+  }
+  if (action.type == 'UI_NEW_GAME_REMOVE_PLAYER') {
+    return {
+      ...state,
+      newGame: {
+        ...state.newGame,
+        users: state.newGame.users.filter((x: string) => x != action.playerId),
+      },
+    };
+  }
   if (action.type == '@@router/LOCATION_CHANGE' ||
       action.type == 'UI_STOP_DRAWING_LINE') {
     return {
@@ -194,6 +228,10 @@ export default function(state: Ui = initialState, action: Action) {
       drawing: {
         ...state.drawing,
         inProgress: false,
+      },
+      newGame: {
+        topic: '',
+        users: {},
       },
     };
   }

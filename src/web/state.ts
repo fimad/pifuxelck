@@ -34,6 +34,10 @@ export type Ui = {
   contacts: {
     lookup: string
   }
+  newGame: {
+    topic: string
+    users: string[]
+  }
 };
 
 /**

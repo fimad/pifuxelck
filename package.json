@@ -85,6 +85,7 @@
     "redux-logger": "^3.0.6",
     "redux-storage": "^4.1.2",
     "redux-storage-decorator-filter": "^1.1.8",
+    "redux-storage-decorator-migrate": "^1.1.0",
     "redux-storage-engine-indexed-db": "^0.0.4",
     "redux-thunk": "^2.2.0",
     "shuffle-array": "^1.0.1",

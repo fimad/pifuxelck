@@ -5378,6 +5378,10 @@ redux-storage-decorator-filter@^1.1.8:
     lodash.set "^4.0.0"
     lodash.unset "^4.1.0"
 
+redux-storage-decorator-migrate@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/redux-storage-decorator-migrate/-/redux-storage-decorator-migrate-1.1.0.tgz#95e5e2b729e4a81d234f1cb7b42c6559a0eac084"
+
 redux-storage-engine-indexed-db@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/redux-storage-engine-indexed-db/-/redux-storage-engine-indexed-db-0.0.4.tgz#a2fefa20feca02bbbb53dc9ad1388b9aa8e5825f"
