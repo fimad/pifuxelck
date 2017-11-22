@@ -231,7 +231,7 @@ export default function(state: Ui = initialState, action: Action) {
       },
       newGame: {
         topic: '',
-        users: {},
+        users: [],
       },
     };
   }

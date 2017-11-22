@@ -13,7 +13,7 @@ type Props = {
 
 const InboxComponent = ({entries}: Props) => (
   <div style={{maxWidth: '75vh', margin: 'auto'}}>
-    {entries.map((gameId) => (<InboxEntry gameId={gameId} />))}
+    {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))}
   </div>
 );
 

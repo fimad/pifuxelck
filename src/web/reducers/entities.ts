@@ -1,5 +1,7 @@
 import { Action } from '../actions';
+import { ContactGroup } from '../../common/models/contacts';
 import { Entities } from '../state';
+import { User } from '../../common/models/user';
 import { mapFrom } from '../../common/utils';
 
 const initialState = {
@@ -48,7 +50,10 @@ export default function(state: Entities = initialState, action: Action) {
       if (action.message && action.message.contacts) {
         return {
           ...state,
-          contacts: action.message.contacts,
+          contacts: action.message.contacts.reduce((obj, x) => {
+            obj[x.id] = x;
+            return obj;
+          }, {} as {[id: string]: User}),
         };
       }
       break;
@@ -56,7 +61,10 @@ export default function(state: Entities = initialState, action: Action) {
       if (action.message && action.message.contact_groups) {
         return {
           ...state,
-          contactGroups: action.message.contact_groups,
+          contactGroups: action.message.contact_groups.reduce((obj, x) => {
+            obj[x.id] = x;
+            return obj;
+          }, {} as {[id: string]: ContactGroup}),
         };
       }
       break;
