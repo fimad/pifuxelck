@@ -50,67 +50,103 @@ const passPointTo =
   appendLine({x, y});
 };
 
-const Draw = ({
+class Draw extends React.Component {
+
+  divNode: HTMLDivElement;
+  props: Props;
+
+  componentDidMount() {
+    (this.divNode as any).addEventListener('touchend', this.onTouchEnd, {passive: false});
+    (this.divNode as any).addEventListener('touchstart', this.onTouchStart, {passive: false});
+    (this.divNode as any).addEventListener('touchmove', this.onTouchMove, {passive: false});
+  }
+
+  onTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (this.props.lineInProgress) {
+      this.props.stopLine();
+    }
+    event.preventDefault();
+  };
+
+  onTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (this.props.lineInProgress) {
+      this.props.stopLine();
+    } else {
+      passPointTo(this.props.startLine, this.props.stopLine)(event);
+    }
+    event.preventDefault();
+  };
+
+  onTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (this.props.lineInProgress) {
+      passPointTo(this.props.appendLine, this.props.stopLine)(event);
+    }
+    event.preventDefault();
+  };
+
+  render() {
+    const {
       gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
       showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
       lineInProgress, onSubmit
-    }: Props) => (
-  <div style={{
-      display: 'flex',
-      flex: '1 1',
-      flexDirection: 'column',
-      width: '100%',
-      margin: 'auto',
-      marginTop: '8px',
-      marginBottom: '0px',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-  }}>
-    <Card style={{flex: '0 0 auto'}}>
-      <CardContent>
-        <Typography style={{textAlign: 'center'}} type="headline" component="h2">
-          {label}
-        </Typography>
-      </CardContent>
-    </Card>
-    <div style={{flex: '1 1 0%', margin: '8px', paddingLeft: 'calc(100% - 16px)', position: 'relative'}}>
-      <div style={{position: 'absolute', top: '0px', bottom: '0px', left: '0px', right: '0px'}}
+    } = this.props;
+    return (
+      <div style={{
+          display: 'flex',
+          flex: '1 1',
+          flexDirection: 'column',
+          width: '100%',
+          margin: 'auto',
+          marginTop: '8px',
+          marginBottom: '0px',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+      }}>
+        <Card style={{flex: '0 0 auto'}}>
+          <CardContent>
+            <Typography style={{textAlign: 'center'}} type="headline" component="h2">
+              {label}
+            </Typography>
+          </CardContent>
+        </Card>
+        <div style={{flex: '1 1 0%', margin: '8px', paddingLeft: 'calc(100% - 16px)', position: 'relative'}}>
+          <div style={{position: 'absolute', top: '0px', bottom: '0px', left: '0px', right: '0px'}}
+              ref={(node) => { this.divNode = node; }}
               onMouseUp={lineInProgress ? stopLine : undefined}
               onMouseLeave={lineInProgress ? stopLine : undefined}
               onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
-              onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}
-              onTouchEnd={lineInProgress ? stopLine : undefined}
-              onTouchStart={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
-              onTouchMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined} >
-        <Drawing style={{
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            width: '100%',
-            height: '100%',
-        }} drawing={drawing} />
+              onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}>
+            <Drawing style={{
+                position: 'absolute',
+                top: '0px',
+                left: '0px',
+                width: '100%',
+                height: '100%',
+            }} drawing={drawing} />
+          </div>
+        </div>
+        <Card style={{flex: '0 0 auto'}}>
+          <CardActions style={{justifyContent: 'space-evenly'}}>
+            <IconButton onClick={undoLastLine}>
+              <UndoIcon />
+            </IconButton>
+            <IconButton onClick={showBrushSizeDialog}>
+              <BrushIcon />
+            </IconButton>
+            <IconButton onClick={showBrushColorDialog}>
+              <PaletteIcon />
+            </IconButton>
+            <IconButton onClick={showBackgroundColorDialog}>
+              <LayersIcon />
+            </IconButton>
+            <IconButton onClick={() => onSubmit(gameId, drawing)}>
+              <SendIcon />
+            </IconButton>
+          </CardActions>
+        </Card>
       </div>
-    </div>
-    <Card style={{flex: '0 0 auto'}}>
-      <CardActions style={{justifyContent: 'space-evenly'}}>
-        <IconButton onClick={undoLastLine}>
-          <UndoIcon />
-        </IconButton>
-        <IconButton onClick={showBrushSizeDialog}>
-          <BrushIcon />
-        </IconButton>
-        <IconButton onClick={showBrushColorDialog}>
-          <PaletteIcon />
-        </IconButton>
-        <IconButton onClick={showBackgroundColorDialog}>
-          <LayersIcon />
-        </IconButton>
-        <IconButton onClick={() => onSubmit(gameId, drawing)}>
-          <SendIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
-  </div>
-);
+    );
+  }
+}
 
 export default Draw;

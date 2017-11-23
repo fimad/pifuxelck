@@ -5,7 +5,6 @@ import App from './containers/app';
 import Login from './containers/login';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ScrollToTop from './components/scroll-to-top';
-import stopPullToRefresh from './pull-to-refresh';
 import { Provider } from 'react-redux';
 import { Router, Route, Switch } from 'react-router';
 import { createBrowserHistory } from 'history';
@@ -54,5 +53,3 @@ createPifuxelckStore(history)
       document.getElementById('content')
     );
   });
-
-stopPullToRefresh();
