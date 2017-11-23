@@ -7,19 +7,25 @@ import { State } from '../state';
 import { compareStringsAsInts } from '../../common/utils';
 
 export function login(user: string, password: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.post({
-    start: 'LOGIN_START',
-    success: 'LOGIN_SUCCESS',
-    failure: 'LOGIN_FAILURE',
-    onSuccess: () => dispatch(getAllData()),
-    url: '/api/2/account/login',
-    body: {
-      user: {
-        display_name: user,
-        password,
-      }
-    }
-  })(dispatch, getState);
+  return (dispatch: Dispatch<State>, getState: () => State) => {
+    // Before logging in wipe the user's history. We don't want to conflate use
+    // history between users sharing the same browser...
+    idbKeyval.set('game-history', {}).then(() => {
+      api.post({
+        start: 'LOGIN_START',
+        success: 'LOGIN_SUCCESS',
+        failure: 'LOGIN_FAILURE',
+        onSuccess: () => dispatch(getAllData()),
+        url: '/api/2/account/login',
+        body: {
+          user: {
+            display_name: user,
+            password,
+          }
+        }
+      })(dispatch, getState);
+    });
+  };
 }
 
 export function userLookup(user: string) {

@@ -11,13 +11,14 @@ import Inbox from './inbox';
 import InboxIcon from 'material-ui-icons/Inbox';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import LoginRedirect from './login-redirect';
+import LogoutIcon from 'material-ui-icons/Eject';
 import NewGameDialog from '../containers/new-game-dialog';
 import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router';
 import { State } from '../state';
 import { connect } from 'react-redux';
-import { gotoContacts, gotoInbox, gotoHistory, login } from '../actions';
+import { gotoContacts, gotoInbox, gotoHistory, login, logout } from '../actions';
 
 import MenuIcon from 'material-ui-icons/Menu';
 import {
@@ -69,6 +70,10 @@ class AppComponent extends React.Component<Props, any> {
   handleShowNewGame = () => {
     this.props.dispatch(push('/new'));
     this.handleShowDrawer(false);
+  };
+
+  handleLogout = () => {
+    this.props.dispatch(logout());
   };
 
   render() {
@@ -159,7 +164,7 @@ class AppComponent extends React.Component<Props, any> {
             open={this.state.showDrawer}
             onRequestClose={this.handleToggleDrawer} >
           <div style={{width: '240px'}} />
-          <List>
+          <List style={{display: 'flex', flexDirection: 'column'}}>
             <ListItem button onClick={this.handleClickInbox}>
               <ListItemIcon>
                 <InboxIcon />
@@ -177,6 +182,15 @@ class AppComponent extends React.Component<Props, any> {
                 <HistoryIcon />
               </ListItemIcon>
               <ListItemText primary="History" />
+            </ListItem>
+            <ListItem
+                style={{marginTop: 'auto'}}
+                button
+                onClick={this.handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
             </ListItem>
           </List>
         </Drawer>
