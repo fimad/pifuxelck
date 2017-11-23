@@ -1,3 +1,5 @@
+const OfflinePlugin = require('offline-plugin');
+
 module.exports = {
   entry: "./src/web/index.tsx",
   output: {
@@ -12,6 +14,28 @@ module.exports = {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
+
+  plugins: [
+    new OfflinePlugin({
+      responseStrategy: 'network-first',
+      externals: [
+        '/',
+        '/favicon-16x16.png',
+        '/favicon-32x32.png',
+        '/favicon.ico',
+        '/images/icon-144.png',
+        '/images/icon-192.png',
+        '/images/icon-48.png',
+        '/images/icon-72.png',
+        '/images/icon-96.png',
+        '/manifest.json',
+      ],
+      ServiceWorker: {
+        navigateFallbackURL: '/',
+      },
+      AppCache: false,
+    }),
+  ],
 
   module: {
     rules: [

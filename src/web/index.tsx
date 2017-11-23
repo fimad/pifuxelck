@@ -24,6 +24,9 @@ const {
   routerMiddleware,
 } = require('react-router-redux');
 
+// Hookup offline support.
+require('offline-plugin/runtime').install();
+
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory();
 
