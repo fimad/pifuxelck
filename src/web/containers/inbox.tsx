@@ -7,13 +7,15 @@ import { State } from '../state';
 import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
 
+const styles = require('./inbox.css');
+
 type Props = {
   entries: string[],
 };
 
 const InboxComponent = ({entries}: Props) => (
-  <div style={{maxWidth: '75vh', margin: 'auto'}}>
-    {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))}
+  <div className={styles.container}>
+    {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))};
   </div>
 );
 

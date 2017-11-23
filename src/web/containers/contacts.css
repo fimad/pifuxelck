@@ -1,0 +1,8 @@
+@import '../common.css';
+
+.contacts {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}

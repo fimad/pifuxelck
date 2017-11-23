@@ -1,19 +1,22 @@
 import * as React from 'react';
+import * as cx from 'classnames';
 import * as models from '../../common/models/drawing';
+import Badge from 'material-ui/Badge';
+import BrushIcon from 'material-ui-icons/Brush';
 import Button from 'material-ui/Button';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Drawing from '../components/drawing';
 import IconButton from 'material-ui/IconButton';
-import SendIcon from 'material-ui-icons/Send';
-import BrushIcon from 'material-ui-icons/Brush';
-import UndoIcon from 'material-ui-icons/Undo';
 import LayersIcon from 'material-ui-icons/Layers';
 import PaletteIcon from 'material-ui-icons/Palette';
+import SendIcon from 'material-ui-icons/Send';
 import Typography from 'material-ui/Typography';
-import Badge from 'material-ui/Badge';
+import UndoIcon from 'material-ui-icons/Undo';
 import { Route, Switch } from 'react-router';
 import { Turn } from '../../common/models/turn';
+
+const styles = require('./draw.css');
 
 type Props = {
   gameId: string,
@@ -91,42 +94,26 @@ class Draw extends React.Component {
       lineInProgress, onSubmit
     } = this.props;
     return (
-      <div style={{
-          display: 'flex',
-          flex: '1 1',
-          flexDirection: 'column',
-          width: '100%',
-          margin: 'auto',
-          marginTop: '8px',
-          marginBottom: '0px',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-      }}>
-        <Card style={{flex: '0 0 auto'}}>
+      <div className={styles.drawingReplyContainer}>
+        <Card className={styles.labelCard}>
           <CardContent>
-            <Typography style={{textAlign: 'center'}} type="headline" component="h2">
+            <Typography className={styles.labelTypography} type="headline" component="h2">
               {label}
             </Typography>
           </CardContent>
         </Card>
-        <div style={{flex: '1 1 0%', margin: '8px', paddingLeft: 'calc(100% - 16px)', position: 'relative'}}>
-          <div style={{position: 'absolute', top: '0px', bottom: '0px', left: '0px', right: '0px'}}
+        <div className={styles.drawingWrapper}>
+          <div className={styles.drawingContainer}
               ref={(node) => { this.divNode = node; }}
               onMouseUp={lineInProgress ? stopLine : undefined}
               onMouseLeave={lineInProgress ? stopLine : undefined}
               onMouseDown={lineInProgress ? stopLine : passPointTo(startLine, stopLine)}
               onMouseMove={lineInProgress ? passPointTo(appendLine, stopLine) : undefined}>
-            <Drawing style={{
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                width: '100%',
-                height: '100%',
-            }} drawing={drawing} />
+            <Drawing className={styles.drawing} drawing={drawing} />
           </div>
         </div>
-        <Card style={{flex: '0 0 auto'}}>
-          <CardActions style={{justifyContent: 'space-evenly'}}>
+        <Card className={styles.actionsCard}>
+          <CardActions className={styles.actions}>
             <IconButton onClick={undoLastLine}>
               <UndoIcon />
             </IconButton>

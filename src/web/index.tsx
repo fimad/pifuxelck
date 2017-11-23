@@ -28,7 +28,6 @@ const {
 const history = createBrowserHistory();
 
 // TODO(will): Need to handle errors here...
-// TODO(will): Add migration that wipes all data except the auth token...
 createPifuxelckStore(history)
   .then((store) => {
     store.dispatch(actions.getAllData());

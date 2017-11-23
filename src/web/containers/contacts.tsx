@@ -1,14 +1,17 @@
 import * as React from 'react';
 import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
 import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
+import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
+import * as cx from 'classnames';
 import { Dispatch } from 'redux';
 import { State } from '../state';
-import { connect } from 'react-redux';
 import { addContact, changeContactLookup, userLookup } from '../actions';
+import { connect } from 'react-redux';
+
+const styles = require('./contacts.css');
 
 type Props = {
   addContactEnabled: boolean
@@ -23,15 +26,7 @@ const ContactsComponent = ({
     addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange
   }: Props) => {
   return (
-    <div style={{
-      alignItems: 'stretch',
-      display: 'flex',
-      flexDirection: 'column',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      marginTop: '16px',
-      maxWidth: '75vh',
-    }}>
+    <div className={cx(styles.container, styles.contacts)}>
       <Paper style={{display: 'flex', flexDirection: 'row'}}>
         <TextField
             onChange={(event) => onLookupChange(event.target.value)}

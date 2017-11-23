@@ -5,6 +5,7 @@ const VisibilitySensor = require('react-visibility-sensor');
 
 type Props = {
   style?: any,
+  className?: string,
   drawing: models.Drawing,
   hideInivisible?: boolean,
 };
@@ -23,7 +24,7 @@ const drawLine = ({color, points, size}: models.Line, i: number) => (
       points={[points[0], ...points].map(({x, y}: models.Point) => `${x},${y}`).join(' ')}/>
 );
 
-const Drawing = ({style, drawing: {background_color, lines}, hideInivisible}: Props) => (
+const Drawing = ({className, style, drawing: {background_color, lines}, hideInivisible}: Props) => (
   <VisibilitySensor
       delayedCall={true}
       scrollCheck={true}
@@ -32,7 +33,7 @@ const Drawing = ({style, drawing: {background_color, lines}, hideInivisible}: Pr
       partialVisibility={true}>
   {
     ({isVisible}: {isVisible: boolean}) => (
-      <svg style={style} viewBox="0 0 1 1">
+      <svg className={className} style={style} viewBox="0 0 1 1">
         <defs>
           <rect id="bg" width='1' height='1' fill={toColor(background_color)} />
           <clipPath id="clip">

@@ -1,14 +1,14 @@
 import * as React from 'react';
 import Drawing from '../components/drawing';
-import { StarBorder } from 'material-ui-icons';
+import { Desktop, Tablet, Mobile } from '../components/media-query';
 import { Dispatch } from 'redux';
 import { Game } from '../../common/models/game';
 import { Link } from 'react-router-dom';
+import { StarBorder } from 'material-ui-icons';
 import { State } from '../state';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import { connect } from 'react-redux';
-import { Desktop, Tablet, Mobile } from '../components/media-query';
 
 const { push } = require('react-router-redux');
 
