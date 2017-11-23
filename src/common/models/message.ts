@@ -29,6 +29,7 @@ export type Message = {
  */
 export type Errors = {
   application?: string[]
+  auth?: string
   user?: UserError
   new_game?: NewGameError
 }

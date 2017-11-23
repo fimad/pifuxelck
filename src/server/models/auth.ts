@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import * as winston from 'winston';
+import ServerError from '../error';
 import { Connection } from 'mysql';
 import { query } from '../db-promise';
 
@@ -9,13 +10,13 @@ import { query } from '../db-promise';
  * from the user with the given id.
  */
 export async function newAuthToken(
-    db: Connection, 
+    db: Connection,
     userId: string) : Promise<string> {
   await pruneAuthTokens(db);
   winston.info(`Generating new random token for user with ID ${userId}.`);
   const auth = uuid.v4();
   await query(
-      db, 'INSERT INTO Sessions (auth_token, account_id) VALUES (?, ?)', 
+      db, 'INSERT INTO Sessions (auth_token, account_id) VALUES (?, ?)',
       [auth, userId]);
   return auth;
 }
@@ -32,7 +33,7 @@ export async function authTokenLookup(
   const results = await query(
       db, 'SELECT account_id AS id FROM Sessions WHERE auth_token = ?', [auth]);
   if (!results[0]) {
-    throw new Error('Invalid authentication token');
+    throw new ServerError({auth: 'Invalid authentication token'});
   }
   return results[0]['id'];
 }

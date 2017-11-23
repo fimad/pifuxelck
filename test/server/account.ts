@@ -106,4 +106,18 @@ describe('Accounts', () => {
           .expect(500);
     });
   });
+
+  describe('Invalid auth token', () => {
+    it('should have an error message', async () => {
+      const app = agent(await server());
+      const user = await newUser(app, 'user');
+      await app.get('/api/2/games')
+          .set('x-pifuxelck-auth', 'invalid-token')
+          .expect(500)
+          .expect((res: any) => {
+            expect(res.body).to.have.property('errors');
+            expect(res.body.errors).to.have.property('auth');
+          });
+    });
+  });
 });

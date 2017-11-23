@@ -1,8 +1,11 @@
 import * as winston from 'winston';
+import ServerError from '../error';
+import { Message } from '../../common/models/message';
 import { Request, Response, NextFunction } from 'express';
 
 /**
- * Middleware that adds the success function to the response object.
+ * Middleware that handles thrown exceptions and translates them into an error
+ * message response.
  */
 const error = () => (
     error: Error,
@@ -10,8 +13,10 @@ const error = () => (
     res: Response,
     next: NextFunction) => {
   winston.error(error.stack, req.context);
-  res.status(500).send(error.stack).end();
+  let errors = (error as ServerError).errors || {
+    application: [error.message],
+  };
+  res.status(500).send({errors} as Message).end();
 };
 
 export default error;
-

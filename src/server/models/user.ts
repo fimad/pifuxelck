@@ -1,8 +1,9 @@
 import * as winston from 'winston';
+import ServerError from '../error';
 import { Connection } from 'mysql';
+import { User, UserError } from '../../common/models/user';
 import { genSalt, hash, compare } from 'bcrypt';
 import { query } from '../db-promise';
-import { User, UserError } from '../../common/models/user';
 
 async function hashPassword(password: string): Promise<string> {
   if (password.length < 8) {
@@ -47,14 +48,14 @@ export async function lookupByPassword(
 
   if (!results[0]) {
     winston.warn('Lookup failed for user.');
-    throw new Error('Invalid user or password.');
+    throw new ServerError({auth: 'Invalid user or password.'});
   }
 
   const valid = await compare(user.password, results[0]['password_hash'].toString());
 
   if (!valid) {
     winston.warn('Lookup failed, bad password.');
-    throw new Error('Invalid user or password.');
+    throw new ServerError({auth: 'Invalid user or password.'});
   }
 
   winston.info('Lookup success!');
