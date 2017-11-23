@@ -6,14 +6,28 @@
   "author": "Will Coster <willcoster@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf \"dist/*\"",
-    "build": "tsc",
-    "copy-package": "copyfiles package.json yarn.lock dist",
-    "firebase-deploy": "firebase deploy --only functions",
-    "install-deps": "yarn install --production=true --cwd dist",
-    "deploy": "run-s clean build copy-package install-deps firebase-deploy",
-    "pretest": "run-s clean build",
-    "test": "nyc mocha"
+    "test": "nyc mocha",
+    "pretest": "run-s clean _server-build",
+    "clean": "run-s _server-clean _web-clean",
+    "_firebase-deploy": "firebase deploy",
+    "deploy": "run-s _server-pre-deploy _web-pre-deploy _firebase-deploy",
+
+    "_server-clean": "rimraf \"dist/*\"",
+    "_server-build": "tsc",
+    "_server-copy-package": "copyfiles package.json yarn.lock dist",
+    "_server-firebase-deploy": "firebase deploy --only functions",
+    "_server-install-deps": "yarn install --production=true --cwd dist",
+    "_server-pre-deplpy": "run-s _server-clean _server-build _server-copy-package _server-install-deps",
+    "server-deploy": "run-s _server-pre-deploy _server-firebase-deploy",
+
+    "_web-clean": "rimraf \"dist-web/*\"",
+    "_web-build": "webpack",
+    "_web-copy-static": "copyfiles -u 1 'static/**/*' dist-web",
+    "_web-firebase-deploy": "firebase deploy --only hosting",
+    "_web-pre-deploy": "run-s _web-clean _web-copy-static _web-build",
+    "_web-dev-server": "webpack-dev-server --content-base dist-web",
+    "web-local": "run-s _web-clean _web-copy-static _web-dev-server",
+    "web-deploy": "run-s _web-pre-deploy _web-firebase-deploy"
   },
   "devDependencies": {
     "@google-cloud/functions-emulator": "^1.0.0-alpha.25",

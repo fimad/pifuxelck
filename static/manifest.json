@@ -1,0 +1,8 @@
+{
+  "name": "pifuxelck",
+  "short_name": "pifuxelck",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#CFD8DC",
+  "description": "A drawing game!"
+}
