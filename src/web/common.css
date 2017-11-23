@@ -4,12 +4,13 @@
  */
 
 @custom-media --mobile (max-width: 767px);
+@custom-media --non-mobile (min-width: 768px);
 
 .container {
   margin: auto;
 }
 
-@media (not --mobile) and (min-aspect-ratio: 3/4) {
+@media (--non-mobile) and (min-aspect-ratio: 3/4) {
   .container {
     max-width: 75vh;
   }
