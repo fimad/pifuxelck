@@ -6,12 +6,14 @@ import db, { DbConfig } from './middleware/db';
 import error from './middleware/error';
 import games from './routes/games';
 import log from './middleware/log';
+import mail, { MailConfig } from './middleware/mail';
 import models from './middleware/models';
 import success from './middleware/success';
 import { ConnectionConfig } from 'mysql';
 
 type Config = {
   db: DbConfig,
+  mail?: MailConfig,
 };
 
 export default function(config: Config) {
@@ -21,6 +23,7 @@ export default function(config: Config) {
   app.use(log());
   app.use(models());
   app.use(success());
+  app.use(mail(config.mail));
   app.use(db(config.db));
   app.use('/api/2/account', account);
   app.use('/api/2/contacts', contacts);

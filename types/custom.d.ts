@@ -10,6 +10,7 @@ declare global {
       parseTurnMessage: () => Promise<Message>
       parseUserMessage: () => Promise<Message>
       context: {[key: string]: any}
+      sendMail: (params: {to: string, subject: string, body: string}) => void
     }
 
     export interface Response {
