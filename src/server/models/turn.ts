@@ -2,7 +2,8 @@ import * as winston from 'winston';
 import { Connection } from 'mysql';
 import { Drawing } from '../../common/models/drawing';
 import { InboxEntry, Turn } from '../../common/models/turn';
-import { query } from '../db-promise';
+import { SendMail } from '../middleware/mail';
+import { transact, query } from '../db-promise';
 
 async function rowToInboxEntry(row: any): Promise<InboxEntry> {
   const drawingJson = row['drawing'];
@@ -122,6 +123,7 @@ export async function getInboxEntriesForUser(
  */
 export async function updateDrawingTurn(
     db: Connection,
+    sendMail: SendMail,
     userId: string,
     gameId: string,
     drawing: Drawing): Promise<void> {
@@ -150,6 +152,7 @@ export async function updateDrawingTurn(
     winston.info('Drawing turn update failed because no rows were affected.');
     throw new Error('Unable to take a turn at this time.');
   }
+  await sendEmailUpdatesAfterTurn(db, sendMail);
 }
 
 /**
@@ -158,6 +161,7 @@ export async function updateDrawingTurn(
  */
 export async function updateLabelTurn(
     db: Connection,
+    sendMail: SendMail,
     userId: string,
     gameId: string,
     label: string): Promise<void> {
@@ -177,11 +181,61 @@ export async function updateLabelTurn(
               SELECT MIN(T.id)
               FROM (SELECT * FROM Turns) AS T
               WHERE T.is_complete = 0 AND T.game_id = ?)`,
-      [label, userId, gameId, gameId])
+      [label, userId, gameId, gameId]);
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
     winston.info('Label turn update failed because no rows were affected.');
     throw new Error('Unable to take a turn at this time.');
   }
+  await sendEmailUpdatesAfterTurn(db, sendMail);
+}
+
+export async function sendEmailUpdatesAfterTurn(
+    db: Connection, sendMail: SendMail): Promise<void> {
+  const emailsAndGames = await transact(db, async () => {
+    const turnsToNotifyQuery =
+        `SELECT
+           Turns.id AS turn_id,
+           Turns.game_id AS game_id,
+           Accounts.email AS email
+         FROM (
+           SELECT
+             MIN(id) AS id,
+             game_id AS game_id
+           FROM Turns
+           WHERE NOT is_complete
+           GROUP BY game_id
+         ) AS NT
+         INNER JOIN Turns ON NT.id = Turns.id
+         INNER JOIN Accounts ON Accounts.id = Turns.account_id
+         WHERE NOT did_notify`;
+    const results = await query(db, turnsToNotifyQuery, []);
+    await query(
+        db,
+        `UPDATE Turns
+         SET Turns.did_notify = TRUE
+         WHERE Turns.id IN (
+           SELECT X.turn_id
+           FROM (${turnsToNotifyQuery}) AS X
+         )`, []);
+    const emailsAndGames = [];
+    for (let i = 0; i < results.length; i++) {
+      const game = results[i]['game_id'];
+      const email = results[i]['email'];
+      if (email) {
+        emailsAndGames.push({game, email});
+      }
+    }
+    return emailsAndGames;
+  });
+
+  await Promise.all(emailsAndGames.map(async ({email, game}) => {
+    winston.info(`SENDING EMAIL TO ${email}`);
+    await sendMail({
+      to: email,
+      subject: 'It is your turn!',
+      body: 'Your turn in foobar!',
+    });
+  }));
 }

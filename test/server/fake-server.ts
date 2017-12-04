@@ -1,6 +1,7 @@
 import config from '../../config/test';
 import server from '../../src/server/server';
 import { Connection, createConnection } from 'mysql';
+import { SendMailParams } from '../../src/server/middleware/mail';
 import { readFile } from 'fs';
 
 export default async function fakeServer() {
@@ -23,6 +24,16 @@ export default async function fakeServer() {
       sqlDb.query(schema.toString(), (err) => err ? reject(err) : resolve()));
   sqlDb.end();
 
-  // Create a server using the same temporary in-memory SQLite database.
-  return server({db: dbConfig});
+  const sentMail = [] as SendMailParams[];
+  const app = server({
+    ...config,
+    mail: {
+      sendMail: (params: SendMailParams) => {
+        sentMail.push(params);
+        return Promise.resolve();
+      },
+    },
+  });
+  app.sentMail = sentMail;
+  return app;
 }

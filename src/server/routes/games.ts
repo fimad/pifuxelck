@@ -36,7 +36,7 @@ games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
 }));
 
 games.get('/inbox', authRoute(async (userId, req, res) => {
-  await reapExpiredTurns(req.db);
+  await reapExpiredTurns(req.db, req.sendMail);
   winston.info(`Attempting to query inbox.`, req.context);
   const entries = await getInboxEntriesForUser(req.db, userId);
   winston.info(`Retrieved inbox.`, req.context);
@@ -55,7 +55,7 @@ games.get('/inbox/:gameId(\\d+)', authRoute(async (userId, req, res) => {
 games.post('/new', authRoute(async (userId, req, res) => {
   const newGame = (await req.parseGameMessage()).new_game;
   winston.info(`Attempting to start new game.`, req.context);
-  await createGame(req.db, userId, newGame);
+  await createGame(req.db, req.sendMail, userId, newGame);
   winston.info(`Created new game.`, req.context);
   res.success({});
 }));
@@ -66,9 +66,9 @@ games.put('/play/:gameId(\\d+)', authRoute(async (userId, req, res) => {
   winston.info(`Taking turn in game ${gameId}.`, req.context);
 
   if (turn.is_drawing == true) {
-    await updateDrawingTurn(req.db, userId, gameId, turn.drawing);
+    await updateDrawingTurn(req.db, req.sendMail, userId, gameId, turn.drawing);
   } else {
-    await updateLabelTurn(req.db, userId, gameId, turn.label);
+    await updateLabelTurn(req.db, req.sendMail, userId, gameId, turn.label);
   }
 
   // Check if the game needs to have it's completed at time updated.

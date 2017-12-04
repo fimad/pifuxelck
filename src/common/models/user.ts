@@ -1,8 +1,9 @@
 /** User contains all of the identifying information of a pifuxelck player. */
 export type User = {
-  id?: string,
-  display_name?: string,
-  password?: string,
+  id?: string
+  display_name?: string
+  password?: string
+  email?: string
 }
 
 /**

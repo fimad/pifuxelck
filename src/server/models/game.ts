@@ -2,7 +2,9 @@ import * as shuffle from 'shuffle-array';
 import * as winston from 'winston';
 import { Connection } from 'mysql';
 import { Game, NewGame } from '../../common/models/game';
+import { SendMail } from '../middleware/mail';
 import { Turn } from '../../common/models/turn';
+import { sendEmailUpdatesAfterTurn } from './turn';
 import { transact, query } from '../db-promise';
 
 /*
@@ -20,6 +22,7 @@ func (e NewGameError) Error() string {
  */
 export async function createGame(
     db: Connection,
+    sendMail: SendMail,
     userId: string,
     newGame: NewGame): Promise<void> {
   if (newGame.label == '') {
@@ -32,7 +35,7 @@ export async function createGame(
     throw new Error('At least one other player is required.');
   }
 
-  return transact(db, async () => {
+  await transact(db, async () => {
     //  genericError := []string{'Unable to create a new game at this time.'}
     //  var errors *Errors
 
@@ -76,6 +79,7 @@ export async function createGame(
           [players[i], gameId, isDrawing]);
     }
   });
+  await sendEmailUpdatesAfterTurn(db, sendMail);
 }
 
 /**
@@ -142,9 +146,10 @@ async function updateGameCompletedAtTimeInTransaction(
  * should be called periodically to ensure that games to not hang on players who
  * have uninstalled the app or otherwise stopped playing.
  */
-export async function reapExpiredTurns(db: Connection): Promise<void> {
+export async function reapExpiredTurns(
+    db: Connection, sendMail: SendMail): Promise<void> {
   winston.info('Reaping expired turns.');
-  return transact(db, async () => {
+  await transact(db, async () => {
     // First delete turns from games where the expiration time is in the past.
     await query(
         db,
@@ -219,6 +224,7 @@ export async function reapExpiredTurns(db: Connection): Promise<void> {
     //      return errors.New('Inconsistent number of turns and games affected.')
     //    }
   });
+  await sendEmailUpdatesAfterTurn(db, sendMail);
 }
 
 async function rowsToGames(rows: any): Promise<Game[]> {

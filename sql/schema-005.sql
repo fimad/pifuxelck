@@ -1,5 +1,5 @@
 -- -----------------------------------------------------------------------------
--- Pifuxel Schema v4
+-- Pifuxel Schema v5
 --
 -- This script will blow away existing tables and create new ones in there
 -- place. To use:
@@ -34,6 +34,7 @@ CREATE TABLE Accounts (
   display_name        VARCHAR(32) NOT NULL UNIQUE,
   hashed_phone_number CHAR(64),
   password_hash       BLOB,
+  email               TEXT,
   PRIMARY KEY (id)
 );
 
@@ -72,6 +73,7 @@ CREATE TABLE Games (
   id                  INT(11)     NOT NULL AUTO_INCREMENT,
   completed_at_id     INT(11)     NULL,
   next_expiration     TIMESTAMP   NULL,
+  did_notify          BOOLEAN     NOT NULL DEFAULT FALSE,
 
   PRIMARY KEY (id),
   FOREIGN KEY (completed_at_id) REFERENCES GamesCompletedAt (id)
@@ -86,6 +88,7 @@ CREATE TABLE Turns (
   is_drawing          BOOLEAN     NOT NULL,
   label               TEXT        NOT NULL,
   drawing             MEDIUMTEXT  NOT NULL,
+  did_notify          BOOLEAN     NOT NULL DEFAULT FALSE,
 
   PRIMARY KEY (id),
   FOREIGN KEY (account_id) REFERENCES Accounts (id),
@@ -119,3 +122,4 @@ CREATE TABLE ContactGroupMembers (
   FOREIGN KEY (group_id) REFERENCES ContactGroups (id),
   FOREIGN KEY (contact_id) REFERENCES Accounts (id)
 );
+

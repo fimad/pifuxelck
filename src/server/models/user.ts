@@ -62,13 +62,24 @@ export async function lookupByPassword(
   return results[0]['id'];
 }
 
-/** Takes a User object and updates their password. */
-export async function setPassword(db: Connection, user: User): Promise<User> {
-  const hash = await hashPassword(user.password);
-  winston.info(`Updating password in db of user ${user.display_name}.`);
-  await query(
-      db, 'UPDATE Accounts SET password_hash = ? WHERE id = ?',
-      [hash, user.id]);
+/** Takes a User object and updates their password and/or email. */
+export async function updateUser(db: Connection, user: User): Promise<User> {
+  let sqlQuery = 'UPDATE Accounts SET ';
+  const params = [] as string[];
+  if (user.password) {
+    const hash = await hashPassword(user.password);
+    sqlQuery += ' password_hash = ? '
+    params.push(hash);
+  }
+  if (user.email) {
+    sqlQuery += ' email = ? '
+    params.push(user.email);
+  }
+  sqlQuery += ' WHERE id = ?';
+  params.push(user.id);
+
+  winston.info(`Updating user in db of user ${user.id}.`);
+  await query(db, sqlQuery, params);
   user.password = '';
   return user;
 }

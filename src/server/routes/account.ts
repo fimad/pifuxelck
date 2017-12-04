@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as winston from 'winston';
 import asyncRoute from './async-route';
 import authRoute from './auth-route';
-import { createUser, lookupByPassword, setPassword } from '../models/user';
+import { createUser, lookupByPassword, updateUser } from '../models/user';
 import { newAuthToken } from '../models/auth';
 
 const account = express.Router();
@@ -46,15 +46,15 @@ account.post('/register', asyncRoute(async (req, res) => {
 account.put('/', authRoute(async (userId, req, res) => {
   let {user} = await req.parseUserMessage();
   winston.info(
-      `Attempting to update password for ${user.display_name}.`, req.context);
+      `Attempting to update password for ${userId}.`, req.context);
 
   // Override any ID given in the JSON request body with the actual
   // authenticated user ID.
   user.id = userId;
-  user = await setPassword(req.db, user);
+  user = await updateUser(req.db, user);
 
   winston.info(
-      `Successfully updated password of ${user.display_name}.`, req.context);
+      `Successfully updated password of ${userId}.`, req.context);
   res.success({user});
 }));
 

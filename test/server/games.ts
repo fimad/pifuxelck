@@ -186,8 +186,10 @@ describe('Games', () => {
           }));
     });
 
-    it('should handle gamesa with more than 2 players', async () => {
-      const app = agent(await server());
+    it('should handle games with more than 2 players', async () => {
+      const testServer = await server();
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
       const user1 = await newUser(app, 'user1');
       const user2 = await newUser(app, 'user2');
       const user3 = await newUser(app, 'user3');
@@ -249,6 +251,139 @@ describe('Games', () => {
                   completed_at_id: 1,
                 },
               }))));
+    });
+  });
+
+  describe('Email', () => {
+    it('should send email to first player', async () => {
+      const testServer = await(server());
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1', undefined, 'user1@example.com');
+      const user2 = await newUser(app, 'user2', undefined, 'user2@example.com');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2'], label: 'start'}})
+          .expect(200);
+      expect(sentMail).to.have.lengthOf(1);
+      await user2.put('/api/2/games/play/1')
+          .send({
+            turn: {
+              is_drawing: true,
+              drawing: {
+                background_color: {
+                  alpha: 1,
+                  red: 2,
+                  green: 3,
+                  blue: 4,
+                },
+                lines: [],
+              },
+            },
+          })
+          .expect(200);
+    });
+
+    it('should not send email if first has no email on file', async () => {
+      const testServer = await(server());
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2'], label: 'start'}})
+          .expect(200);
+      expect(sentMail).to.have.lengthOf(0);
+      await user2.put('/api/2/games/play/1')
+          .send({
+            turn: {
+              is_drawing: true,
+              drawing: {
+                background_color: {
+                  alpha: 1,
+                  red: 2,
+                  green: 3,
+                  blue: 4,
+                },
+                lines: [],
+              },
+            },
+          })
+          .expect(200);
+    });
+
+    it('should send email to multiple players', async () => {
+      const testServer = await(server());
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1', undefined, 'user1@example.com');
+      const user2 = await newUser(app, 'user2', undefined, 'user2@example.com');
+      const user3 = await newUser(app, 'user3', undefined, 'user3@example.com');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2', '3'], label: 'start'}})
+          .expect(200);
+      expect(sentMail).to.have.lengthOf(1);
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: true,
+                  drawing: {
+                    background_color: {
+                      alpha: 1,
+                      red: 2,
+                      green: 3,
+                      blue: 4,
+                    },
+                    lines: [],
+                  },
+                },
+              })));
+      expect(sentMail).to.have.lengthOf(2);
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: false,
+                  label: 'end',
+                },
+              })));
+    });
+
+    it('should send email to all players after game ends', async () => {
+      const testServer = await(server());
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1', undefined, 'user1@example.com');
+      const user2 = await newUser(app, 'user2', undefined, 'user2@example.com');
+      const user3 = await newUser(app, 'user3', undefined, 'user3@example.com');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2', '3'], label: 'start'}})
+          .expect(200);
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: true,
+                  drawing: {
+                    background_color: {
+                      alpha: 1,
+                      red: 2,
+                      green: 3,
+                      blue: 4,
+                    },
+                    lines: [],
+                  },
+                },
+              })));
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: false,
+                  label: 'end',
+                },
+              })));
+      expect(sentMail).to.have.lengthOf(5);
     });
   });
 });
