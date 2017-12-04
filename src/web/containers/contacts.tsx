@@ -30,6 +30,24 @@ interface Props {
 const ContactsComponent = ({
     addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange,
   }: Props) => {
+  const contactListItem = (contact: string, i: number) => (
+    <ListItem key={i}>
+      <ListItemText primary={contact} />
+    </ListItem>
+  );
+  const contactList = contacts.length === 0 ?
+      (
+        <Typography align='center' style={{margin: '16px'}}>
+          No buds. Add contacts by searching above.
+        </Typography>
+      ) :
+      (
+        <Paper style={{marginTop: '16px'}}>
+          <List>
+            {contacts.map(contactListItem)}
+          </List>
+        </Paper>
+      );
   return (
     <div className={cx(styles.container, styles.contacts)}>
       <Paper style={{display: 'flex', flexDirection: 'row'}}>
@@ -37,37 +55,18 @@ const ContactsComponent = ({
             onChange={(event) => onLookupChange(event.target.value)}
             label='Lookup contact'
             value={lookup}
-            fullWidth />
+            fullWidth={true}
+        />
         <Button
             onClick={() => lookupId ? onAddContact(lookupId) : null}
             disabled={!addContactEnabled}
-            raised
-            color='accent'>
+            raised={true}
+            color='accent'
+        >
           <AddIcon />
         </Button>
       </Paper>
-
-      {
-        contacts.length === 0 ?
-        (
-          <Typography align='center' style={{margin: '16px'}}>
-            No buds. Add contacts by searching above.
-          </Typography>
-        ) :
-        (
-          <Paper style={{marginTop: '16px'}}>
-            <List>
-              {
-                contacts.map((contact, i) => (
-                  <ListItem key={i}>
-                    <ListItemText primary={contact} />
-                  </ListItem>
-                ))
-              }
-            </List>
-          </Paper>
-        )
-      }
+      {contactList}
     </div>
   );
 };

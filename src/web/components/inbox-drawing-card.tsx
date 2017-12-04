@@ -18,27 +18,33 @@ interface Props {
 }
 
 const InboxDrawingCard = (
-      {gameId, label, drawing, onChange, onSubmit}: Props) => (
-  <Card style={{margin: '8px'}}>
-    <Drawing drawing={drawing} />
-    <Divider />
-    <CardActions>
-      <TextField
-          onChange={(event) => onChange({
-            is_drawing: false,
-            label: event.target.value,
-          })}
-          label='Description'
-          value={label}
-          fullWidth />
-      <IconButton onClick={() => onSubmit(gameId, {
+      {gameId, label, drawing, onChange, onSubmit}: Props) => {
+  const onChangeCallback =
+      (event: React.ChangeEvent<HTMLInputElement>) => onChange({
         is_drawing: false,
-        label,
-      })} >
-        <SendIcon />
-      </IconButton>
-    </CardActions>
-  </Card>
-);
+        label: event.target.value,
+      });
+  const onClickCallback = () => onSubmit(gameId, {
+    is_drawing: false,
+    label,
+  });
+  return (
+    <Card style={{margin: '8px'}}>
+      <Drawing drawing={drawing} />
+      <Divider />
+      <CardActions>
+        <TextField
+            onChange={onChangeCallback}
+            label='Description'
+            value={label}
+            fullWidth={true}
+        />
+        <IconButton onClick={onClickCallback}>
+          <SendIcon />
+        </IconButton>
+      </CardActions>
+    </Card>
+  );
+};
 
 export default InboxDrawingCard;

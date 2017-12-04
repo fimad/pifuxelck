@@ -102,6 +102,12 @@ class Draw extends React.Component {
       showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
       lineInProgress, onSubmit,
     } = this.props;
+    const onMouseUp = lineInProgress ? stopLine : undefined;
+    const onMouseLeave = lineInProgress ? stopLine : undefined;
+    const onMouseDown =
+        lineInProgress ?  stopLine : passPointTo(startLine, stopLine);
+    const onMouseMove =
+        lineInProgress ?  passPointTo(appendLine, stopLine) : undefined;
     return (
       <div className={styles.drawingReplyContainer}>
         <Card className={styles.labelCard}>
@@ -109,22 +115,21 @@ class Draw extends React.Component {
             <Typography
                 className={styles.labelTypography}
                 type='headline'
-                component='h2'>
+                component='h2'
+            >
               {label}
             </Typography>
           </CardContent>
         </Card>
         <div className={styles.drawingWrapper}>
-          <div className={styles.drawingContainer}
+          <div
+              className={styles.drawingContainer}
               ref={(node) => { this.divNode = node; }}
-              onMouseUp={lineInProgress ? stopLine : undefined}
-              onMouseLeave={lineInProgress ? stopLine : undefined}
-              onMouseDown={lineInProgress ?
-                  stopLine :
-                  passPointTo(startLine, stopLine)}
-              onMouseMove={lineInProgress ?
-                  passPointTo(appendLine, stopLine)
-                  : undefined}>
+              onMouseUp={onMouseUp}
+              onMouseLeave={onMouseLeave}
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+          >
             <Drawing className={styles.drawing} drawing={drawing} />
           </div>
         </div>

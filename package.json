@@ -6,6 +6,8 @@
   "author": "Will Coster <willcoster@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "lint": "tslint --project .",
+    "fix": "tslint --fix --project .",
     "test": "nyc mocha",
     "pretest": "run-s clean _server-build",
     "clean": "run-s _server-clean _web-clean",

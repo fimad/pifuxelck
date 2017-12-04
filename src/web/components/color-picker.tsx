@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Color } from '../../common/models/drawing';
 
+const styles = require('./color-picker.css');
+
 interface Props {
   onPickColor: (color: Color) => void;
 }
@@ -51,39 +53,19 @@ const toColor = ({red, green, blue, alpha}: Color) =>
     `rgba(${red * 255}, ${green * 255}, ${blue * 255}, ${alpha})`;
 
 const ColorButton = ({color, onPickColor}: ColorButtonProps) => (
-  <svg key={`color-${toColor(color)}`} style={{
-    display: 'block',
-    flex: '0 0 auto',
-    height: '100%',
-    margin: '8px',
-    width: 'calc(25% - 16px)',
-  }} onClick={() => onPickColor(color)}
-  viewBox='-1 -1 2 2'>
+  <svg
+      key={`color-${toColor(color)}`}
+      className={styles.colorButton}
+      onClick={() => onPickColor(color)}
+      viewBox='-1 -1 2 2'
+  >
     <ellipse cx='0' cy='0' rx='1' ry='1' fill={toColor(color)} />
   </svg>
 );
 
 const ColorPicker = (props: Props) => (
-  <div style={{
-    background: 'rgba(0, 0, 0, .50)',
-    height: '100%',
-    margin: '0px',
-    overflowY: 'scroll',
-    padding: '0px',
-    placeSelf: 'center',
-    position: 'absolute',
-    top: '0px',
-    width: '100%',
-  }}>
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      margin: 'auto',
-      maxWidth: '65vh',
-      paddingTop: '64px',
-      width: '100%',
-    }}>
+  <div className={styles.colorPickerContainer}>
+    <div className={styles.colorPicker}>
       {colors.map((color: Color) => (<ColorButton color={color} {...props} />))}
     </div>
   </div>

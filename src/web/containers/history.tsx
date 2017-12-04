@@ -41,7 +41,8 @@ const gameToTile =
   return (
     <GridListTile
         key={game.id}
-        onClick={() => dispatch(push(`/game/${game.id}`))}>
+        onClick={() => dispatch(push(`/game/${game.id}`))}
+    >
       {drawing}
       <GridListTileBar title={title} subtitle={subtitle} />
     </GridListTile>

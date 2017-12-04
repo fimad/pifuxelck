@@ -35,6 +35,8 @@ import Dialog, {
   withMobileDialog,
 } from 'material-ui/Dialog';
 
+const styles = require('./new-game-dialog.css');
+
 type Props = WithWidthProps & {
   players: User[]
   contacts: User[]
@@ -49,67 +51,67 @@ type Props = WithWidthProps & {
 
 const NewGameDialog = ({
     contacts, fullScreen, topic, players, onCancel, onStart,
-    onAddPlayer, onRemovePlayer, onChangeTopic}: Props) => (
-  <Dialog
-      fullScreen={fullScreen}
-      open={true}
-      onRequestClose={onCancel} >
-    <DialogTitle>
-      <TextField
-          value={topic}
-          onChange={(event) => onChangeTopic(event.target.value)}
-          fullWidth
-          label='Topic' />
-      <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          marginTop: '16px',
-      }}>
-        {
-          players.map((player) => (
-            <Chip
-                key={player.id}
-                label={player.display_name}
-                onRequestDelete={() => onRemovePlayer(player.id)} />
-          ))
-        }
-      </div>
-    </DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Choose which players you would like to participate in this game.
-      </DialogContentText>
-      <List>
-        {
-          contacts.map((c) => (
-            <ListItem
-                key={`contact-${c.id}`}
-                disabled={players.filter(({id}) => c.id === id).length > 0}
-                button
-                onClick={() => onAddPlayer(c.id)}>
-              <ListItemIcon>
-                <AddIcon />
-              </ListItemIcon>
-              <ListItemText primary={c.display_name} />
-            </ListItem>
-          ))
-        }
-      </List>
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={onCancel} color='primary'>
-        Cancel
-      </Button>
-      <Button
-          onClick={() => onStart(topic, players.map((p) => p.id))}
-          color='primary'
-          autoFocus>
-        Start
-      </Button>
-    </DialogActions>
-  </Dialog>
-);
+    onAddPlayer, onRemovePlayer, onChangeTopic}: Props) => {
+  const playerToChip = (player: User) => (
+    <Chip
+        key={player.id}
+        label={player.display_name}
+        onRequestDelete={() => onRemovePlayer(player.id)}
+    />
+  );
+  const contactToListEntry = (c: User) => (
+    <ListItem
+        key={`contact-${c.id}`}
+        disabled={players.filter(({id}) => c.id === id).length > 0}
+        button={true}
+        onClick={() => onAddPlayer(c.id)}
+    >
+      <ListItemIcon>
+        <AddIcon />
+      </ListItemIcon>
+      <ListItemText primary={c.display_name} />
+    </ListItem>
+  );
+  return (
+    <Dialog
+        fullScreen={fullScreen}
+        open={true}
+        onRequestClose={onCancel}
+    >
+      <DialogTitle>
+        <TextField
+            value={topic}
+            onChange={(event) => onChangeTopic(event.target.value)}
+            fullWidth={true}
+            label='Topic'
+        />
+        <div className={styles.activePlayerList}>
+          {players.map(playerToChip)}
+        </div>
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Choose which players you would like to participate in this game.
+        </DialogContentText>
+        <List>
+          {contacts.map(contactToListEntry)}
+        </List>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel} color='primary'>
+          Cancel
+        </Button>
+        <Button
+            onClick={() => onStart(topic, players.map((p) => p.id))}
+            color='primary'
+            autoFocus={true}
+        >
+          Start
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const userMapToList = (users: {[id: string]: User}) => Object.keys(users)
     .map((id) => users[id])

@@ -1,0 +1,29 @@
+.colorPickerContainer {
+  background: rgba(0, 0, 0, .50);
+  height: 100%;
+  margin: 0px;
+  overflowY: scroll;
+  padding: 0px;
+  placeSelf: center;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+}
+
+.colorPicker {
+  display: flex;
+  flexWrap: wrap;
+  justifyContent: center;
+  margin: auto;
+  maxWidth: 65vh;
+  paddingTop: 64px;
+  width: 100%;
+}
+
+.colorButton {
+  display: block;
+  flex: 0 0 auto;
+  height: 100%;
+  margin: 8px;
+  width: calc(25% - 16px);
+}

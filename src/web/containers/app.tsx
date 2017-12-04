@@ -109,7 +109,8 @@ class AppComponent extends React.Component<Props, any> {
           <IconButton
               onClick={this.handleToggleDrawer}
               color='contrast'
-              aria-label='Menu'>
+              aria-label='Menu'
+          >
             <MenuIcon />
           </IconButton>
           <Typography type='title' style={{flex: '1 1 auto'}} color='inherit'>
@@ -121,6 +122,23 @@ class AppComponent extends React.Component<Props, any> {
       <AppBar position='static'><Toolbar /></AppBar>
       </div>
     );
+    const gameView = ({match}: any) => (
+      <div>
+        {appBar('Game')}
+        <Game gameId={match.params.id} />
+      </div>
+    );
+    const drawView = ({match}: any) => (
+      <div style={{display: 'flex', flex: '1 0 auto', flexDirection: 'column'}}>
+        {appBar('Inbox')}
+        <DrawReply gameId={match.params.gameId} />
+      </div>
+    );
+    const newGameButton = (
+      <Button color='contrast' onClick={this.handleShowNewGame}>
+        New Game
+      </Button>
+    );
     return (
       <div style={rootStyle}>
         <Switch>
@@ -131,24 +149,10 @@ class AppComponent extends React.Component<Props, any> {
             </div>
           </Route>
           <Route path='/game/:id'>
-            {({match}) => (
-              <div>
-                {appBar('Game')}
-                <Game gameId={match.params.id} />
-              </div>
-            )}
+            {gameView}
           </Route>
           <Route path='/draw/:gameId'>
-            {({match}) => (
-              <div style={{
-                  display: 'flex',
-                  flex: '1 0 auto',
-                  flexDirection: 'column',
-              }}>
-                {appBar('Inbox')}
-                <DrawReply gameId={match.params.gameId} />
-              </div>
-            )}
+            {drawView}
           </Route>
           <Route path='/contacts'>
             <div>
@@ -158,11 +162,7 @@ class AppComponent extends React.Component<Props, any> {
           </Route>
           <Route path='/'>
             <div>
-              {appBar('Inbox', (
-                <Button color='contrast' onClick={this.handleShowNewGame}>
-                  New Game
-                </Button>),
-              )}
+              {appBar('Inbox', newGameButton)}
               <Inbox />
               <Switch>
                 <Route path='/new'>
@@ -177,22 +177,23 @@ class AppComponent extends React.Component<Props, any> {
             type='temporary'
             anchor='left'
             open={this.state.showDrawer}
-            onRequestClose={this.handleToggleDrawer} >
+            onRequestClose={this.handleToggleDrawer}
+        >
           <div style={{width: '240px'}} />
           <List style={{display: 'flex', flexDirection: 'column'}}>
-            <ListItem button onClick={this.handleClickInbox}>
+            <ListItem button={true} onClick={this.handleClickInbox}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary='Inbox' />
             </ListItem>
-            <ListItem button onClick={this.handleClickContacts}>
+            <ListItem button={true} onClick={this.handleClickContacts}>
               <ListItemIcon>
                 <ContactsIcon />
               </ListItemIcon>
               <ListItemText primary='Contacts' />
             </ListItem>
-            <ListItem button onClick={this.handleClickHistory}>
+            <ListItem button={true} onClick={this.handleClickHistory}>
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>
@@ -200,8 +201,9 @@ class AppComponent extends React.Component<Props, any> {
             </ListItem>
             <ListItem
                 style={{marginTop: 'auto'}}
-                button
-                onClick={this.handleLogout}>
+                button={true}
+                onClick={this.handleLogout}
+            >
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>

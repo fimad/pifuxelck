@@ -68,15 +68,16 @@ const DrawComponent = (props: Props) =>
         <div style={{flex: '1 1', display: 'flex', flexDirection: 'column'}}>
           <Draw {...props} />
           <Switch>
-            <Route exact path='/draw/:id/brush/size'>
+            <Route exact={true} path='/draw/:id/brush/size'>
               <BrushSizePicker
                   color={props.brushColor}
-                  onPickSize={props.onPickBrushSize} />
+                  onPickSize={props.onPickBrushSize}
+              />
             </Route>
-            <Route exact path='/draw/:id/brush/color'>
+            <Route exact={true} path='/draw/:id/brush/color'>
               <ColorPicker onPickColor={props.onPickBrushColor} />
             </Route>
-            <Route exact path='/draw/:id/bg/color'>
+            <Route exact={true} path='/draw/:id/bg/color'>
               <ColorPicker onPickColor={props.onPickBackgroundColor} />
             </Route>
           </Switch>

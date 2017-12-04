@@ -60,19 +60,27 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
         <TextField
             onChange={this.onChange('user')}
             value={this.state.user}
-            label='Username' />
+            label='Username'
+        />
         <TextField
             onChange={this.onChange('password')}
             value={this.state.password}
             label='Password'
-            type='password' />
+            type='password'
+        />
         <Button
-            raised
+            raised={true}
             color='primary'
-            onClick={this.dispatchLogin} style={buttonStyle}>
+            onClick={this.dispatchLogin}
+            style={buttonStyle}
+        >
           Login
         </Button>
-        <Button raised color='accent' style={buttonStyle}>
+        <Button
+            raised={true}
+            color='accent'
+            style={buttonStyle}
+        >
           Register
         </Button>
       </Paper>
