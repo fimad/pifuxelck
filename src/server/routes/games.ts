@@ -72,7 +72,7 @@ games.put('/play/:gameId(\\d+)', authRoute(async (userId, req, res) => {
   }
 
   // Check if the game needs to have it's completed at time updated.
-  await updateGameCompletedAtTime(req.db, gameId);
+  await updateGameCompletedAtTime(req.db, req.sendMail, gameId);
   winston.info(`Took turn in game ${gameId}.`, req.context);
   res.success({});
 }));

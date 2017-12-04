@@ -88,9 +88,10 @@ export async function createGame(
  */
 export async function updateGameCompletedAtTime(
     db: Connection,
+    sendMail: SendMail,
     gameId: string): Promise<void> {
   return transact(db, async () => {
-    return updateGameCompletedAtTimeInTransaction(db, gameId);
+    return updateGameCompletedAtTimeInTransaction(db, sendMail, gameId);
   });
 }
 
@@ -98,6 +99,7 @@ export async function updateGameCompletedAtTime(
 // already running inside a MySQL transaction.
 async function updateGameCompletedAtTimeInTransaction(
     db: Connection,
+    sendMail: (SendMail | null),
     gameId: string): Promise<void> {
   winston.info(`Checking if game ${gameId} needs a completed at id.`);
   // This query is a conditional insert that will create an entry in the
@@ -139,6 +141,10 @@ async function updateGameCompletedAtTimeInTransaction(
       [completedAtId, gameId]);
 
   winston.info(`Marked ${gameId} as finished.`);
+
+  if (sendMail) {
+    await sendEmailUpdatesAfterTurn(db, sendMail);
+  }
 }
 
 /**
@@ -209,7 +215,7 @@ export async function reapExpiredTurns(
     for (let i = 0; i < results.length; i++) {
       const gameId = results[i]['id'];
       winston.info(`Assigning a completed at ID to game ${gameId}.`);
-      await updateGameCompletedAtTimeInTransaction(db, gameId);
+      await updateGameCompletedAtTimeInTransaction(db, null, gameId);
     }
 
     // TODO(will): Uncomment this once the database is free of all orphaned

@@ -193,6 +193,58 @@ export async function updateLabelTurn(
 
 export async function sendEmailUpdatesAfterTurn(
     db: Connection, sendMail: SendMail): Promise<void> {
+  await Promise.all([
+      sendEmailUpdatesForGameOver(db, sendMail),
+      sendEmailUpdatesForNextTurn(db, sendMail),
+  ]);
+}
+
+export async function sendEmailUpdatesForGameOver(
+    db: Connection, sendMail: SendMail): Promise<void> {
+  const emailsAndGames = await transact(db, async () => {
+    const gamesToNotifyQuery =
+        `SELECT
+           Turns.game_id AS game_id,
+           Accounts.email AS email
+         FROM Turns
+         INNER JOIN (
+           SELECT id, did_notify
+           FROM Games
+           WHERE completed_at_id IS NOT NULL AND NOT did_notify
+         ) AS CompletedGames ON CompletedGames.id = Turns.game_id
+         INNER JOIN Accounts ON Accounts.id = Turns.account_id`;
+    const results = await query(db, gamesToNotifyQuery, []);
+    await query(
+        db,
+        `UPDATE Games
+         SET Games.did_notify = TRUE
+         WHERE Games.id IN (
+           SELECT X.game_id
+           FROM (${gamesToNotifyQuery}) AS X
+           GROUP BY 1
+         )`, []);
+    const emailsAndGames = [];
+    for (let i = 0; i < results.length; i++) {
+      const game = results[i]['game_id'];
+      const email = results[i]['email'];
+      if (email) {
+        emailsAndGames.push({game, email});
+      }
+    }
+    return emailsAndGames;
+  });
+
+  await Promise.all(emailsAndGames.map(async ({email, game}) => {
+    await sendMail({
+      to: email,
+      subject: 'New completed game!',
+      body: 'New completed game!',
+    });
+  }));
+}
+
+export async function sendEmailUpdatesForNextTurn(
+    db: Connection, sendMail: SendMail): Promise<void> {
   const emailsAndGames = await transact(db, async () => {
     const turnsToNotifyQuery =
         `SELECT
@@ -231,7 +283,6 @@ export async function sendEmailUpdatesAfterTurn(
   });
 
   await Promise.all(emailsAndGames.map(async ({email, game}) => {
-    winston.info(`SENDING EMAIL TO ${email}`);
     await sendMail({
       to: email,
       subject: 'It is your turn!',
