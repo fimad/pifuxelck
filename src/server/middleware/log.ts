@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-const log = () => (req : Request, res : Response, next : NextFunction) => {
+const log = () => (req: Request, res: Response, next: NextFunction) => {
   req.context = {
     httpRequest: {
-      requestUrl: req.url,
-      requestMethod: req.method,
       remoteIp: req.connection.remoteAddress,
+      requestMethod: req.method,
       requestSize: req.headers['content-length'],
+      requestUrl: req.url,
     },
   };
   next();

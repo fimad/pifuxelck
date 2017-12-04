@@ -1,16 +1,16 @@
-import * as storage from 'redux-storage'
-import filter from 'redux-storage-decorator-filter';
-import thunk from 'redux-thunk';
 import { History } from 'history';
 import { logger } from 'redux-logger';
+import * as storage from 'redux-storage';
+import filter from 'redux-storage-decorator-filter';
+import thunk from 'redux-thunk';
 import { reducers } from './reducers';
 
 import {
-  Reducer,
   applyMiddleware,
   combineReducers,
   compose,
   createStore,
+  Reducer,
 } from 'redux';
 
 const {
@@ -30,7 +30,8 @@ export function createPifuxelckStore(history: History) {
     ...reducers,
     routing: routerReducer as Reducer<any>,
   }));
-  const idbEngine = require('redux-storage-engine-indexed-db').default('my-save-key');
+  const idbEngine =
+      require('redux-storage-engine-indexed-db').default('my-save-key');
   let engine = debounce(
       filter(
           {
@@ -45,10 +46,10 @@ export function createPifuxelckStore(history: History) {
       applyMiddleware(...middlewares)(createStore);
   const store = createStoreWithMiddleware(reducer, {});
   return storage.createLoader(engine)(store).then(() => store);
-};
+}
 
 function decorateEngineWithMigrations(engine: storage.StorageEngine) {
-  let decoratedEngine = migrate(engine, 3, '_version', []);
+  const decoratedEngine = migrate(engine, 3, '_version', []);
   decoratedEngine.addMigration(1, (state: any) => {});
   decoratedEngine.addMigration(2, (state: any) => {});
   decoratedEngine.addMigration(3, (state: any) => {});

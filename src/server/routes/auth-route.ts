@@ -1,6 +1,6 @@
-import asyncRoute from './async-route';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { authTokenLookup } from '../models/auth';
+import asyncRoute from './async-route';
 
 type AuthHandler = (
     userId: string,

@@ -1,51 +1,56 @@
-import * as React from 'react';
+import * as cx from 'classnames';
 import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
-import * as cx from 'classnames';
-import { Dispatch } from 'redux';
-import { State } from '../state';
-import { addContact, changeContactLookup, userLookup } from '../actions';
+import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { addContact, changeContactLookup, userLookup } from '../actions';
+import { State } from '../state';
+
+import List, {
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+} from 'material-ui/List';
 
 const styles = require('./contacts.css');
 
-type Props = {
-  addContactEnabled: boolean
-  contacts: string[]
-  lookup: string
-  lookupId?: string
-  onAddContact: (lookupId: string) => void
-  onLookupChange: (lookup: string) => void
-};
+interface Props {
+  addContactEnabled: boolean;
+  contacts: string[];
+  lookup: string;
+  lookupId?: string;
+  onAddContact: (lookupId: string) => void;
+  onLookupChange: (lookup: string) => void;
+}
 
 const ContactsComponent = ({
-    addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange
+    addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange,
   }: Props) => {
   return (
     <div className={cx(styles.container, styles.contacts)}>
       <Paper style={{display: 'flex', flexDirection: 'row'}}>
         <TextField
             onChange={(event) => onLookupChange(event.target.value)}
-            label="Lookup contact"
+            label='Lookup contact'
             value={lookup}
             fullWidth />
         <Button
             onClick={() => lookupId ? onAddContact(lookupId) : null}
             disabled={!addContactEnabled}
             raised
-            color="accent">
+            color='accent'>
           <AddIcon />
         </Button>
       </Paper>
 
       {
-        contacts.length == 0 ?
+        contacts.length === 0 ?
         (
-          <Typography align="center" style={{margin: '16px'}}>
+          <Typography align='center' style={{margin: '16px'}}>
             No buds. Add contacts by searching above.
           </Typography>
         ) :
@@ -68,12 +73,12 @@ const ContactsComponent = ({
 };
 
 const mapStateToProps = (state: State) => ({
-  lookup: state.ui.contacts.lookup,
-  lookupId: state.entities.users[state.ui.contacts.lookup],
   addContactEnabled: !!state.entities.users[state.ui.contacts.lookup],
   contacts: Object.keys(state.entities.contacts)
       .map((i) => state.entities.contacts[i].display_name)
       .sort(),
+  lookup: state.ui.contacts.lookup,
+  lookupId: state.entities.users[state.ui.contacts.lookup],
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => ({

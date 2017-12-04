@@ -1,4 +1,3 @@
-import authRoute from './auth-route';
 import { Router } from 'express';
 import {
   addContact,
@@ -9,6 +8,7 @@ import {
   getContacts,
   removeContactFromGroup,
 } from '../models/contacts';
+import authRoute from './auth-route';
 
 const contacts = Router();
 
@@ -20,8 +20,8 @@ contacts.get('/lookup/:displayName', authRoute(async (userId, req, res) => {
 }));
 
 contacts.get('/', authRoute(async (userId, req, res) => {
-  const contacts = await getContacts(req.db, userId);
-  res.success({contacts});
+  const usersContacts = await getContacts(req.db, userId);
+  res.success({contacts: usersContacts});
 }));
 
 contacts.put('/:contactId', authRoute(async (userId, req, res) => {
@@ -31,8 +31,8 @@ contacts.put('/:contactId', authRoute(async (userId, req, res) => {
 }));
 
 contacts.get('/group', authRoute(async (userId, req, res) => {
-  const contact_groups = await getContactGroups(req.db, userId);
-  res.success({contact_groups});
+  const contactGroups = await getContactGroups(req.db, userId);
+  res.success({contact_groups: contactGroups});
 }));
 
 contacts.post('/group', authRoute(async (userId, req, res) => {
@@ -47,7 +47,8 @@ contacts.put('/group/:group/:contact', authRoute(async (userId, req, res) => {
   res.success({});
 }));
 
-contacts.delete('/group/:group/:contact', authRoute(async (userId, req, res) => {
+contacts.delete(
+    '/group/:group/:contact', authRoute(async (userId, req, res) => {
   const {group, contact} = req.params;
   await removeContactFromGroup(req.db, userId, group, contact);
   res.success({});

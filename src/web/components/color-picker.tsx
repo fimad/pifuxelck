@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { Color } from '../../common/models/drawing';
 
-type Props = {
-  onPickColor: (color: Color) => void
-};
+interface Props {
+  onPickColor: (color: Color) => void;
+}
 
-type ColorButtonProps = {
-  onPickColor: (color: Color) => void
-  color: Color
-};
+interface ColorButtonProps {
+  color: Color;
+  onPickColor: (color: Color) => void;
+}
 
 const newColor = (red: number, green: number, blue: number) => ({
-  red: red / 255,
-  green: green / 255,
-  blue: blue / 255,
   alpha: 1,
+  blue: blue / 255,
+  green: green / 255,
+  red: red / 255,
 }) as Color;
 
 const colors = [
@@ -44,7 +44,7 @@ const colors = [
 
   // Purples:
   newColor(139, 0, 139), newColor(208, 32, 144), newColor(255, 20, 147),
-  newColor(255, 0, 255), newColor(219, 112, 147), newColor(255, 182, 193)
+  newColor(255, 0, 255), newColor(219, 112, 147), newColor(255, 182, 193),
 ];
 
 const toColor = ({red, green, blue, alpha}: Color) =>
@@ -52,37 +52,37 @@ const toColor = ({red, green, blue, alpha}: Color) =>
 
 const ColorButton = ({color, onPickColor}: ColorButtonProps) => (
   <svg key={`color-${toColor(color)}`} style={{
+    display: 'block',
     flex: '0 0 auto',
+    height: '100%',
     margin: '8px',
     width: 'calc(25% - 16px)',
-    height: '100%',
-    display: 'block',
   }} onClick={() => onPickColor(color)}
-  viewBox="-1 -1 2 2">
+  viewBox='-1 -1 2 2'>
     <ellipse cx='0' cy='0' rx='1' ry='1' fill={toColor(color)} />
   </svg>
 );
 
 const ColorPicker = (props: Props) => (
   <div style={{
-    position: 'absolute',
     background: 'rgba(0, 0, 0, .50)',
+    height: '100%',
+    margin: '0px',
+    overflowY: 'scroll',
+    padding: '0px',
     placeSelf: 'center',
+    position: 'absolute',
     top: '0px',
     width: '100%',
-    height: '100%',
-    overflowY: 'scroll',
-    margin: '0px',
-    padding: '0px',
   }}>
     <div style={{
-      paddingTop: '64px',
-      margin: 'auto',
-      width: '100%',
-      maxWidth: '65vh',
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center',
+      margin: 'auto',
+      maxWidth: '65vh',
+      paddingTop: '64px',
+      width: '100%',
     }}>
       {colors.map((color: Color) => (<ColorButton color={color} {...props} />))}
     </div>

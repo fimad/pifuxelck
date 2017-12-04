@@ -2,8 +2,8 @@ import * as winston from 'winston';
 import config from '../../config/prod';
 import server from './server';
 
-const LoggingWinston = require('@google-cloud/logging-winston');
-const functions = require('firebase-functions');
+const LoggingWinston: any = require('@google-cloud/logging-winston');
+const functions: any = require('firebase-functions');
 
 winston.add(LoggingWinston);
 

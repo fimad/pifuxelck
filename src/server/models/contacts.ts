@@ -1,7 +1,7 @@
-import * as uuid from 'uuid';
 import { Connection } from 'mysql';
-import { User } from '../../common/models/user';
+import * as uuid from 'uuid';
 import { ContactGroup } from '../../common/models/contacts';
+import { User } from '../../common/models/user';
 import { query } from '../db-promise';
 
 /** Looks up a user given a display name. */
@@ -49,8 +49,8 @@ export async function getContacts(
   const contacts: User[] = [];
   for (let i = 0; i < results.length; i++) {
     contacts.push({
-      display_name: results[i]['display_name'],
-      id: results[i]['contact_id'],
+      display_name: results[i].display_name,
+      id: results[i].contact_id,
     });
   }
   return contacts;
@@ -145,25 +145,25 @@ export async function getContactGroups(
        ORDER BY ContactGroups.id ASC, Accounts.display_name ASC`, [id]);
   const groups: {[id: string]: ContactGroup} = {};
   for (let i = 0; i < results.length; i++) {
-    const groupId = results[i]['group_id'];
+    const groupId = results[i].group_id;
     let group = groups[groupId];
     if (!group) {
       group = {
         id: groupId,
-        name: results[i]['name'],
         members: [],
+        name: results[i].name,
       };
       groups[groupId] = group;
     }
-    if (results[i]['contact_id'] == results[i]['owner_id']) {
+    if (results[i].contact_id === results[i].owner_id) {
       // Do not list the account owner as a member of the group. It is an
       // implementation detail and would confuse users.
       continue;
     }
     group.members.push({
-      display_name: results[i]['display_name'],
-      id: results[i]['contact_id'],
+      display_name: results[i].display_name,
+      id: results[i].contact_id,
     });
   }
-  return Object.keys(groups).map((id) => groups[id]);
+  return Object.keys(groups).map((i) => groups[i]);
 }

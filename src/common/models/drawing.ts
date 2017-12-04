@@ -1,22 +1,22 @@
-export type Drawing = {
-  background_color: Color
-  lines: Line[]
+export interface Drawing {
+  background_color: Color;
+  lines: Line[];
 }
 
-export type Color = {
-  alpha: number
-  red: number
-  green: number
-  blue: number
+export interface Color {
+  alpha: number;
+  red: number;
+  green: number;
+  blue: number;
 }
 
-export type Line = {
-  color: Color
-  size: number
-  points: Point[]
+export interface Line {
+  color: Color;
+  size: number;
+  points: Point[];
 }
 
-export type Point = {
-  x: number
-  y: number
+export interface Point {
+  x: number;
+  y: number;
 }

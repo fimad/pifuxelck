@@ -1,6 +1,6 @@
-import server from './fake-server';
-import { agent } from 'supertest';
 import { expect } from 'chai';
+import { agent } from 'supertest';
+import server from './fake-server';
 import { newUser } from './fake-user';
 
 describe('Accounts', () => {
@@ -13,7 +13,7 @@ describe('Accounts', () => {
         .expect(
             (res: any) =>
                 expect(res.body).to.have.property('meta') &&
-                expect(res.body.meta).to.have.property('auth')))
+                expect(res.body.meta).to.have.property('auth')));
 
     it('should reject too short passwords', async () => agent(await server())
         .post('/api/2/account/register')
@@ -86,7 +86,7 @@ describe('Accounts', () => {
           .expect(200);
     });
 
-    it('should not allow changing other user\'s password', async () => {
+    it("should not allow changing other user's password", async () => {
       const app = agent(await server());
       const user = await newUser(app, 'user');
       const user2 = await newUser(app, 'user2');

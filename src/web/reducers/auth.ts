@@ -1,9 +1,9 @@
-import { Action } from '../actions';
 import { Message } from '../../common/models/message';
+import { Action } from '../actions';
 
-type ActionMessage = {
-  message: Message
-};
+interface ActionMessage {
+  message: Message;
+}
 
 export default function(auth = '', action: Action) {
   switch (action.type) {
@@ -14,9 +14,9 @@ export default function(auth = '', action: Action) {
     case 'LOGOUT':
       return '';
     default:
-      if ((<ActionMessage>action).message &&
-          (<ActionMessage>action).message.errors &&
-          (<ActionMessage>action).message.errors.auth) {
+      if ((action as ActionMessage).message &&
+          (action as ActionMessage).message.errors &&
+          (action as ActionMessage).message.errors.auth) {
         return '';
       }
       return auth;

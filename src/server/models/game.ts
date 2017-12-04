@@ -1,11 +1,11 @@
+import { Connection } from 'mysql';
 import * as shuffle from 'shuffle-array';
 import * as winston from 'winston';
-import { Connection } from 'mysql';
 import { Game, NewGame } from '../../common/models/game';
-import { SendMail } from '../middleware/mail';
 import { Turn } from '../../common/models/turn';
+import { query, transact } from '../db-promise';
+import { SendMail } from '../middleware/mail';
 import { sendEmailUpdatesAfterTurn } from './turn';
-import { transact, query } from '../db-promise';
 
 /*
 
@@ -25,7 +25,7 @@ export async function createGame(
     sendMail: SendMail,
     userId: string,
     newGame: NewGame): Promise<void> {
-  if (newGame.label == '') {
+  if (newGame.label === '') {
     winston.info('Failed to create game due to lack of label.');
     throw new Error('A label is required to start a game.');
   }
@@ -65,7 +65,7 @@ export async function createGame(
     const players = newGame.players.slice();
     shuffle(players);
     for (let i = 0; i < players.length; i++) {
-      const isDrawing = i % 2 == 0;  // Alternate drawing.
+      const isDrawing = i % 2 === 0;  // Alternate drawing.
       await query(
           db,
           `INSERT INTO Turns
@@ -126,7 +126,7 @@ async function updateGameCompletedAtTimeInTransaction(
   // If there is not last inserted ID, then the game was not over. This is
   // fine, just return nil as a success.
   const completedAtId = results.insertId;
-  if (completedAtId == null || results.affectedRows == 0) {
+  if (completedAtId === null || results.affectedRows === 0) {
     winston.info(`Did not insert completed at ID.`);
     return;
   }
@@ -194,7 +194,7 @@ export async function reapExpiredTurns(
 
     // Obtain a list of all games where all of the turns are marked as complete,
     // but where the game does not have a completed at ID.
-    const results= await query(
+    const results = await query(
         db,
         `SELECT Games.id AS id
          FROM Games AS Games
@@ -213,7 +213,7 @@ export async function reapExpiredTurns(
            AND CompleteTurns.total = AllTurns.total`);
 
     for (let i = 0; i < results.length; i++) {
-      const gameId = results[i]['id'];
+      const gameId = results[i].id;
       winston.info(`Assigning a completed at ID to game ${gameId}.`);
       await updateGameCompletedAtTimeInTransaction(db, null, gameId);
     }
@@ -223,11 +223,13 @@ export async function reapExpiredTurns(
     //
     // If the number of updated games does not equal the number of expired
     // turns, then fail the transaction.
-    //    if updatedGames != expiredTurns {
+    //    if updatedGames !== expiredTurns {
     //      log.Warnf(
-    //        'Reaping failed, number of games (%v) and turns (%v) affected differs.',
+    //        'Reaping failed,
+    //        number of games (%v) and turns (%v) affected differs.',
     //        updatedGames, expiredTurns)
-    //      return errors.New('Inconsistent number of turns and games affected.')
+    //      return errors.New(
+    //      'Inconsistent number of turns and games affected.')
     //    }
   });
   await sendEmailUpdatesAfterTurn(db, sendMail);
@@ -236,14 +238,14 @@ export async function reapExpiredTurns(
 async function rowsToGames(rows: any): Promise<Game[]> {
   const gameIdToGame = {} as {[id: string]: Game};
   for (let i = 0; i < rows.length; i++) {
-    const gameId = rows[i]['game_id'];
-    const completedAt = rows[i]['completed_at'];
-    const completedAtId = rows[i]['completed_at_id'];
-    const drawingJson = rows[i]['drawing'];
+    const gameId = rows[i].game_id;
+    const completedAt = rows[i].completed_at;
+    const completedAtId = rows[i].completed_at_id;
+    const drawingJson = rows[i].drawing;
     const turn = {
-      label: rows[i]['label'],
-      player: rows[i]['display_name'],
-      is_drawing: !!rows[i]['is_drawing'],
+      is_drawing: !!rows[i].is_drawing,
+      label: rows[i].label,
+      player: rows[i].display_name,
     } as Turn;
 
     // Only attempt to unmarshal the drawing if it is a drawing turn. Otherwise
@@ -258,11 +260,11 @@ async function rowsToGames(rows: any): Promise<Game[]> {
     }
 
     let game = gameIdToGame[gameId];
-    if (game == null) {
+    if (game === null) {
       game = {
-        id: gameId,
         completed_at: completedAt,
         completed_at_id: completedAtId,
+        id: gameId,
         turns: [],
       };
       gameIdToGame[gameId] = game;

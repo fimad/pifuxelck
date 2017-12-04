@@ -19,48 +19,47 @@ export type Action = ({
       'CREATE_CONTACT_GROUP_START' | 'CREATE_CONTACT_GROUP_FAILURE' |
       'ADD_CONTACT_TO_GROUP_START' | 'ADD_CONTACT_TO_GROUP_SUCCESS' |
       'ADD_CONTACT_TO_GROUP_FAILURE' | 'REMOVE_CONTACT_TO_GROUP_START' |
-      'REMOVE_CONTACT_TO_GROUP_SUCCESS' | 'REMOVE_CONTACT_TO_GROUP_FAILURE'
+      'REMOVE_CONTACT_TO_GROUP_SUCCESS' | 'REMOVE_CONTACT_TO_GROUP_FAILURE',
 } | {
   type: 'LOGIN_SUCCESS' | 'USER_LOOKUP_SUCCESS' | 'GET_HISTORY_RECEIVE' |
       'GET_INBOX_SUCCESS' | 'NEW_GAME_SUCCESS' | 'PLAY_GAME_SUCCESS' |
       'GET_CONTACTS_SUCCESS' | 'GET_CONTACT_GROUPS_SUCCESS'
-  message: Message
+  message: Message,
 } | {
   type: 'UI_UPDATE_OUTBOX'
   gameId: string
-  turn: Turn
+  turn: Turn,
 } | {
   type: 'UI_CHOOSE_BRUSH_SIZE'
-  size: number
+  size: number,
 } | {
   type: 'UI_CHOOSE_BRUSH_COLOR'
-  color: Color
+  color: Color,
 } | {
   type: 'UI_UPDATE_BACKGROUND_COLOR'
   gameId: string
-  color: Color
+  color: Color,
 } | {
   type: 'UI_APPEND_DRAWING_LINE'
   gameId: string
-  point: Point
+  point: Point,
 } | {
   type: 'UI_START_DRAWING_LINE'
   gameId: string
-  point: Point
+  point: Point,
 } | {
   type: 'UI_UNDO_DRAWING_LINE'
-  gameId: string
+  gameId: string,
 } | {
   type: 'UI_CHANGE_CONTACT_LOOKUP'
-  lookup: string
+  lookup: string,
 } | {
   type: 'UI_NEW_GAME_CHANGE_TOPIC'
-  topic: string
+  topic: string,
 } | {
   type: 'UI_NEW_GAME_ADD_PLAYER'
-  playerId: string
+  playerId: string,
 } | {
   type: 'UI_NEW_GAME_REMOVE_PLAYER'
-  playerId: string
+  playerId: string,
 });
-

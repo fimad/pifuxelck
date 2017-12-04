@@ -1,54 +1,54 @@
-import { Color } from '../common/models/drawing';
 import { ContactGroup } from '../common/models/contacts';
+import { Color } from '../common/models/drawing';
 import { Game } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
 
-export type Entities = {
+export interface Entities {
   history: {
-    [id: string]: Game
-  }
+    [id: string]: Game,
+  };
   inbox: {
-    [id: string]: InboxEntry
-  }
+    [id: string]: InboxEntry,
+  };
   contacts: {
-    [id: string]: User
-  }
+    [id: string]: User,
+  };
   contactGroups: {
-    [id: string]: ContactGroup
-  }
+    [id: string]: ContactGroup,
+  };
   users: {
-    [displayName: string]: string
-  }
-};
+    [displayName: string]: string,
+  };
+}
 
-export type Ui = {
+export interface Ui {
   outbox: {
-    [gameId: string]: Turn
-  }
+    [gameId: string]: Turn,
+  };
   drawing: {
     brushSize: number
     brushColor: Color
-    inProgress: boolean
-  }
+    inProgress: boolean,
+  };
   contacts: {
-    lookup: string
-  }
+    lookup: string,
+  };
   newGame: {
     topic: string
-    users: string[]
-  }
-};
+    users: string[],
+  };
+}
 
 /**
  * The overall state of the application.
  */
-export type State = {
+export interface State {
   /** Locally cached server side state. */
-  entities: Entities,
+  entities: Entities;
 
-  ui: Ui,
+  ui: Ui;
 
   /** The auth token, if present the user is logged in. */
-  auth?: string,
-};
+  auth?: string;
+}

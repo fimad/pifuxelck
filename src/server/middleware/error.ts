@@ -1,20 +1,20 @@
+import { NextFunction, Request, Response } from 'express';
 import * as winston from 'winston';
-import ServerError from '../error';
 import { Message } from '../../common/models/message';
-import { Request, Response, NextFunction } from 'express';
+import ServerError from '../error';
 
 /**
  * Middleware that handles thrown exceptions and translates them into an error
  * message response.
  */
 const error = () => (
-    error: Error,
+    throwError: Error,
     req: Request,
     res: Response,
     next: NextFunction) => {
-  winston.error(error.stack, req.context);
-  let errors = (error as ServerError).errors || {
-    application: [error.message],
+  winston.error(throwError.stack, req.context);
+  const errors = (throwError as ServerError).errors || {
+    application: [throwError.message],
   };
   res.status(500).send({errors} as Message).end();
 };

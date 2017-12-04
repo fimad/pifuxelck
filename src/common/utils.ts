@@ -1,5 +1,5 @@
 export function mapFrom<T>(
-    objects: Array<T>, toId: (value: T) => string): {[id: string]: T} {
+    objects: T[], toId: (value: T) => string): {[id: string]: T} {
   const result = {} as {[id: string]: T};
   objects.forEach((x) => {
     result[toId(x)] = x;

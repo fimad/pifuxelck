@@ -1,38 +1,40 @@
+import { StarBorder } from 'material-ui-icons';
 import * as React from 'react';
-import Drawing from '../components/drawing';
-import { Desktop, Tablet, Mobile } from '../components/media-query';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import { Game } from '../../common/models/game';
-import { Link } from 'react-router-dom';
-import { StarBorder } from 'material-ui-icons';
-import { State } from '../state';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
-import { connect } from 'react-redux';
+import Drawing from '../components/drawing';
+import { Desktop, Mobile, Tablet } from '../components/media-query';
+import { State } from '../state';
 
 const { push } = require('react-router-redux');
 
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import { IconButton } from 'material-ui';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 
-type Props = {
-  games: Game[],
-  dispatch: Dispatch<State>,
-};
+interface Props {
+  games: Game[];
+  dispatch: Dispatch<State>;
+}
 
-const gameToTile = ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
+const gameToTile =
+    ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
   let title = '';
   if (game.turns.length >= 1) {
     const turn = game.turns[0];
-    if (turn.is_drawing == false) {
+    if (turn.is_drawing === false) {
       title = turn.label;
     }
   }
-  let subtitle = 'by ' + game.turns.map((turn: Turn) => turn.player).join(', ');
-  let drawing = undefined;
+  const subtitle =
+      'by ' + game.turns.map((turn: Turn) => turn.player).join(', ');
+  let drawing;
   if (game.turns.length >= 2) {
     const turn = game.turns[1];
-    if (turn.is_drawing == true) {
+    if (turn.is_drawing === true) {
       drawing = (<Drawing drawing={turn.drawing} hideInivisible={true} />);
     }
   }

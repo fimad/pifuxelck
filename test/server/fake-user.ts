@@ -9,19 +9,19 @@ export default class FakeUser {
     this.token = token;
   }
 
-  get(path: string): Test {
+  public get(path: string): Test {
     return this.app.get(path).set('x-pifuxelck-auth', this.token);
   }
 
-  post(path: string): Test {
+  public post(path: string): Test {
     return this.app.post(path).set('x-pifuxelck-auth', this.token);
   }
 
-  put(path: string): Test {
+  public put(path: string): Test {
     return this.app.put(path).set('x-pifuxelck-auth', this.token);
   }
 
-  delete(path: string): Test {
+  public delete(path: string): Test {
     return this.app.delete(path).set('x-pifuxelck-auth', this.token);
   }
 }

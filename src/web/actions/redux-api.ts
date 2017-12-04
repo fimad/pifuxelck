@@ -1,16 +1,16 @@
-import * as api from './api';
 import { Dispatch } from 'redux';
-import { State } from '../state';
 import { Message } from '../../common/models/message';
+import { State } from '../state';
+import * as api from './api';
 
-export type Params = {
-  start?: string,
-  success?: string,
-  failure?: string,
-  url: string,
-  body?: Message,
-  onSuccess?: (message: Message) => void,
-};
+export interface Params {
+  start?: string;
+  success?: string;
+  failure?: string;
+  url: string;
+  body?: Message;
+  onSuccess?: (message: Message) => void;
+}
 
 export function get(params: Params) {
   return call(api.get, params);
@@ -29,7 +29,8 @@ export function del(params: Params) {
 }
 
 export function call(
-    apiCall: (url: string, message: Message, token?: string) => Promise<Message>,
+    apiCall: (url: string, message: Message, token?: string) =>
+        Promise<Message>,
     params: Params) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
     if (params.start) {
@@ -45,6 +46,6 @@ export function call(
             params.onSuccess(message);
           }
         })
-        .catch(() => dispatch({type: params.failure}))
+        .catch(() => dispatch({type: params.failure}));
   };
 }

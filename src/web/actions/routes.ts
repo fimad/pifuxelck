@@ -1,6 +1,12 @@
 import { Dispatch } from 'redux';
 import { State } from '../state';
-import { getContacts, getContactGroups, getInbox, getHistory } from './api-actions';
+
+import {
+  getContactGroups,
+  getContacts,
+  getHistory,
+  getInbox,
+} from './api-actions';
 
 const { push } = require('react-router-redux');
 
@@ -8,14 +14,14 @@ export function gotoHistory() {
   return (dispatch: Dispatch<State>) => {
     dispatch(push('/history'));
     dispatch(getHistory());
-  }
+  };
 }
 
 export function gotoInbox() {
   return (dispatch: Dispatch<State>) => {
     dispatch(push('/inbox'));
     dispatch(getInbox());
-  }
+  };
 }
 
 export function gotoContacts() {
@@ -23,5 +29,5 @@ export function gotoContacts() {
     dispatch(push('/contacts'));
     dispatch(getContacts());
     dispatch(getContactGroups());
-  }
+  };
 }

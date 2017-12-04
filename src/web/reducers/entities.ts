@@ -1,13 +1,13 @@
-import { Action } from '../actions';
 import { ContactGroup } from '../../common/models/contacts';
-import { Entities } from '../state';
 import { Message } from '../../common/models/message';
 import { User } from '../../common/models/user';
 import { mapFrom } from '../../common/utils';
+import { Action } from '../actions';
+import { Entities } from '../state';
 
-type ActionMessage = {
-  message: Message
-};
+interface ActionMessage {
+  message: Message;
+}
 
 const initialState = {
   contactGroups: {},
@@ -46,7 +46,7 @@ export default function(state: Entities = initialState, action: Action) {
         return {
           ...state,
           inbox: {
-              ...mapFrom(action.message.inbox_entries, (x) => x.game_id)
+              ...mapFrom(action.message.inbox_entries, (x) => x.game_id),
           },
         };
       }
@@ -78,9 +78,9 @@ export default function(state: Entities = initialState, action: Action) {
       return initialState;
     default:
       // If the user is logged out clear all state.
-      if ((<ActionMessage>action).message &&
-          (<ActionMessage>action).message.errors &&
-          (<ActionMessage>action).message.errors.auth) {
+      if ((action as ActionMessage).message &&
+          (action as ActionMessage).message.errors &&
+          (action as ActionMessage).message.errors.auth) {
         return initialState;
       }
   }

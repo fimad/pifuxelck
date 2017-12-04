@@ -1,27 +1,27 @@
 import * as React from 'react';
-import { Dispatch } from 'redux';
-import { Redirect } from 'react-router';
-import { State } from '../state';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
+import { Dispatch } from 'redux';
 import { login } from '../actions';
+import { State } from '../state';
 
 import {
-  Paper,
   Button,
+  Paper,
   TextField,
   Typography,
 } from 'material-ui';
 
-type Props = {
-  auth?: string,
-  dispatch: Dispatch<State>,
+interface Props {
+  auth?: string;
+  dispatch: Dispatch<State>;
 }
 
 const style: any = {
   display: 'flex',
-  width: 'fit-content',
   flexDirection: 'column',
   padding: '16px',
+  width: 'fit-content',
 };
 
 class LoginComponent extends React.Component<Props, {[key: string]: string}> {
@@ -31,45 +31,48 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      user: '',
       password: '',
+      user: '',
     };
     this.dispatchLogin = () => {
       this.props.dispatch(login(this.state.user, this.state.password));
-    }
+    };
   }
 
-  onChange(key: string) {
+  public onChange(key: string) {
     return (event: any) => {
       this.setState({[key]: event.target.value});
     };
   }
 
-  render() {
+  public render() {
     if (this.props.auth) {
-      return (<Redirect to="/" />);
+      return (<Redirect to='/' />);
     }
     const buttonStyle = {
       marginTop: '8px',
     };
     return (
       <Paper style={style}>
-        <Typography type="display1" style={{textAlign: 'center'}}>
+        <Typography type='display1' style={{textAlign: 'center'}}>
           pifuxelck
         </Typography>
         <TextField
-            onChange={this.onChange("user")}
+            onChange={this.onChange('user')}
             value={this.state.user}
-            label="Username" />
+            label='Username' />
         <TextField
-            onChange={this.onChange("password")}
+            onChange={this.onChange('password')}
             value={this.state.password}
-            label="Password"
-            type="password" />
-        <Button raised color="primary" onClick={this.dispatchLogin} style={buttonStyle}>
+            label='Password'
+            type='password' />
+        <Button
+            raised
+            color='primary'
+            onClick={this.dispatchLogin} style={buttonStyle}>
           Login
         </Button>
-        <Button raised color="accent" style={buttonStyle}>
+        <Button raised color='accent' style={buttonStyle}>
           Register
         </Button>
       </Paper>

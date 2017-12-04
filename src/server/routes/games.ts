@@ -1,6 +1,6 @@
+import { Router } from 'express';
 import * as winston from 'winston';
 import authRoute from './auth-route';
-import { Router } from 'express';
 
 import {
   getInboxEntriesForUser,
@@ -22,9 +22,9 @@ const games = Router();
 games.get('/', authRoute(async (userId, req, res) => {
   const sinceId = req.query.since || '0';
   winston.info(`Requesting history since ${sinceId}.`, req.context);
-  const games = await completedGames(req.db, userId, sinceId);
+  const allGames = await completedGames(req.db, userId, sinceId);
   winston.info(`Looked up history since ${sinceId}.`, req.context);
-  res.success({games});
+  res.success({games: allGames});
 }));
 
 games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
@@ -65,7 +65,7 @@ games.put('/play/:gameId(\\d+)', authRoute(async (userId, req, res) => {
   const {gameId} = req.params;
   winston.info(`Taking turn in game ${gameId}.`, req.context);
 
-  if (turn.is_drawing == true) {
+  if (turn.is_drawing === true) {
     await updateDrawingTurn(req.db, req.sendMail, userId, gameId, turn.drawing);
   } else {
     await updateLabelTurn(req.db, req.sendMail, userId, gameId, turn.label);

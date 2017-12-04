@@ -1,18 +1,23 @@
 import * as React from 'react';
-import InboxDrawingCard from '../components/inbox-drawing-card';
-import InboxLabelCard from '../components/inbox-label-card';
+import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Drawing } from '../../common/models/drawing';
-import { State } from '../state';
-import { Turn, drawingOrDefault, labelOrDefault } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
-import { connect } from 'react-redux';
-import { updateOutbox, playLabelTurn, playDrawingTurn } from '../actions';
+import { playDrawingTurn, playLabelTurn, updateOutbox } from '../actions';
+import InboxDrawingCard from '../components/inbox-drawing-card';
+import InboxLabelCard from '../components/inbox-label-card';
+import { State } from '../state';
+
+import {
+  drawingOrDefault,
+  labelOrDefault,
+  Turn,
+} from '../../common/models/turn';
 
 const { push } = require('react-router-redux');
 
-type ExternalProps = {
-  gameId: string
+interface ExternalProps {
+  gameId: string;
 }
 
 type Props = ExternalProps & {
@@ -21,11 +26,11 @@ type Props = ExternalProps & {
   onSubmit: (gameId: string, turn: Turn) => void
   previousIsDrawing: boolean
   onChange: (turn: Turn) => void
-  onShowDrawing: (showDrawing: boolean) => void
+  onShowDrawing: (showDrawing: boolean) => void,
 };
 
 const EntryComponent = (props: Props) =>
-  props.previousIsDrawing == true ?
+  props.previousIsDrawing === true ?
       (<InboxDrawingCard {...props} />) :
       (<InboxLabelCard {...props} />);
 
@@ -42,15 +47,17 @@ function mapStateToProps(
       labelOrDefault(previous) :
       labelOrDefault(current);
   return { previousIsDrawing, label, drawing } as Props;
-};
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
+const mapDispatchToProps =
+    (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
-  onShowDrawing: (showDrawing: boolean) => dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
-  onSubmit: (gameId: string, turn: Turn) => {
-    dispatch(turn.is_drawing == true ?
-        playDrawingTurn(gameId, turn.drawing):
-        playLabelTurn(gameId, turn.label));
+  onShowDrawing: (showDrawing: boolean) =>
+      dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
+  onSubmit: (id: string, turn: Turn) => {
+    dispatch(turn.is_drawing === true ?
+        playDrawingTurn(id, turn.drawing) :
+        playLabelTurn(id, turn.label));
   },
 });
 

@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { State } from '../state';
 
-type Props = {
-  auth?: string
+interface Props {
+  auth?: string;
 }
 
 const RedirectComponent = ({auth}: Props) =>
-  !auth ? (<Redirect to="/login" />) : null;
+  !auth ? (<Redirect to='/login' />) : null;
 
 const mapStateToProps = ({auth}: State) => ({
   auth,

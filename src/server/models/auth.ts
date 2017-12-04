@@ -1,8 +1,8 @@
+import { Connection } from 'mysql';
 import * as uuid from 'uuid';
 import * as winston from 'winston';
-import ServerError from '../error';
-import { Connection } from 'mysql';
 import { query } from '../db-promise';
+import ServerError from '../error';
 
 /**
  * Creates a new authentication token for the given user ID.  Presenting this
@@ -11,7 +11,7 @@ import { query } from '../db-promise';
  */
 export async function newAuthToken(
     db: Connection,
-    userId: string) : Promise<string> {
+    userId: string): Promise<string> {
   await pruneAuthTokens(db);
   winston.info(`Generating new random token for user with ID ${userId}.`);
   const auth = uuid.v4();
@@ -28,18 +28,18 @@ export async function newAuthToken(
  */
 export async function authTokenLookup(
     db: Connection,
-    auth: string) : Promise<string> {
+    auth: string): Promise<string> {
   await pruneAuthTokens(db);
   const results = await query(
       db, 'SELECT account_id AS id FROM Sessions WHERE auth_token = ?', [auth]);
   if (!results[0]) {
     throw new ServerError({auth: 'Invalid authentication token'});
   }
-  return results[0]['id'];
+  return results[0].id;
 }
 
 /** Prune all existing authentication tokens that are older than 7 days. */
-async function pruneAuthTokens(db: Connection) : Promise<any> {
+async function pruneAuthTokens(db: Connection): Promise<any> {
   winston.info('Pruning all expired authentication tokens.');
   await query(
       db, 'DELETE FROM Sessions WHERE created_at < NOW() - INTERVAL 7 DAY');

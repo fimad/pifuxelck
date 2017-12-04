@@ -1,9 +1,9 @@
-import * as winston from 'winston';
-import ServerError from '../error';
+import { compare, genSalt, hash } from 'bcrypt';
 import { Connection } from 'mysql';
+import * as winston from 'winston';
 import { User, UserError } from '../../common/models/user';
-import { genSalt, hash, compare } from 'bcrypt';
 import { query } from '../db-promise';
+import ServerError from '../error';
 
 async function hashPassword(password: string): Promise<string> {
   if (password.length < 8) {
@@ -18,16 +18,16 @@ async function hashPassword(password: string): Promise<string> {
  * if the password is not sufficiently complex.
  */
 export async function createUser(db: Connection, user: User): Promise<User> {
-  if (!user.display_name || user.display_name == '') {
+  if (!user.display_name || user.display_name === '') {
     return Promise.reject(new Error('Username must be non-empty.'));
   }
-  const hash = await hashPassword(user.password);
+  const hashedPassword = await hashPassword(user.password);
 
   winston.info(`Request to register the new user ${user.display_name}.`);
   const res = await query(
       db, 'INSERT INTO Accounts (display_name, password_hash) VALUES (?, ?)',
-      [user.display_name, hash])
-      .catch(error => new Error('Display name already taken'));
+      [user.display_name, hashedPassword])
+      .catch((error) => new Error('Display name already taken'));
 
   return {
     display_name: user.display_name,
@@ -51,7 +51,8 @@ export async function lookupByPassword(
     throw new ServerError({auth: 'Invalid user or password.'});
   }
 
-  const valid = await compare(user.password, results[0]['password_hash'].toString());
+  const valid = await compare(
+      user.password, results[0].password_hash.toString());
 
   if (!valid) {
     winston.warn('Lookup failed, bad password.');
@@ -59,7 +60,7 @@ export async function lookupByPassword(
   }
 
   winston.info('Lookup success!');
-  return results[0]['id'];
+  return results[0].id;
 }
 
 /** Takes a User object and updates their password and/or email. */
@@ -67,12 +68,12 @@ export async function updateUser(db: Connection, user: User): Promise<User> {
   let sqlQuery = 'UPDATE Accounts SET ';
   const params = [] as string[];
   if (user.password) {
-    const hash = await hashPassword(user.password);
-    sqlQuery += ' password_hash = ? '
-    params.push(hash);
+    const hashedPassword = await hashPassword(user.password);
+    sqlQuery += ' password_hash = ? ';
+    params.push(hashedPassword);
   }
   if (user.email) {
-    sqlQuery += ' email = ? '
+    sqlQuery += ' email = ? ';
     params.push(user.email);
   }
   sqlQuery += ' WHERE id = ?';

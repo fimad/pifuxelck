@@ -1,17 +1,17 @@
-import * as winston from 'winston';
 import { Connection } from 'mysql';
+import * as winston from 'winston';
 import { Drawing } from '../../common/models/drawing';
 import { InboxEntry, Turn } from '../../common/models/turn';
+import { query, transact } from '../db-promise';
 import { SendMail } from '../middleware/mail';
-import { transact, query } from '../db-promise';
 
 async function rowToInboxEntry(row: any): Promise<InboxEntry> {
-  const drawingJson = row['drawing'];
+  const drawingJson = row.drawing;
   const entry = {
-    game_id: row['game_id'],
+    game_id: row.game_id,
     previous_turn: {
-      is_drawing: !!row['is_drawing'],
-      label: row['label'],
+      is_drawing: !!row.is_drawing,
+      label: row.label,
     },
   } as InboxEntry;
 
@@ -213,7 +213,7 @@ export async function sendEmailUpdatesForGameOver(
            WHERE completed_at_id IS NOT NULL AND NOT did_notify
          ) AS CompletedGames ON CompletedGames.id = Turns.game_id
          INNER JOIN Accounts ON Accounts.id = Turns.account_id`;
-    const results = await query(db, gamesToNotifyQuery, []);
+    const queryResults = await query(db, gamesToNotifyQuery, []);
     await query(
         db,
         `UPDATE Games
@@ -223,22 +223,22 @@ export async function sendEmailUpdatesForGameOver(
            FROM (${gamesToNotifyQuery}) AS X
            GROUP BY 1
          )`, []);
-    const emailsAndGames = [];
-    for (let i = 0; i < results.length; i++) {
-      const game = results[i]['game_id'];
-      const email = results[i]['email'];
+    const results = [];
+    for (let i = 0; i < queryResults.length; i++) {
+      const game = queryResults[i].game_id;
+      const email = queryResults[i].email;
       if (email) {
-        emailsAndGames.push({game, email});
+        results.push({game, email});
       }
     }
-    return emailsAndGames;
+    return results;
   });
 
   await Promise.all(emailsAndGames.map(async ({email, game}) => {
     await sendMail({
-      to: email,
-      subject: 'New completed game!',
       body: 'New completed game!',
+      subject: 'New completed game!',
+      to: email,
     });
   }));
 }
@@ -262,7 +262,7 @@ export async function sendEmailUpdatesForNextTurn(
          INNER JOIN Turns ON NT.id = Turns.id
          INNER JOIN Accounts ON Accounts.id = Turns.account_id
          WHERE NOT did_notify`;
-    const results = await query(db, turnsToNotifyQuery, []);
+    const queryResults = await query(db, turnsToNotifyQuery, []);
     await query(
         db,
         `UPDATE Turns
@@ -271,22 +271,22 @@ export async function sendEmailUpdatesForNextTurn(
            SELECT X.turn_id
            FROM (${turnsToNotifyQuery}) AS X
          )`, []);
-    const emailsAndGames = [];
-    for (let i = 0; i < results.length; i++) {
-      const game = results[i]['game_id'];
-      const email = results[i]['email'];
+    const results = [];
+    for (let i = 0; i < queryResults.length; i++) {
+      const game = queryResults[i].game_id;
+      const email = queryResults[i].email;
       if (email) {
-        emailsAndGames.push({game, email});
+        results.push({game, email});
       }
     }
-    return emailsAndGames;
+    return results;
   });
 
   await Promise.all(emailsAndGames.map(async ({email, game}) => {
     await sendMail({
-      to: email,
-      subject: 'It is your turn!',
       body: 'Your turn in foobar!',
+      subject: 'It is your turn!',
+      to: email,
     });
   }));
 }

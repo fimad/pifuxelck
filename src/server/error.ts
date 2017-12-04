@@ -1,7 +1,7 @@
 import { Errors } from '../common/models/message';
 
 class ServerError extends Error {
-  errors: Errors;
+  public errors: Errors;
 
   constructor(errors: Errors, ...params: any[]) {
     super(JSON.stringify(errors), ...params);

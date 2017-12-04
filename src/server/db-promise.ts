@@ -2,14 +2,14 @@ import { Connection } from 'mysql';
 
 export async function query(
     db: Connection,
-    query: string,
-    values?: any) : Promise<any> {
+    sqlQuery: string,
+    values?: any): Promise<any> {
   return new Promise<any>((resolve, reject) => {
-    db.query(query, values, (error, results) => {
+    db.query(sqlQuery, values, (error, results) => {
       error ? reject(error) : resolve(results);
     });
   });
-};
+}
 
 export async function transact<T>(
     db: Connection,
@@ -20,15 +20,15 @@ export async function transact<T>(
         reject(error);
         return;
       }
-      f().then((result) => {
-        db.commit((error) => {
+      f().then((results2) => {
+        db.commit((error2) => {
           if (error) {
-            db.rollback(() => reject(error));
+            db.rollback(() => reject(error2));
           } else {
-            resolve(result);
+            resolve(results2);
           }
         });
-      }).catch((error) => db.rollback(() => reject(error)));
+      }).catch((error2) => db.rollback(() => reject(error2)));
     });
   });
   let result = tryTransaction();

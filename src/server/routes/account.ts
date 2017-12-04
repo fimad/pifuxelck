@@ -1,9 +1,9 @@
 import * as express from 'express';
 import * as winston from 'winston';
+import { newAuthToken } from '../models/auth';
+import { createUser, lookupByPassword, updateUser } from '../models/user';
 import asyncRoute from './async-route';
 import authRoute from './auth-route';
-import { createUser, lookupByPassword, updateUser } from '../models/user';
-import { newAuthToken } from '../models/auth';
 
 const account = express.Router();
 
@@ -40,7 +40,7 @@ account.post('/register', asyncRoute(async (req, res) => {
   winston.info(
       `Successfully registered new user ${user.display_name} (${user.id}).`,
        req.context);
-      res.success({meta: {auth}, user});
+  res.success({meta: {auth}, user});
 }));
 
 account.put('/', authRoute(async (userId, req, res) => {

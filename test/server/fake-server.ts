@@ -1,8 +1,8 @@
-import config from '../../config/test';
-import server from '../../src/server/server';
-import { Connection, createConnection } from 'mysql';
-import { SendMailParams } from '../../src/server/middleware/mail';
 import { readFile } from 'fs';
+import { Connection, createConnection } from 'mysql';
+import config from '../../config/test';
+import { SendMailParams } from '../../src/server/middleware/mail';
+import server from '../../src/server/server';
 
 export default async function fakeServer() {
   const dbConfig = config.db;

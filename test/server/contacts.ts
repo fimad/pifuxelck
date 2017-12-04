@@ -1,6 +1,6 @@
-import server from './fake-server';
-import { agent } from 'supertest';
 import { expect } from 'chai';
+import { agent } from 'supertest';
+import server from './fake-server';
 import { newUser } from './fake-user';
 
 describe('Contacts', () => {
@@ -69,8 +69,8 @@ describe('Contacts', () => {
           .expect(200)
           .expect((res: any) => expect(res.body).to.deep.equal({
             contacts: [{
-              id: 2,
               display_name: 'user2',
+              id: 2,
             }],
           }));
     });
@@ -100,8 +100,8 @@ describe('Contacts', () => {
           .expect((res: any) => expect(res.body).to.deep.equal({
             contact_groups: [{
               id: 1,
-              name: 'group name',
               members: [],
+              name: 'group name',
             }],
           }));
     });
@@ -119,11 +119,11 @@ describe('Contacts', () => {
           .expect((res: any) => expect(res.body).to.deep.equal({
             contact_groups: [{
               id: 1,
-              name: 'group name',
               members: [{
                 display_name: 'user2',
                 id: 2,
               }],
+              name: 'group name',
             }],
           }));
     });
@@ -143,7 +143,6 @@ describe('Contacts', () => {
           .expect((res: any) => expect(res.body).to.deep.equal({
             contact_groups: [{
               id: 1,
-              name: 'group name',
               members: [
                 {
                   display_name: 'user2',
@@ -153,6 +152,7 @@ describe('Contacts', () => {
                   id: 3,
                 },
               ],
+              name: 'group name',
             }],
           }));
       await user1.delete('/api/2/contacts/group/1/2').expect(200);
@@ -161,16 +161,16 @@ describe('Contacts', () => {
           .expect((res: any) => expect(res.body).to.deep.equal({
             contact_groups: [{
               id: 1,
-              name: 'group name',
               members: [{
                 display_name: 'user3',
                 id: 3,
               }],
+              name: 'group name',
             }],
           }));
     });
 
-    it('should not allow other groups edit other\'s groups', async () => {
+    it("should not allow other groups edit other's groups", async () => {
       const app = agent(await server());
       const user1 = await newUser(app, 'user1');
       const user2 = await newUser(app, 'user2');
@@ -183,8 +183,8 @@ describe('Contacts', () => {
           .expect((res: any) => expect(res.body).to.deep.equal({
             contact_groups: [{
               id: 1,
-              name: 'group name',
               members: [],
+              name: 'group name',
             }],
           }));
     });
@@ -213,20 +213,20 @@ describe('Contacts', () => {
             contact_groups: [
               {
                 id: 1,
-                name: 'group 1',
                 members: [
                   {display_name: 'user2', id: 2},
                   {display_name: 'user3', id: 3},
                   {display_name: 'user4', id: 4},
                 ],
+                name: 'group 1',
               }, {
                 id: 2,
-                name: 'group 2',
                 members: [
                   {display_name: 'user4', id: 4},
                   {display_name: 'user5', id: 5},
                 ],
-              }
+                name: 'group 2',
+              },
             ],
           }));
     });

@@ -1,6 +1,6 @@
-import server from './fake-server';
-import { agent } from 'supertest';
 import { expect, use } from 'chai';
+import { agent } from 'supertest';
+import server from './fake-server';
 import { newUser } from './fake-user';
 
 use(require('chai-subset'));
@@ -143,16 +143,16 @@ describe('Games', () => {
       await user2.put('/api/2/games/play/1')
           .send({
             turn: {
-              is_drawing: true,
               drawing: {
                 background_color: {
                   alpha: 1,
-                  red: 2,
-                  green: 3,
                   blue: 4,
+                  green: 3,
+                  red: 2,
                 },
                 lines: [],
               },
+              is_drawing: true,
             },
           })
           .expect(200);
@@ -160,28 +160,28 @@ describe('Games', () => {
           .expect(200)
           .expect((res: any) => expect(res.body).to.containSubset({
             games: [{
+              completed_at_id: 1,
               id: 1,
               turns: [
                 {
-                  player: 'user1',
                   is_drawing: false,
                   label: 'start',
+                  player: 'user1',
                 },
                 {
-                  player: 'user2',
-                  is_drawing: true,
                   drawing: {
                     background_color: {
                       alpha: 1,
-                      red: 2,
-                      green: 3,
                       blue: 4,
+                      green: 3,
+                      red: 2,
                     },
                     lines: [],
                   },
+                  is_drawing: true,
+                  player: 'user2',
                 },
               ],
-              completed_at_id: 1,
             }],
           }));
     });
@@ -200,16 +200,16 @@ describe('Games', () => {
           await user.put('/api/2/games/play/1')
               .send({
                 turn: {
-                  is_drawing: true,
                   drawing: {
                     background_color: {
                       alpha: 1,
-                      red: 2,
-                      green: 3,
                       blue: 4,
+                      green: 3,
+                      red: 2,
                     },
                     lines: [],
                   },
+                  is_drawing: true,
                 },
               })));
       await Promise.all([user2, user3].map(async (user) =>
@@ -225,6 +225,7 @@ describe('Games', () => {
               .expect(200)
               .expect((res: any) => expect(res.body).to.containSubset({
                 game: {
+                  completed_at_id: 1,
                   id: 1,
                   turns: [
                     {
@@ -232,23 +233,22 @@ describe('Games', () => {
                       label: 'start',
                     },
                     {
-                      is_drawing: true,
                       drawing: {
                         background_color: {
                           alpha: 1,
-                          red: 2,
-                          green: 3,
                           blue: 4,
+                          green: 3,
+                          red: 2,
                         },
                         lines: [],
                       },
+                      is_drawing: true,
                     },
                     {
                       is_drawing: false,
                       label: 'end',
                     },
                   ],
-                  completed_at_id: 1,
                 },
               }))));
     });
@@ -268,16 +268,16 @@ describe('Games', () => {
       await user2.put('/api/2/games/play/1')
           .send({
             turn: {
-              is_drawing: true,
               drawing: {
                 background_color: {
                   alpha: 1,
-                  red: 2,
-                  green: 3,
                   blue: 4,
+                  green: 3,
+                  red: 2,
                 },
                 lines: [],
               },
+              is_drawing: true,
             },
           })
           .expect(200);
@@ -296,16 +296,16 @@ describe('Games', () => {
       await user2.put('/api/2/games/play/1')
           .send({
             turn: {
-              is_drawing: true,
               drawing: {
                 background_color: {
                   alpha: 1,
-                  red: 2,
-                  green: 3,
                   blue: 4,
+                  green: 3,
+                  red: 2,
                 },
                 lines: [],
               },
+              is_drawing: true,
             },
           })
           .expect(200);
@@ -326,16 +326,16 @@ describe('Games', () => {
           await user.put('/api/2/games/play/1')
               .send({
                 turn: {
-                  is_drawing: true,
                   drawing: {
                     background_color: {
                       alpha: 1,
-                      red: 2,
-                      green: 3,
                       blue: 4,
+                      green: 3,
+                      red: 2,
                     },
                     lines: [],
                   },
+                  is_drawing: true,
                 },
               })));
       expect(sentMail).to.have.lengthOf(2);
@@ -363,16 +363,16 @@ describe('Games', () => {
           await user.put('/api/2/games/play/1')
               .send({
                 turn: {
-                  is_drawing: true,
                   drawing: {
                     background_color: {
                       alpha: 1,
-                      red: 2,
-                      green: 3,
                       blue: 4,
+                      green: 3,
+                      red: 2,
                     },
                     lines: [],
                   },
+                  is_drawing: true,
                 },
               })));
       await Promise.all([user2, user3].map(async (user) =>

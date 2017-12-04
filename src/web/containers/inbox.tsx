@@ -1,17 +1,17 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import * as models from '../../common/models/turn';
+import { compareStringsAsInts } from '../../common/utils';
 import InboxDrawingCard from '../components/inbox-drawing-card';
-import InboxEntry from './inbox-entry';
 import InboxLabelCard from '../components/inbox-label-card';
 import { State } from '../state';
-import { compareStringsAsInts } from '../../common/utils';
-import { connect } from 'react-redux';
+import InboxEntry from './inbox-entry';
 
 const styles = require('./inbox.css');
 
-type Props = {
-  entries: string[],
-};
+interface Props {
+  entries: string[];
+}
 
 const InboxComponent = ({entries}: Props) => (
   <div className={styles.container}>

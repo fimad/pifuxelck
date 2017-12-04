@@ -1,39 +1,39 @@
+import { drawingOrDefault, Turn } from '../../common/models/turn';
+import { mapFrom } from '../../common/utils';
 import { Action } from '../actions';
 import { Ui } from '../state';
-import { Turn, drawingOrDefault } from '../../common/models/turn';
-import { mapFrom } from '../../common/utils';
 
 const initialState = {
-  outbox: {} ,
-  drawing: {
-    inProgress: false,
-    brushSize: .0125,
-    brushColor: {
-      red: 0,
-      blue: 0,
-      green: 0,
-      alpha: 1,
-    },
-  },
   contacts: {
     lookup: '',
+  },
+  drawing: {
+    brushColor: {
+      alpha: 1,
+      blue: 0,
+      green: 0,
+      red: 0,
+    },
+    brushSize: .0125,
+    inProgress: false,
   },
   newGame: {
     topic: '',
     users: [] as string[],
   },
+  outbox: {} ,
 };
 
 const defaultDrawingTurn: Turn = {
-  is_drawing: true,
   drawing: drawingOrDefault({} as Turn),
+  is_drawing: true,
 };
 
 export default function(state: Ui = initialState, action: Action) {
-  if (action.type == 'LOGOUT' || action.type == 'LOGIN_START') {
+  if (action.type === 'LOGOUT' || action.type === 'LOGIN_START') {
     return initialState;
   }
-  if (action.type == 'UI_UPDATE_OUTBOX') {
+  if (action.type === 'UI_UPDATE_OUTBOX') {
     return {
       ...state,
       outbox: {
@@ -42,7 +42,7 @@ export default function(state: Ui = initialState, action: Action) {
       },
     };
   }
-  if (action.type == 'UI_CHOOSE_BRUSH_SIZE') {
+  if (action.type === 'UI_CHOOSE_BRUSH_SIZE') {
     return {
       ...state,
       drawing: {
@@ -51,7 +51,7 @@ export default function(state: Ui = initialState, action: Action) {
       },
     };
   }
-  if (action.type == 'UI_CHOOSE_BRUSH_COLOR') {
+  if (action.type === 'UI_CHOOSE_BRUSH_COLOR') {
     return {
       ...state,
       drawing: {
@@ -60,9 +60,9 @@ export default function(state: Ui = initialState, action: Action) {
       },
     };
   }
-  if (action.type == 'UI_UPDATE_BACKGROUND_COLOR') {
+  if (action.type === 'UI_UPDATE_BACKGROUND_COLOR') {
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
-    if (turn.is_drawing != true) {
+    if (turn.is_drawing !== true) {
       return state;
     }
     return {
@@ -74,18 +74,18 @@ export default function(state: Ui = initialState, action: Action) {
           drawing: {
             ...turn.drawing,
             background_color: action.color,
-          }
-        }
-      }
+          },
+        },
+      },
     };
   }
-  if (action.type == 'UI_START_DRAWING_LINE') {
+  if (action.type === 'UI_START_DRAWING_LINE') {
     if (!Number.isFinite(action.point.x) || !Number.isFinite(action.point.y)) {
       return state;
     }
 
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
-    if (turn.is_drawing != true) {
+    if (turn.is_drawing !== true) {
       return state;
     }
 
@@ -105,22 +105,22 @@ export default function(state: Ui = initialState, action: Action) {
               ...turn.drawing.lines,
               {
                 color: state.drawing.brushColor,
-                size: state.drawing.brushSize,
                 points: [action.point],
-              }
+                size: state.drawing.brushSize,
+              },
             ],
-          }
-        }
-      }
+          },
+        },
+      },
     };
   }
-  if (action.type == 'UI_APPEND_DRAWING_LINE') {
+  if (action.type === 'UI_APPEND_DRAWING_LINE') {
     if (!Number.isFinite(action.point.x) || !Number.isFinite(action.point.y)) {
       return state;
     }
 
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
-    if (turn.is_drawing != true) {
+    if (turn.is_drawing !== true) {
       return state;
     }
 
@@ -136,10 +136,10 @@ export default function(state: Ui = initialState, action: Action) {
 
     // Ensure that the cursor has moved a significant distance from the previous
     // point before appending a new point.
-    var dX = lastPoint.x - action.point.x;
-    var dY = lastPoint.y - action.point.y;
-    var sqrDiff = dX * dX + dY * dY;
-    var minDiff = 0.01;
+    const dX = lastPoint.x - action.point.x;
+    const dY = lastPoint.y - action.point.y;
+    const sqrDiff = dX * dX + dY * dY;
+    const minDiff = 0.01;
     if (sqrDiff < minDiff * minDiff) {
       return state;
     }
@@ -157,16 +157,16 @@ export default function(state: Ui = initialState, action: Action) {
               {
                 ...lastLine,
                 points: [...lastLine.points, action.point],
-              }
+              },
             ],
-          }
-        }
-      }
+          },
+        },
+      },
     };
   }
-  if (action.type == 'UI_UNDO_DRAWING_LINE') {
+  if (action.type === 'UI_UNDO_DRAWING_LINE') {
     const turn = state.outbox[action.gameId] || defaultDrawingTurn;
-    if (turn.is_drawing != true) {
+    if (turn.is_drawing !== true) {
       return state;
     }
     return {
@@ -178,51 +178,51 @@ export default function(state: Ui = initialState, action: Action) {
           drawing: {
             ...turn.drawing,
             lines: [...turn.drawing.lines.slice(0, -1)],
-          }
-        }
-      }
+          },
+        },
+      },
     };
   }
-  if (action.type == 'UI_CHANGE_CONTACT_LOOKUP') {
+  if (action.type === 'UI_CHANGE_CONTACT_LOOKUP') {
     return {
       ...state,
       contacts: {
         lookup: action.lookup,
-      }
+      },
     };
   }
-  if (action.type == 'UI_NEW_GAME_CHANGE_TOPIC') {
+  if (action.type === 'UI_NEW_GAME_CHANGE_TOPIC') {
     return {
       ...state,
       newGame: {
         ...state.newGame,
         topic: action.topic,
-      }
+      },
     };
   }
-  if (action.type == 'UI_NEW_GAME_ADD_PLAYER') {
+  if (action.type === 'UI_NEW_GAME_ADD_PLAYER') {
     return {
       ...state,
       newGame: {
         ...state.newGame,
         users: [
-          ...(state.newGame.users.filter((x) => x != action.playerId)),
+          ...(state.newGame.users.filter((x) => x !== action.playerId)),
           action.playerId,
         ],
       },
     };
   }
-  if (action.type == 'UI_NEW_GAME_REMOVE_PLAYER') {
+  if (action.type === 'UI_NEW_GAME_REMOVE_PLAYER') {
     return {
       ...state,
       newGame: {
         ...state.newGame,
-        users: state.newGame.users.filter((x: string) => x != action.playerId),
+        users: state.newGame.users.filter((x: string) => x !== action.playerId),
       },
     };
   }
-  if (action.type == '@@router/LOCATION_CHANGE' ||
-      action.type == 'UI_STOP_DRAWING_LINE') {
+  if (action.type === '@@router/LOCATION_CHANGE' ||
+      action.type === 'UI_STOP_DRAWING_LINE') {
     return {
       ...state,
       drawing: {

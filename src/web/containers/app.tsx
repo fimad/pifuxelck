@@ -1,42 +1,49 @@
-import * as React from 'react';
 import AddIcon from 'material-ui-icons/Add';
 import ArchiveIcon from 'material-ui-icons/Archive';
-import Contacts from './contacts';
 import ContactsIcon from 'material-ui-icons/Contacts';
+import LogoutIcon from 'material-ui-icons/Eject';
+import HistoryIcon from 'material-ui-icons/History';
+import InboxIcon from 'material-ui-icons/Inbox';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router';
+import { Link } from 'react-router-dom';
+import { Dispatch } from 'redux';
+import NewGameDialog from '../containers/new-game-dialog';
+import { State } from '../state';
+import Contacts from './contacts';
 import DrawReply from './draw-reply';
 import Game from './game';
 import History from './history';
-import HistoryIcon from 'material-ui-icons/History';
 import Inbox from './inbox';
-import InboxIcon from 'material-ui-icons/Inbox';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import LoginRedirect from './login-redirect';
-import LogoutIcon from 'material-ui-icons/Eject';
-import NewGameDialog from '../containers/new-game-dialog';
-import { Dispatch } from 'redux';
-import { Link } from 'react-router-dom';
-import { Route, Switch } from 'react-router';
-import { State } from '../state';
-import { connect } from 'react-redux';
-import { gotoContacts, gotoInbox, gotoHistory, login, logout } from '../actions';
 
-import MenuIcon from 'material-ui-icons/Menu';
+import {
+  gotoContacts,
+  gotoHistory,
+  gotoInbox,
+  login,
+  logout,
+} from '../actions';
+
 import {
   AppBar,
-  Toolbar,
   Button,
-  IconButton,
   Drawer,
+  IconButton,
   MenuItem,
+  Toolbar,
   Typography,
 } from 'material-ui';
+import MenuIcon from 'material-ui-icons/Menu';
 
 const { push } = require('react-router-redux');
 
-type Props = {
-  dispatch: Dispatch<State>,
-  isLoggedIn: boolean,
-};
+interface Props {
+  dispatch: Dispatch<State>;
+  isLoggedIn: boolean;
+}
 
 class AppComponent extends React.Component<Props, any> {
   constructor(props: any) {
@@ -46,68 +53,72 @@ class AppComponent extends React.Component<Props, any> {
     };
   }
 
-  handleToggleDrawer = () => this.setState({
-    showDrawer: !this.state.showDrawer
-  });
+  public handleToggleDrawer = () => this.setState({
+    showDrawer: !this.state.showDrawer,
+  })
 
-  handleShowDrawer = (showDrawer: boolean) => this.setState({showDrawer});
+  public handleShowDrawer =
+      (showDrawer: boolean) => this.setState({showDrawer})
 
-  handleClickInbox = () => {
+  public handleClickInbox = () => {
     this.props.dispatch(gotoInbox());
     this.handleShowDrawer(false);
   }
 
-  handleClickHistory = () => {
+  public handleClickHistory = () => {
     this.props.dispatch(gotoHistory());
     this.handleShowDrawer(false);
-  };
+  }
 
-  handleClickContacts = () => {
+  public handleClickContacts = () => {
     this.props.dispatch(gotoContacts());
     this.handleShowDrawer(false);
-  };
+  }
 
-  handleShowNewGame = () => {
+  public handleShowNewGame = () => {
     this.props.dispatch(push('/new'));
     this.handleShowDrawer(false);
-  };
+  }
 
-  handleLogout = () => {
+  public handleLogout = () => {
     this.props.dispatch(logout());
-  };
+  }
 
-  render() {
+  public render() {
     if (!this.props.isLoggedIn) {
       return (<LoginRedirect />);
     }
     const fabStyle: any = {
-      position: 'fixed',
       bottom: '32px',
+      position: 'fixed',
       right: '32px',
     };
     const rootStyle: any = {
-      position: 'absolute',
-      top: '0px',
-      left: '0px',
-      width: '100%',
-      height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      height: '100%',
+      left: '0px',
+      position: 'absolute',
+      top: '0px',
+      width: '100%',
     };
     const appBar = (title: string, button?: JSX.Element) => (
       <div>
-      <AppBar position="fixed">
+      <AppBar position='fixed'>
         <Toolbar>
-          <IconButton onClick={this.handleToggleDrawer} color="contrast" aria-label="Menu">
+          <IconButton
+              onClick={this.handleToggleDrawer}
+              color='contrast'
+              aria-label='Menu'>
             <MenuIcon />
           </IconButton>
-          <Typography type="title" style={{flex: '1 1 auto'}} color="inherit">
+          <Typography type='title' style={{flex: '1 1 auto'}} color='inherit'>
             {title}
           </Typography>
           {button}
         </Toolbar>
       </AppBar>
-      <AppBar position="static"><Toolbar /></AppBar>
+      <AppBar position='static'><Toolbar /></AppBar>
       </div>
     );
     return (
@@ -129,7 +140,11 @@ class AppComponent extends React.Component<Props, any> {
           </Route>
           <Route path='/draw/:gameId'>
             {({match}) => (
-              <div style={{flex: "1 0 auto", display: 'flex', flexDirection: 'column'}}>
+              <div style={{
+                  display: 'flex',
+                  flex: '1 0 auto',
+                  flexDirection: 'column',
+              }}>
                 {appBar('Inbox')}
                 <DrawReply gameId={match.params.gameId} />
               </div>
@@ -144,9 +159,9 @@ class AppComponent extends React.Component<Props, any> {
           <Route path='/'>
             <div>
               {appBar('Inbox', (
-                <Button color="contrast" onClick={this.handleShowNewGame}>
+                <Button color='contrast' onClick={this.handleShowNewGame}>
                   New Game
-                </Button>)
+                </Button>),
               )}
               <Inbox />
               <Switch>
@@ -159,8 +174,8 @@ class AppComponent extends React.Component<Props, any> {
         </Switch>
 
         <Drawer
-            type="temporary"
-            anchor="left"
+            type='temporary'
+            anchor='left'
             open={this.state.showDrawer}
             onRequestClose={this.handleToggleDrawer} >
           <div style={{width: '240px'}} />
@@ -169,19 +184,19 @@ class AppComponent extends React.Component<Props, any> {
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary="Inbox" />
+              <ListItemText primary='Inbox' />
             </ListItem>
             <ListItem button onClick={this.handleClickContacts}>
               <ListItemIcon>
                 <ContactsIcon />
               </ListItemIcon>
-              <ListItemText primary="Contacts" />
+              <ListItemText primary='Contacts' />
             </ListItem>
             <ListItem button onClick={this.handleClickHistory}>
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>
-              <ListItemText primary="History" />
+              <ListItemText primary='History' />
             </ListItem>
             <ListItem
                 style={{marginTop: 'auto'}}
@@ -190,7 +205,7 @@ class AppComponent extends React.Component<Props, any> {
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText primary='Logout' />
             </ListItem>
           </List>
         </Drawer>

@@ -1,16 +1,16 @@
-import * as React from 'react';
 import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
 import Checkbox from 'material-ui/Checkbox';
 import Chip from 'material-ui/Chip';
 import Divider from 'material-ui/Divider';
-import TextField from 'material-ui/TextField';
 import { Breakpoint } from 'material-ui/styles/createBreakpoints';
-import { Dispatch } from 'redux';
-import { State } from '../state';
-import { User } from '../../common/models/user';
+import TextField from 'material-ui/TextField';
 import { WithWidthProps } from 'material-ui/utils/withWidth';
+import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { User } from '../../common/models/user';
+import { State } from '../state';
 
 import {
   gotoInbox,
@@ -44,7 +44,7 @@ type Props = WithWidthProps & {
   onStart: (topic: string, playerIds: string[]) => void
   onAddPlayer: (playerId: string) => void
   onRemovePlayer: (playerId: string) => void
-  onChangeTopic: (topic: string) => void
+  onChangeTopic: (topic: string) => void,
 };
 
 const NewGameDialog = ({
@@ -59,12 +59,12 @@ const NewGameDialog = ({
           value={topic}
           onChange={(event) => onChangeTopic(event.target.value)}
           fullWidth
-          label="Topic" />
+          label='Topic' />
       <div style={{
-          marginTop: '16px',
           display: 'flex',
           flexDirection: 'row',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          marginTop: '16px',
       }}>
         {
           players.map((player) => (
@@ -82,28 +82,28 @@ const NewGameDialog = ({
       </DialogContentText>
       <List>
         {
-          contacts.map((contact) => (
+          contacts.map((c) => (
             <ListItem
-                key={`contact-${contact.id}`}
-                disabled={players.filter(({id}) => contact.id == id).length > 0}
+                key={`contact-${c.id}`}
+                disabled={players.filter(({id}) => c.id === id).length > 0}
                 button
-                onClick={() => onAddPlayer(contact.id)}>
+                onClick={() => onAddPlayer(c.id)}>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
-              <ListItemText primary={contact.display_name} />
+              <ListItemText primary={c.display_name} />
             </ListItem>
           ))
         }
       </List>
     </DialogContent>
     <DialogActions>
-      <Button onClick={onCancel} color="primary">
+      <Button onClick={onCancel} color='primary'>
         Cancel
       </Button>
       <Button
-          onClick={() => onStart(topic, players.map(p => p.id))}
-          color="primary"
+          onClick={() => onStart(topic, players.map((p) => p.id))}
+          color='primary'
           autoFocus>
         Start
       </Button>
@@ -119,27 +119,27 @@ const compareUserByName =
     (a: User, b: User) => a.display_name.localeCompare(b.display_name);
 
 const mapStateToProps = (state: State) => ({
+  contacts: userMapToList(state.entities.contacts),
   players: state.ui.newGame.users
       .map((id) => state.entities.contacts[id])
       .sort(compareUserByName),
-  contacts: userMapToList(state.entities.contacts),
   topic: state.ui.newGame.topic,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
-  onCancel: () => dispatch(gotoInbox()),
-  onStart: (topic: string, playerIds: string[]) => {
-    dispatch(newGame(playerIds, topic));
-    dispatch(gotoInbox());
-  },
   onAddPlayer: (playerId: string) => {
     dispatch(newGameAddPlayer(playerId));
+  },
+  onCancel: () => dispatch(gotoInbox()),
+  onChangeTopic: (topic: string) => {
+    dispatch(newGameChangeTopic(topic));
   },
   onRemovePlayer: (playerId: string) => {
     dispatch(newGameRemovePlayer(playerId));
   },
-  onChangeTopic: (topic: string) => {
-    dispatch(newGameChangeTopic(topic));
+  onStart: (topic: string, playerIds: string[]) => {
+    dispatch(newGame(playerIds, topic));
+    dispatch(gotoInbox());
   },
 });
 
