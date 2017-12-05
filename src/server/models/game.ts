@@ -260,7 +260,7 @@ async function rowsToGames(rows: any): Promise<Game[]> {
     }
 
     let game = gameIdToGame[gameId];
-    if (game === null) {
+    if (game === undefined) {
       game = {
         completed_at: completedAt,
         completed_at_id: completedAtId,
