@@ -236,7 +236,7 @@ export async function sendEmailUpdatesForGameOver(
 
   await Promise.all(emailsAndGames.map(async ({email, game}) => {
     await sendMail({
-      body: 'New completed game!',
+      body: finshedGameEmail.replace('%GAMEID%', game),
       subject: 'New completed game!',
       to: email,
     });
@@ -284,9 +284,123 @@ export async function sendEmailUpdatesForNextTurn(
 
   await Promise.all(emailsAndGames.map(async ({email, game}) => {
     await sendMail({
-      body: 'Your turn in foobar!',
+      body: yourTurnEmail,
       subject: 'It is your turn!',
       to: email,
     });
   }));
 }
+
+const yourTurnEmail = `
+<div style="
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+">
+
+  <div style="
+      flex: 0 1 auto;
+      font-size: 48px;
+      text-align: center;
+      background-color: #3f51b5;
+      color: white;
+      padding: 16px;
+  ">
+    Its your turn
+    <div style="font-size: 18px; margin-top: 6px">
+      ❤️ #blessed #lit 🔥
+    </div>
+
+    <div style="line-height: 32px; font-size: 24px; margin-top: 32px;">
+    Someone has added you to a
+    <span style="font-weight: bold">pifuxelck™©®☢</span>
+    game. 🎉👏🎂
+
+    <br />
+
+    You have 2 days to take your turn before you are automatically
+    skipped.
+
+    <br />
+
+    If you are skipped you will not be able to see the completed game!
+    </div>
+  </div>
+
+  <div style="
+      margin-top: 64px;
+      flex: 1 1 auto;
+      font-size: 48px;
+      text-align: center;
+      line-height: 96px;
+  ">
+    <a
+        href="https://everythingissauce.com"
+        style="
+            text-decoration:none;
+            color: black;
+        ">
+      Play now!
+      <br />
+      <img
+         width="48"
+         height="48"
+         src="https://canary.everythingissauce.com/images/icon-48.png" />
+    </a>
+  </div>
+<div>
+`;
+
+const finshedGameEmail = `
+<div style="
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+">
+
+  <div style="
+      flex: 0 1 auto;
+      font-size: 48px;
+      text-align: center;
+      background-color: #3f51b5;
+      color: white;
+      padding: 16px;
+  ">
+    New finished game
+    <div style="font-size: 18px; margin-top: 6px">
+      🙌 #praise 🕊️
+    </div>
+
+    <div style="line-height: 32px; font-size: 24px; margin-top: 32px;">
+    You just finished a
+    <span style="font-weight: bold">pifuxelck™©®☢</span>
+    game. 🎉👏🎂
+
+    </div>
+  </div>
+
+  <div style="
+      margin-top: 64px;
+      flex: 1 1 auto;
+      font-size: 48px;
+      text-align: center;
+      line-height: 96px;
+  ">
+    <a
+        href="https://canary.everythingissauce.com/game/%GAMEID%"
+        style="
+            text-decoration:none;
+            color: black;
+        ">
+      Check it out!
+      <br />
+      <img
+         width="48"
+         height="48"
+         src="https://canary.everythingissauce.com/images/icon-48.png" />
+    </a>
+  </div>
+<div>
+`;
