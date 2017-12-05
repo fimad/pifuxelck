@@ -18,7 +18,7 @@
     "_server-copy-package": "copyfiles package.json yarn.lock dist",
     "_server-firebase-deploy": "firebase deploy --only functions",
     "_server-install-deps": "yarn install --production=true --cwd dist",
-    "_server-pre-deplpy": "run-s _server-clean _server-build _server-copy-package _server-install-deps",
+    "_server-pre-deploy": "run-s _server-clean _server-build _server-copy-package _server-install-deps",
     "server-deploy": "run-s _server-pre-deploy _server-firebase-deploy",
     "_web-clean": "rimraf \"dist-web/*\"",
     "_web-build": "webpack",

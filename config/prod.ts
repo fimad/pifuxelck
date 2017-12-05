@@ -7,7 +7,7 @@ export default {
     user: 'pifuxelck',
   },
   mail: {
-    apiKey: functions.config().mailgun.key,
+    apiKey: functions.config().mailgun['api-key'],
     domain: 'm.everythingissauce.com',
   },
 };
