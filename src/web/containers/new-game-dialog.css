@@ -1,6 +1,6 @@
 .activePlayerList {
   display: flex;
-  flexDirection: row;
-  flexWrap: wrap;
-  marginTop: 16px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 16px;
 }

@@ -86,7 +86,8 @@ export async function updateUser(db: Connection, user: User): Promise<User> {
 }
 
 /**
- * Returns
+ * Returns a user given the ID of that user. Only call this method if the
+ * currently logged in user is authorized to access this user's meta-data.
  */
 export async function getUserById(
     db: Connection, userId: string): Promise<User> {
