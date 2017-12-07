@@ -20,9 +20,15 @@ export interface Entities {
   users: {
     [displayName: string]: string,
   };
+  account: {
+    email: string,
+  };
 }
 
 export interface Ui {
+  account: {
+    email: (string|null),
+  };
   outbox: {
     [gameId: string]: Turn,
   };

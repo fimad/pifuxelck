@@ -1,0 +1,29 @@
+@import '../common.css';
+
+.email {}
+
+.paper {
+  margin: 8px;
+  padding: 8px;
+}
+
+.title {
+  margin: 8px !important;
+}
+
+.caption {
+  margin: 8px !important;
+}
+
+.text {
+  margin: 8px !important;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.button {
+  margin: 8px !important;
+}

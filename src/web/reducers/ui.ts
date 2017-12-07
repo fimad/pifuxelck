@@ -4,6 +4,9 @@ import { Action } from '../actions';
 import { Ui } from '../state';
 
 const initialState = {
+  account: {
+    email: null as (string | null),
+  },
   contacts: {
     lookup: '',
   },
@@ -221,10 +224,21 @@ export default function(state: Ui = initialState, action: Action) {
       },
     };
   }
+  if (action.type === 'UI_UPDATE_EMAIL') {
+    return {
+      ...state,
+      account: {
+        email: action.email,
+      },
+    };
+  }
   if (action.type === '@@router/LOCATION_CHANGE' ||
       action.type === 'UI_STOP_DRAWING_LINE') {
     return {
       ...state,
+      account: {
+        email: null,
+      },
       drawing: {
         ...state.drawing,
         inProgress: false,

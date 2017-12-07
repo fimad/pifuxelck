@@ -48,3 +48,7 @@ export function newGameAddPlayer(playerId: string) {
 export function newGameRemovePlayer(playerId: string) {
   return {type: 'UI_NEW_GAME_REMOVE_PLAYER', playerId};
 }
+
+export function updateEmail(email: string) {
+  return {type: 'UI_UPDATE_EMAIL', email};
+}

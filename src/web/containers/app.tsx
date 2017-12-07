@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import NewGameDialog from '../containers/new-game-dialog';
 import { State } from '../state';
+import Account from './account';
 import Contacts from './contacts';
 import DrawReply from './draw-reply';
 import Game from './game';
@@ -152,6 +153,7 @@ class AppComponent extends React.Component<Props, any> {
           <Route path='/account'>
             <div>
               {appBar('Account')}
+              <Account />
             </div>
           </Route>
           <Route path='/history'>

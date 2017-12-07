@@ -10,6 +10,9 @@ interface ActionMessage {
 }
 
 const initialState = {
+  account: {
+    email: '',
+  },
   contactGroups: {},
   contacts: {},
   history: {},
@@ -70,6 +73,14 @@ export default function(state: Entities = initialState, action: Action) {
             obj[x.id] = x;
             return obj;
           }, {} as {[id: string]: ContactGroup}),
+        };
+      }
+      break;
+    case 'GET_ACCOUNT_SUCCESS':
+      if (action.message && action.message.user) {
+        return {
+          ...state,
+          account: action.message.user,
         };
       }
       break;

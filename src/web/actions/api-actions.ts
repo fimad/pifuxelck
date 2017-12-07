@@ -2,6 +2,7 @@ import * as idbKeyval from 'idb-keyval';
 import { Dispatch } from 'redux';
 import { Drawing } from '../../common/models/drawing';
 import { Game } from '../../common/models/game';
+import { User } from '../../common/models/user';
 import { compareStringsAsInts } from '../../common/utils';
 import { State } from '../state';
 import * as api from './redux-api';
@@ -177,11 +178,21 @@ export function removeContactToGroup(group: string, contact: string) {
   });
 }
 
+export function updateAccount(user: User) {
+  return api.put({
+    body: {user},
+    failure: 'UPDATE_ACCOUNT_FAILURE',
+    start: 'UPDATE_ACCOUNT_START',
+    success: 'UPDATE_ACCOUNT_SUCCESS',
+    url: `/api/2/account`,
+  });
+}
+
 export function getAccount() {
   return api.get({
     failure: 'GET_ACCOUNT_FAILURE',
     start: 'GET_ACCOUNT_START',
-    success: 'GETACCOUNT_SUCCESS',
+    success: 'GET_ACCOUNT_SUCCESS',
     url: `/api/2/account`,
   });
 }
