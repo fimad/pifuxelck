@@ -84,3 +84,25 @@ export async function updateUser(db: Connection, user: User): Promise<User> {
   user.password = '';
   return user;
 }
+
+/**
+ * Returns
+ */
+export async function getUserById(
+    db: Connection, userId: string): Promise<User> {
+  const results = await query(
+      db, 'SELECT id, display_name, email FROM Accounts WHERE id = ?',
+      [userId]);
+
+  if (!results[0]) {
+    winston.warn('Lookup failed for user.');
+    throw new Error('Invalid user.');
+  }
+
+  winston.info('Lookup success!');
+  return {
+    display_name: results[0].display_name,
+    email: results[0].email,
+    id: results[0].id,
+  };
+}

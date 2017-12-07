@@ -120,4 +120,20 @@ describe('Accounts', () => {
           });
     });
   });
+
+  describe('Email', () => {
+    it('should successfully update and retrieve email', async () => {
+      const app = agent(await server());
+      const user = await newUser(app, 'user', undefined, 'user@example.com');
+      await user.get('/api/2/account')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            user: {
+              display_name: 'user',
+              email: 'user@example.com',
+              id: 1,
+            },
+          }));
+    });
+  });
 });

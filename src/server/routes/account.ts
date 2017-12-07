@@ -1,9 +1,15 @@
 import * as express from 'express';
 import * as winston from 'winston';
 import { newAuthToken } from '../models/auth';
-import { createUser, lookupByPassword, updateUser } from '../models/user';
 import asyncRoute from './async-route';
 import authRoute from './auth-route';
+
+import {
+  createUser,
+  getUserById,
+  lookupByPassword,
+  updateUser,
+} from '../models/user';
 
 const account = express.Router();
 
@@ -55,6 +61,16 @@ account.put('/', authRoute(async (userId, req, res) => {
 
   winston.info(
       `Successfully updated password of ${userId}.`, req.context);
+  res.success({user});
+}));
+
+account.get('/', authRoute(async (userId, req, res) => {
+  winston.info(
+      `Attempting to lookup current user metadata`, req.context);
+
+  const user = await getUserById(req.db, userId);
+
+  winston.info(`Successfully located ${userId}.`, req.context);
   res.success({user});
 }));
 

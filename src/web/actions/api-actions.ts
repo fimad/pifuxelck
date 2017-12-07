@@ -177,10 +177,20 @@ export function removeContactToGroup(group: string, contact: string) {
   });
 }
 
+export function getAccount() {
+  return api.get({
+    failure: 'GET_ACCOUNT_FAILURE',
+    start: 'GET_ACCOUNT_START',
+    success: 'GETACCOUNT_SUCCESS',
+    url: `/api/2/account`,
+  });
+}
+
 export function getAllData() {
   return (dispatch: Dispatch<State>) => {
+    dispatch(getAccount());
     dispatch(getContacts());
-    dispatch(getHistory());
     dispatch(getInbox());
+    dispatch(getHistory());
   };
 }

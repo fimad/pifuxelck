@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 import { State } from '../state';
 
 import {
+  getAccount,
   getContactGroups,
   getContacts,
   getHistory,
@@ -29,5 +30,12 @@ export function gotoContacts() {
     dispatch(push('/contacts'));
     dispatch(getContacts());
     dispatch(getContactGroups());
+  };
+}
+
+export function gotoAccount() {
+  return (dispatch: Dispatch<State>) => {
+    dispatch(push('/account'));
+    dispatch(getAccount());
   };
 }

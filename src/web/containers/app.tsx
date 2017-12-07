@@ -4,6 +4,7 @@ import ContactsIcon from 'material-ui-icons/Contacts';
 import LogoutIcon from 'material-ui-icons/Eject';
 import HistoryIcon from 'material-ui-icons/History';
 import InboxIcon from 'material-ui-icons/Inbox';
+import PersonIcon from 'material-ui-icons/Person';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -20,6 +21,7 @@ import Inbox from './inbox';
 import LoginRedirect from './login-redirect';
 
 import {
+  gotoAccount,
   gotoContacts,
   gotoHistory,
   gotoInbox,
@@ -59,6 +61,11 @@ class AppComponent extends React.Component<Props, any> {
 
   public handleShowDrawer =
       (showDrawer: boolean) => this.setState({showDrawer})
+
+  public handleClickAccount = () => {
+    this.props.dispatch(gotoAccount());
+    this.handleShowDrawer(false);
+  }
 
   public handleClickInbox = () => {
     this.props.dispatch(gotoInbox());
@@ -142,6 +149,11 @@ class AppComponent extends React.Component<Props, any> {
     return (
       <div style={rootStyle}>
         <Switch>
+          <Route path='/account'>
+            <div>
+              {appBar('Account')}
+            </div>
+          </Route>
           <Route path='/history'>
             <div>
               {appBar('History')}
@@ -181,6 +193,12 @@ class AppComponent extends React.Component<Props, any> {
         >
           <div style={{width: '240px'}} />
           <List style={{display: 'flex', flexDirection: 'column'}}>
+            <ListItem button={true} onClick={this.handleClickAccount}>
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary='Account' />
+            </ListItem>
             <ListItem button={true} onClick={this.handleClickInbox}>
               <ListItemIcon>
                 <InboxIcon />
