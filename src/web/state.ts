@@ -27,7 +27,10 @@ export interface Entities {
 
 export interface Ui {
   account: {
-    email: (string|null),
+    email: (string|null)
+    password: (string|null),
+    passwordConfirmation: (string|null),
+    passwordError: string,
   };
   outbox: {
     [gameId: string]: Turn,

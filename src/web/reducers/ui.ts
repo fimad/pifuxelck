@@ -6,6 +6,9 @@ import { Ui } from '../state';
 const initialState = {
   account: {
     email: null as (string | null),
+    password: null as (string | null),
+    passwordConfirmation: null as (string | null),
+    passwordError: '',
   },
   contacts: {
     lookup: '',
@@ -228,7 +231,35 @@ export default function(state: Ui = initialState, action: Action) {
     return {
       ...state,
       account: {
+        ...state.account,
         email: action.email,
+      },
+    };
+  }
+  if (action.type === 'UI_UPDATE_PASSWORD') {
+    return {
+      ...state,
+      account: {
+        ...state.account,
+        password: action.password,
+      },
+    };
+  }
+  if (action.type === 'UI_UPDATE_PASSWORD_CONFIRMATION') {
+    return {
+      ...state,
+      account: {
+        ...state.account,
+        passwordConfirmation: action.passwordConfirmation,
+      },
+    };
+  }
+  if (action.type === 'UI_SET_ACCOUNT_PASSWORD_ERROR') {
+    return {
+      ...state,
+      account: {
+        ...state.account,
+        passwordError: action.error,
       },
     };
   }
@@ -238,6 +269,9 @@ export default function(state: Ui = initialState, action: Action) {
       ...state,
       account: {
         email: null,
+        password: null,
+        passwordConfirmation: null,
+        passwordError: '',
       },
       drawing: {
         ...state.drawing,

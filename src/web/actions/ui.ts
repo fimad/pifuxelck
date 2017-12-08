@@ -52,3 +52,15 @@ export function newGameRemovePlayer(playerId: string) {
 export function updateEmail(email: string) {
   return {type: 'UI_UPDATE_EMAIL', email};
 }
+
+export function updatePassword(password: string) {
+  return {type: 'UI_UPDATE_PASSWORD', password};
+}
+
+export function updatePasswordConfirmation(passwordConfirmation: string) {
+  return {type: 'UI_UPDATE_PASSWORD_CONFIRMATION', passwordConfirmation};
+}
+
+export function setAccountPasswordError(error: string) {
+  return {type: 'UI_SET_ACCOUNT_PASSWORD_ERROR', error};
+}

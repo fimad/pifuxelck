@@ -67,4 +67,13 @@ export type Action = ({
 } | {
   type: 'UI_UPDATE_EMAIL'
   email: string,
+} | {
+  type: 'UI_UPDATE_PASSWORD'
+  password: string,
+} | {
+  type: 'UI_UPDATE_PASSWORD_CONFIRMATION'
+  passwordConfirmation: string,
+} | {
+  type: 'UI_SET_ACCOUNT_PASSWORD_ERROR'
+  error: string,
 });

@@ -7,59 +7,65 @@ import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { updateAccount, updateEmail } from '../actions';
+import AccountEmail from '../components/account-email';
+import AccountPassword from '../components/account-password';
 import { State } from '../state';
 
-const styles = require('./account.css');
+import {
+  setAccountPasswordError,
+  updateAccount,
+  updateEmail,
+  updatePassword,
+  updatePasswordConfirmation,
+} from '../actions';
 
 interface Props {
   email: string;
+  password: string;
+  passwordConfirmation: string;
+  passwordError: string;
   onEmailUpdate: (email: string) => void;
   onEmailSubmit: (email: string) => void;
+  onPasswordUpdate: (password: string) => void;
+  onPasswordConfirmationUpdate: (passwordConfirmation: string) => void;
+  onPasswordSubmit: (password: string, passwordConfirmation: string) => void;
 }
 
-const AccountComponent = ({email, onEmailUpdate, onEmailSubmit}: Props) => {
+const AccountComponent = (props: Props) => {
   return (
-    <div className={cx(styles.container, styles.email)}>
-      <Paper className={styles.paper}>
-          <Typography type='title' className={styles.title}>
-            Email Notifications
-          </Typography>
-          <Typography type='caption' className={styles.caption}>
-            Providing an email address is optional and allows pifuxelck to
-            notify you when it is your turn a game an when a game you are a
-            participant in finishes.
-          </Typography>
-          <TextField
-              className={styles.text}
-              onChange={(event) => onEmailUpdate(event.target.value)}
-              onSubmit={() => onEmailSubmit(email)}
-              label='Email'
-              value={email}
-              fullWidth={true}
-          />
-          <div className={styles.buttonContainer}>
-            <Button
-                onClick={() => onEmailSubmit(email)}
-                raised={true}
-                color='accent'
-                className={styles.button}
-            >
-              Update
-            </Button>
-          </div>
-      </Paper>
+    <div>
+      <AccountEmail {...props} />
+      <AccountPassword {...props} />
     </div>
   );
 };
 
 const mapStateToProps = (state: State) => ({
   email: state.ui.account.email || state.entities.account.email || '',
+  password: state.ui.account.password || '',
+  passwordConfirmation: state.ui.account.passwordConfirmation || '',
+  passwordError: state.ui.account.passwordError || '',
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
   onEmailSubmit: (email: string) => dispatch(updateAccount({email})),
   onEmailUpdate: (email: string) => dispatch(updateEmail(email)),
+  onPasswordConfirmationUpdate: (passwordConfirmation: string) => {
+    dispatch(setAccountPasswordError(''));
+    dispatch(updatePasswordConfirmation(passwordConfirmation));
+  },
+  onPasswordSubmit: (password: string, passwordConfirmation: string) => {
+    if (password !== passwordConfirmation) {
+      dispatch(setAccountPasswordError('Passwords do not match.'));
+    } else {
+      dispatch(setAccountPasswordError(''));
+      dispatch(updateAccount({password}));
+    }
+  },
+  onPasswordUpdate: (password: string) => {
+    dispatch(setAccountPasswordError(''));
+    dispatch(updatePassword(password));
+  },
 });
 
 const Account =
