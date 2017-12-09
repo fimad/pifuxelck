@@ -29,6 +29,7 @@ interface Props {
   onPasswordUpdate: (password: string) => void;
   onPasswordConfirmationUpdate: (passwordConfirmation: string) => void;
   onPasswordSubmit: (password: string, passwordConfirmation: string) => void;
+  sendInProgress: boolean;
 }
 
 const AccountComponent = (props: Props) => {
@@ -45,6 +46,7 @@ const mapStateToProps = (state: State) => ({
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
   passwordError: state.ui.account.passwordError || '',
+  sendInProgress: state.apiStatus.inProgress.UPDATE_ACCOUNT,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => ({

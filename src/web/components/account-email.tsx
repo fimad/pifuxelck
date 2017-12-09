@@ -16,9 +16,11 @@ interface Props {
   email: string;
   onEmailUpdate: (email: string) => void;
   onEmailSubmit: (email: string) => void;
+  sendInProgress: boolean;
 }
 
-export default ({email, onEmailUpdate, onEmailSubmit}: Props) => {
+export default (
+    {email, onEmailUpdate, onEmailSubmit, sendInProgress}: Props) => {
   return (
     <div className={cx(styles.container, styles.email)}>
       <Paper className={styles.paper}>
@@ -32,6 +34,7 @@ export default ({email, onEmailUpdate, onEmailSubmit}: Props) => {
           </Typography>
           <TextField
               className={styles.text}
+              disabled={sendInProgress}
               onChange={(event) => onEmailUpdate(event.target.value)}
               onSubmit={() => onEmailSubmit(email)}
               label='Email'
@@ -40,6 +43,7 @@ export default ({email, onEmailUpdate, onEmailSubmit}: Props) => {
           />
           <div className={styles.buttonContainer}>
             <Button
+                disabled={sendInProgress}
                 onClick={() => onEmailSubmit(email)}
                 raised={true}
                 color='accent'

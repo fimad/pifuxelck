@@ -19,12 +19,13 @@ interface Props {
   onPasswordUpdate: (password: string) => void;
   onPasswordConfirmationUpdate: (password: string) => void;
   onPasswordSubmit: (password: string, passwordConfirmation: string) => void;
+  sendInProgress: boolean;
 }
 
 export default ({
     password, passwordConfirmation, passwordError, onPasswordUpdate,
     onPasswordConfirmationUpdate: onConfirmationUpdate,
-    onPasswordSubmit}: Props) => {
+    onPasswordSubmit, sendInProgress}: Props) => {
   return (
     <div className={cx(styles.container)}>
       <Paper className={styles.paper}>
@@ -38,6 +39,7 @@ export default ({
           </Typography>
           <TextField
               className={styles.text}
+              disabled={sendInProgress}
               onChange={(event) => onPasswordUpdate(event.target.value)}
               type='password'
               label='Password'
@@ -46,6 +48,7 @@ export default ({
           />
           <TextField
               className={styles.text}
+              disabled={sendInProgress}
               onChange={(event) => onConfirmationUpdate(event.target.value)}
               type='password'
               label='Confirm Password'
@@ -57,6 +60,7 @@ export default ({
           </Typography>
           <div className={styles.buttonContainer}>
             <Button
+                disabled={sendInProgress}
                 onClick={() => onPasswordSubmit(password, passwordConfirmation)}
                 raised={true}
                 color='accent'
