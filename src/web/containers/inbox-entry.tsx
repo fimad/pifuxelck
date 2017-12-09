@@ -23,6 +23,7 @@ interface ExternalProps {
 type Props = ExternalProps & {
   drawing: Drawing
   label: string
+  sendPending: boolean
   onSubmit: (gameId: string, turn: Turn) => void
   previousIsDrawing: boolean
   onChange: (turn: Turn) => void
@@ -35,7 +36,8 @@ const EntryComponent = (props: Props) =>
       (<InboxLabelCard {...props} />);
 
 function mapStateToProps(
-    {entities: {inbox}, ui: {outbox}}: State, ownProps: ExternalProps) {
+    {entities: {inbox}, ui: {outbox}, apiStatus}: State,
+    ownProps: ExternalProps) {
   const {gameId} = ownProps;
   const previous = inbox[gameId].previous_turn;
   const previousIsDrawing = previous.is_drawing;
@@ -46,7 +48,8 @@ function mapStateToProps(
   const label = !previousIsDrawing ?
       labelOrDefault(previous) :
       labelOrDefault(current);
-  return { previousIsDrawing, label, drawing } as Props;
+  const sendPending = apiStatus.pendingTurns[gameId];
+  return { previousIsDrawing, label, drawing, sendPending } as Props;
 }
 
 const mapDispatchToProps =

@@ -12,6 +12,9 @@ export interface Params {
   body?: Message;
   onSuccess?: (message: Message) => void;
   name: string;
+  extra?: {
+    [key: string]: any;
+  };
 }
 
 export function get(params: Params) {
@@ -34,13 +37,15 @@ export function call(
     apiCall: (url: string, message: Message, token?: string) =>
         Promise<Message>,
     params: Params) {
+  const extra = params.extra || {};
   return (dispatch: Dispatch<State>, getState: () => State) => {
     if (!params.allowConcurrent &&
-        getState().apiStatus[params.name]) {
+        getState().apiStatus.inProgress[params.name]) {
       return;
     }
     if (params.start) {
       dispatch({
+        ...extra,
         apiName: params.name,
         inProgress: true,
         type: params.start,
@@ -51,6 +56,7 @@ export function call(
         .then((message) => {
           if (params.success) {
             dispatch({
+              ...extra,
               apiName: params.name,
               inProgress: false,
               message,
@@ -62,6 +68,7 @@ export function call(
           }
         })
         .catch(() => dispatch({
+          ...extra,
           apiName: params.name,
           inProgress: false,
           type: params.failure,

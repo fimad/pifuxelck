@@ -66,7 +66,7 @@ export function userLookup(user: string) {
 
 export function getHistory() {
   return (dispatch: Dispatch<State>, getState: () => State) => {
-    if (getState().apiStatus.GET_HISTORY) {
+    if (getState().apiStatus.inProgress.GET_HISTORY) {
       return;
     }
     dispatch({
@@ -142,6 +142,7 @@ export function newGame(players: string[], label: string) {
 export function playDrawingTurn(gameId: string, drawing: Drawing) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     body: {turn: {is_drawing: true, drawing}},
+    extra: {gameId},
     failure: 'PLAY_GAME_FAILURE',
     name: 'PLAY_GAME',
     onSuccess: () => dispatch(getInbox()),
@@ -154,6 +155,7 @@ export function playDrawingTurn(gameId: string, drawing: Drawing) {
 export function playLabelTurn(gameId: string, label: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     body: {turn: {is_drawing: false, label}},
+    extra: {gameId},
     failure: 'PLAY_GAME_FAILURE',
     name: 'PLAY_GAME',
     onSuccess: () => dispatch(getInbox()),

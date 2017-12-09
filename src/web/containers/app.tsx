@@ -6,6 +6,7 @@ import HistoryIcon from 'material-ui-icons/History';
 import InboxIcon from 'material-ui-icons/Inbox';
 import PersonIcon from 'material-ui-icons/Person';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { CircularProgress } from 'material-ui/Progress';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
@@ -46,6 +47,7 @@ const { push } = require('react-router-redux');
 interface Props {
   dispatch: Dispatch<State>;
   isLoggedIn: boolean;
+  newGameInProgress: boolean;
 }
 
 class AppComponent extends React.Component<Props, any> {
@@ -142,7 +144,8 @@ class AppComponent extends React.Component<Props, any> {
         <DrawReply gameId={match.params.gameId} />
       </div>
     );
-    const newGameButton = (
+    const newGameButton = this.props.newGameInProgress ?
+      (<CircularProgress color='accent' />) : (
       <Button color='contrast' onClick={this.handleShowNewGame}>
         New Game
       </Button>
@@ -236,8 +239,9 @@ class AppComponent extends React.Component<Props, any> {
   }
 }
 
-const mapStateToProps = ({auth}: State) => ({
+const mapStateToProps = ({auth, apiStatus}: State) => ({
   isLoggedIn: !!auth,
+  newGameInProgress: apiStatus.inProgress.NEW_GAME,
 });
 
 const App = connect(mapStateToProps)(AppComponent as any);

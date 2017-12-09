@@ -49,6 +49,15 @@ export interface Ui {
   };
 }
 
+export interface ApiStatus {
+  inProgress: {
+    [api: string]: boolean,
+  };
+  pendingTurns: {
+    [gameId: string]: boolean,
+  };
+}
+
 /**
  * The overall state of the application.
  */
@@ -61,7 +70,5 @@ export interface State {
   /** The auth token, if present the user is logged in. */
   auth?: string;
 
-  apiStatus: {
-    [api: string]: boolean,
-  };
+  apiStatus: ApiStatus;
 }
