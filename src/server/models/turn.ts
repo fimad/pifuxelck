@@ -346,7 +346,7 @@ const yourTurnEmail = `
       <img
          width="48"
          height="48"
-         src="https://canary.everythingissauce.com/images/icon-48.png" />
+         src="https://everythingissauce.com/images/icon-48.png" />
     </a>
   </div>
 <div>
@@ -389,7 +389,7 @@ const finshedGameEmail = `
       line-height: 96px;
   ">
     <a
-        href="https://canary.everythingissauce.com/game/%GAMEID%"
+        href="https://everythingissauce.com/game/%GAMEID%"
         style="
             text-decoration:none;
             color: black;
@@ -399,7 +399,7 @@ const finshedGameEmail = `
       <img
          width="48"
          height="48"
-         src="https://canary.everythingissauce.com/images/icon-48.png" />
+         src="https://everythingissauce.com/images/icon-48.png" />
     </a>
   </div>
 <div>
