@@ -8,9 +8,12 @@ interface ActionMessage {
 export default function(auth = '', action: Action) {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
+    case 'REGISTER_SUCCESS':
       return action.message.meta.auth;
     case 'LOGIN_FAILURE':
     case 'LOGIN_START':
+    case 'REGISTER_FAILURE':
+    case 'REGISTER_START':
     case 'LOGOUT':
       return '';
     default:

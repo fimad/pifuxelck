@@ -29,6 +29,28 @@ export function login(user: string, password: string) {
   };
 }
 
+export function register(user: string, password: string) {
+  return (dispatch: Dispatch<State>, getState: () => State) => {
+    // Before logging in wipe the user's history. We don't want to conflate use
+    // history between users sharing the same browser...
+    idbKeyval.set('game-history', {}).then(() => {
+      api.post({
+        body: {
+          user: {
+            display_name: user,
+            password,
+          },
+        },
+        failure: 'REGISTER_FAILURE',
+        onSuccess: () => dispatch(getAllData()),
+        start: 'REGISTER_START',
+        success: 'REGISTER_SUCCESS',
+        url: '/api/2/account/register',
+      })(dispatch, getState);
+    });
+  };
+}
+
 export function userLookup(user: string) {
   return api.get({
     failure: 'USER_LOOKUP_FAILURE',

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
-import { login } from '../actions';
+import { login, register } from '../actions';
 import { State } from '../state';
 
 import {
@@ -27,6 +27,7 @@ const style: any = {
 class LoginComponent extends React.Component<Props, {[key: string]: string}> {
 
   private dispatchLogin: () => void;
+  private dispatchRegister: () => void;
 
   constructor(props: Props) {
     super(props);
@@ -36,6 +37,9 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     };
     this.dispatchLogin = () => {
       this.props.dispatch(login(this.state.user, this.state.password));
+    };
+    this.dispatchRegister = () => {
+      this.props.dispatch(register(this.state.user, this.state.password));
     };
   }
 
@@ -79,6 +83,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
         <Button
             raised={true}
             color='accent'
+            onClick={this.dispatchRegister}
             style={buttonStyle}
         >
           Register
