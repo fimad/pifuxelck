@@ -8,11 +8,12 @@ export * from './actions/routes';
 export * from './actions/ui';
 
 export type Action = ({
+  type: 'LOGOUT' | '@@router/LOCATION_CHANGE' | 'UI_STOP_DRAWING_LINE',
+} | {
   type: 'LOGIN_START' | 'LOGIN_FAILURE' | 'USER_LOOKUP_START' |
       'USER_LOOKUP_FAILURE' | 'GET_HISTORY_START' | 'GET_HISTORY_STOP' |
       'GET_INBOX_START' | 'GET_INBOX_FAILURE' | 'PLAY_GAME_START' |
-      'PLAY_GAME_FAILURE' | 'LOGOUT' | '@@router/LOCATION_CHANGE' |
-      'UI_STOP_DRAWING_LINE' | 'ADD_CONTACT_SUCCESS' |
+      'PLAY_GAME_FAILURE' | 'ADD_CONTACT_SUCCESS' |
       'CREATE_CONTACT_GROUP_SUCCESS' | 'GET_CONTACTS_START' |
       'GET_CONTACTS_FAILURE' | 'ADD_CONTACT_START' | 'ADD_CONTACT_FAILURE' |
       'GET_CONTACT_GROUPS_START' | 'GET_CONTACT_GROUPS_FAILURE' |
@@ -22,12 +23,16 @@ export type Action = ({
       'REMOVE_CONTACT_TO_GROUP_SUCCESS' | 'REMOVE_CONTACT_TO_GROUP_FAILURE' |
       'GET_ACCOUNT_FAILURE' | 'GET_ACCOUNT_START' | 'REGISTER_START' |
       'REGISTER_FAILURE',
+  inProgress: boolean,
+  apiName: string,
 } | {
   type: 'LOGIN_SUCCESS' | 'USER_LOOKUP_SUCCESS' | 'GET_HISTORY_RECEIVE' |
       'GET_INBOX_SUCCESS' | 'NEW_GAME_SUCCESS' | 'PLAY_GAME_SUCCESS' |
       'GET_CONTACTS_SUCCESS' | 'GET_CONTACT_GROUPS_SUCCESS' |
       'GET_ACCOUNT_SUCCESS' | 'REGISTER_SUCCESS'
   message: Message,
+  inProgress: boolean,
+  apiName: string,
 } | {
   type: 'UI_UPDATE_OUTBOX'
   gameId: string

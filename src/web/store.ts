@@ -38,7 +38,12 @@ export function createPifuxelckStore(history: History) {
             load: () => idbEngine.load().then((state: any) => state || {}),
             save: (state) => idbEngine.save(state),
           },
-          [], ['_version', ['entities', 'history'], ['ui', 'newGame']]),
+          [], [
+            '_version',
+            ['apiStatus'],
+            ['entities', 'history'],
+            ['ui', 'newGame'],
+          ]),
       1500);
   engine = decorateEngineWithMigrations(engine);
   middlewares.push(storage.createMiddleware(engine));

@@ -27,7 +27,7 @@ const initialState = {
     topic: '',
     users: [] as string[],
   },
-  outbox: {} ,
+  outbox: {},
 };
 
 const defaultDrawingTurn: Turn = {
@@ -36,7 +36,9 @@ const defaultDrawingTurn: Turn = {
 };
 
 export default function(state: Ui = initialState, action: Action) {
-  if (action.type === 'LOGOUT' || action.type === 'LOGIN_START') {
+  if (action.type === 'LOGOUT' ||
+      action.type === 'LOGIN_START' ||
+      action.type === 'REGISTER_START') {
     return initialState;
   }
   if (action.type === 'UI_UPDATE_OUTBOX') {

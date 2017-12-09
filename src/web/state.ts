@@ -60,4 +60,8 @@ export interface State {
 
   /** The auth token, if present the user is logged in. */
   auth?: string;
+
+  apiStatus: {
+    [api: string]: boolean,
+  };
 }
