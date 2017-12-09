@@ -15,7 +15,7 @@ interface Props {
 
 const InboxComponent = ({entries}: Props) => (
   <div className={styles.container}>
-    {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))};
+    {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))}
   </div>
 );
 
