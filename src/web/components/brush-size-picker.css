@@ -2,12 +2,12 @@
   background: rgba(0, 0, 0, .50);
   height: 100%;
   margin: 0px;
-  overflowY: scroll;
+  overflow-y: scroll;
   padding: 0px;
-  placeSelf: center;
+  place-self: center;
   position: absolute;
-  top: '0px';
-  width: '100%';
+  top: 0px;
+  width: 100%;
 }
 
 .brushSizePicker {

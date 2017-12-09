@@ -42,7 +42,7 @@ const sizes: number[] = [
 
 const BrushSizePicker = (props: Props) => (
   <div className={styles.brushSizePickerContainer}>
-    <div className={styles.BrushSizePicker}>
+    <div className={styles.brushSizePicker}>
       {sizes.map((size: number) => (<SizeButton size={size} {...props} />))}
     </div>
   </div>
