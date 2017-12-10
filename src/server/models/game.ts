@@ -341,7 +341,11 @@ export async function completedGames(
           INNER JOIN (
               SELECT game_id FROM Turns AS T WHERE T.account_id = ?
           ) AS T ON T.game_id = Games.id
-          WHERE Games.completed_at_id > ?
+          WHERE Games.completed_at_id > COALESCE((
+            SELECT completed_at_id
+            FROM Games
+            WHERE id = ?
+          ), -1)
           ORDER BY completed_at_id ASC
           LIMIT 25
        ) AS Games ON Turns.game_id = Games.id
