@@ -1,7 +1,7 @@
 import { ContactGroup } from '../../common/models/contacts';
 import { Message } from '../../common/models/message';
 import { User } from '../../common/models/user';
-import { mapFrom } from '../../common/utils';
+import { mapFrom, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
 import { Entities } from '../state';
 
@@ -20,7 +20,18 @@ const initialState = {
   users: {},
 };
 
-export default function(state: Entities = initialState, action: Action) {
+function handleOptimisticUpdate(state: Entities, action: Action) {
+  switch (action.type) {
+    case 'REMOVE_CONTACT_SUCCESS':
+      return {
+        ...state,
+        contacts: objectWithoutKeys(state.contacts, [action.contactId]),
+      };
+  }
+  return state;
+}
+
+function handleApiResult(state: Entities, action: Action) {
   switch (action.type) {
     case 'USER_LOOKUP_SUCCESS':
       if (action.message && action.message.user) {
@@ -96,4 +107,8 @@ export default function(state: Entities = initialState, action: Action) {
       }
   }
   return state;
+}
+
+export default function(state: Entities = initialState, action: Action) {
+  return handleApiResult(handleOptimisticUpdate(state, action), action);
 }

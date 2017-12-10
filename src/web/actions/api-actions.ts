@@ -186,12 +186,27 @@ export function getContacts() {
 
 export function addContact(contactId: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+    allowConcurrent: true,
     failure: 'ADD_CONTACT_FAILURE',
     name: 'ADD_CONTACT',
     onSuccess: () => dispatch(getContacts()),
     requireAuth: true,
     start: 'ADD_CONTACT_START',
     success: 'ADD_CONTACT_SUCCESS',
+    url: `/api/2/contacts/${contactId}`,
+  })(dispatch, getState);
+}
+
+export function removeContact(contactId: string) {
+  return (dispatch: Dispatch<State>, getState: () => State) => api.del({
+    allowConcurrent: true,
+    extra: {contactId},
+    failure: 'REMOVE_CONTACT_FAILURE',
+    name: 'REMOVE_CONTACT',
+    onSuccess: () => dispatch(getContacts()),
+    requireAuth: true,
+    start: 'REMOVE_CONTACT_START',
+    success: 'REMOVE_CONTACT_SUCCESS',
     url: `/api/2/contacts/${contactId}`,
   })(dispatch, getState);
 }

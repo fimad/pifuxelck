@@ -10,3 +10,9 @@ export function mapFrom<T>(
 export function compareStringsAsInts(a: string, b: string) {
   return parseInt(a, 10) - parseInt(b, 10);
 }
+
+export function objectWithoutKeys(obj: {[x: string]: any}, keys: string[]) {
+  const result = {...obj};
+  keys.forEach((key: string) => delete result[key]);
+  return result;
+}

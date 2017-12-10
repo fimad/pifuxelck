@@ -6,6 +6,7 @@ import {
   createContactGroup,
   getContactGroups,
   getContacts,
+  removeContact,
   removeContactFromGroup,
 } from '../models/contacts';
 import authRoute from './auth-route';
@@ -27,6 +28,12 @@ contacts.get('/', authRoute(async (userId, req, res) => {
 contacts.put('/:contactId', authRoute(async (userId, req, res) => {
   const {contactId} = req.params;
   await addContact(req.db, userId, contactId);
+  res.success({});
+}));
+
+contacts.delete('/:contactId', authRoute(async (userId, req, res) => {
+  const {contactId} = req.params;
+  await removeContact(req.db, userId, contactId);
   res.success({});
 }));
 

@@ -74,6 +74,19 @@ describe('Contacts', () => {
             }],
           }));
     });
+
+    it('should allow contacts to be removed', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      await newUser(app, 'user2');
+      await user1.put('/api/2/contacts/2').expect(200);
+      await user1.delete('/api/2/contacts/2').expect(200);
+      await user1.get('/api/2/contacts')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            contacts: [],
+          }));
+    });
   });
 
   describe('Contact Groups', () => {

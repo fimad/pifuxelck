@@ -56,6 +56,9 @@ export interface ApiStatus {
   pendingTurns: {
     [gameId: string]: boolean,
   };
+  pendingContactDeletes: {
+    [id: string]: boolean,
+  };
 }
 
 /**

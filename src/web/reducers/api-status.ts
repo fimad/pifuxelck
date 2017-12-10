@@ -8,6 +8,7 @@ function isApiAction(action: Action): action is ApiAction {
 
 const initialState: ApiStatus = {
   inProgress: {},
+  pendingContactDeletes: {},
   pendingTurns: {},
 };
 
@@ -34,6 +35,17 @@ export default function(state: ApiStatus = initialState, action: Action) {
       pendingTurns: {
         ...nextState.pendingTurns,
         [action.gameId]: action.inProgress,
+      },
+    };
+  }
+  if (action.type === 'REMOVE_CONTACT_START' ||
+      action.type === 'REMOVE_CONTACT_SUCCESS' ||
+      action.type === 'REMOVE_CONTACT_FAILURE') {
+    return {
+      ...nextState,
+      pendingContactDeletes: {
+        ...nextState.pendingContactDeletes,
+        [action.contactId]: action.inProgress,
       },
     };
   }

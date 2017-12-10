@@ -1,14 +1,23 @@
 import * as cx from 'classnames';
 import AddIcon from 'material-ui-icons/Add';
+import RemoveIcon from 'material-ui-icons/Delete';
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
+import { CircularProgress } from 'material-ui/Progress';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { addContact, changeContactLookup, userLookup } from '../actions';
 import { State } from '../state';
+
+import {
+  addContact,
+  changeContactLookup,
+  removeContact,
+  userLookup,
+} from '../actions';
 
 import List, {
   ListItem,
@@ -18,23 +27,41 @@ import List, {
 
 const styles = require('./contacts.css');
 
+interface SlimContact {
+  name: string;
+  id: string;
+  pendingDelete: boolean;
+}
+
 interface Props {
   addContactEnabled: boolean;
-  contacts: string[];
+  contacts: SlimContact[];
   lookup: string;
   lookupId?: string;
   onAddContact: (lookupId: string) => void;
+  onRemoveContact: (lookupId: string) => void;
   onLookupChange: (lookup: string) => void;
 }
 
 const ContactsComponent = ({
     addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange,
+    onRemoveContact,
   }: Props) => {
-  const contactListItem = (contact: string, i: number) => (
-    <ListItem key={i}>
-      <ListItemText primary={contact} />
-    </ListItem>
-  );
+  const contactListItem = ({name, id, pendingDelete}: SlimContact) => {
+    const action = pendingDelete ? (<CircularProgress color='accent' />) : (
+      <IconButton onClick={() => onRemoveContact(id)}>
+        <RemoveIcon />
+      </IconButton>
+    );
+    return (
+      <ListItem key={id}>
+        <ListItemText primary={name} />
+        <ListItemSecondaryAction>
+          {action}
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
+  };
   const contactList = contacts.length === 0 ?
       (
         <Typography align='center' style={{margin: '16px'}}>
@@ -71,11 +98,18 @@ const ContactsComponent = ({
   );
 };
 
+const compareByDisplayName =
+    (a: SlimContact, b: SlimContact) => a.name.localeCompare(b.name);
+
 const mapStateToProps = (state: State) => ({
   addContactEnabled: !!state.entities.users[state.ui.contacts.lookup],
   contacts: Object.keys(state.entities.contacts)
-      .map((i) => state.entities.contacts[i].display_name)
-      .sort(),
+      .map((i) => ({
+        id: i,
+        name: state.entities.contacts[i].display_name,
+        pendingDelete: state.apiStatus.pendingContactDeletes[i],
+      }))
+      .sort(compareByDisplayName),
   lookup: state.ui.contacts.lookup,
   lookupId: state.entities.users[state.ui.contacts.lookup],
 });
@@ -88,6 +122,9 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
   onLookupChange: (lookup: string) => {
     dispatch(changeContactLookup(lookup));
     dispatch(userLookup(lookup));
+  },
+  onRemoveContact: (lookupId: string) => {
+    dispatch(removeContact(lookupId));
   },
 });
 

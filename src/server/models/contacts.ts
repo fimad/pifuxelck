@@ -34,6 +34,17 @@ export async function addContact(
      )`, [id, contactId, id, contactId]);
 }
 
+/**
+ * Removes new contact from the list of known contacts for the current user.
+ */
+export async function removeContact(
+    db: Connection, id: string, contactId: string): Promise<void> {
+  await query(
+    db,
+    `DELETE FROM Contacts WHERE ? = account_id AND ? = contact_id`,
+    [id, contactId]);
+}
+
 /** Returns all of a user's contacts. */
 export async function getContacts(
     db: Connection, id: string): Promise<User[]> {

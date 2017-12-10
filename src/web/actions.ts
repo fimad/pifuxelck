@@ -24,6 +24,13 @@ export type ApiAction = {
       'REMOVE_CONTACT_TO_GROUP_FAILURE' | 'GET_ACCOUNT_FAILURE' |
       'GET_ACCOUNT_START' | 'REGISTER_START' | 'REGISTER_FAILURE',
 } | {
+  type: 'REMOVE_CONTACT_START' | 'REMOVE_CONTACT_FAILURE',
+  contactId: string,
+} | {
+  type: 'REMOVE_CONTACT_SUCCESS',
+  contactId: string,
+  message: Message,
+} | {
   type: 'PLAY_GAME_START' | 'PLAY_GAME_FAILURE',
   gameId: string,
 } | {
