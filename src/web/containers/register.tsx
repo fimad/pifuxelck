@@ -27,7 +27,8 @@ const style: any = {
   width: 'fit-content',
 };
 
-class LoginComponent extends React.Component<Props, {[key: string]: string}> {
+class RegisterComponent extends
+    React.Component<Props, {[key: string]: string}> {
 
   private dispatchLogin: () => void;
   private dispatchRegister: () => void;
@@ -36,13 +37,14 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     super(props);
     this.state = {
       password: '',
+      passwordConfirmation: '',
       user: '',
     };
     this.dispatchLogin = () => {
-      this.props.dispatch(login(this.state.user, this.state.password));
+      this.props.dispatch(push('/login'));
     };
     this.dispatchRegister = () => {
-      this.props.dispatch(push('/register'));
+      this.props.dispatch(register(this.state.user, this.state.password));
     };
   }
 
@@ -82,23 +84,30 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
             label='Password'
             type='password'
         />
+        <TextField
+            style={textStyle}
+            onChange={this.onChange('passwordConfirmation')}
+            value={this.state.passwordConfirmation}
+            label='Confirm Password'
+            type='password'
+        />
         <Button
             raised={true}
             disabled={this.props.inProgress}
             color='primary'
-            onClick={this.dispatchLogin}
+            onClick={this.dispatchRegister}
             style={buttonStyle}
         >
-          Login
+          Register
         </Button>
         <Typography type='caption'>
-          Don't have an account?
+          Already have an account?
           <Button
-              onClick={this.dispatchRegister}
+              onClick={this.dispatchLogin}
               disabled={this.props.inProgress}
               color='accent'
           >
-            Register
+            Sign in
           </Button>
         </Typography>
       </Paper>
@@ -108,9 +117,9 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
 
 const mapStateToProps = ({auth, apiStatus}: State) => ({
   auth,
-  inProgress: apiStatus.inProgress.LOGIN || apiStatus.inProgress.REGISTER,
+  inProgress: apiStatus.inProgress.REGISTER,
 });
 
-const Login = connect(mapStateToProps)(LoginComponent as any);
+const Register = connect(mapStateToProps)(RegisterComponent as any);
 
-export default Login;
+export default Register;

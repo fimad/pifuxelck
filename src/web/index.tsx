@@ -8,6 +8,7 @@ import * as actions from './actions';
 import ScrollToTop from './components/scroll-to-top';
 import App from './containers/app';
 import Login from './containers/login';
+import Register from './containers/register';
 import { createPifuxelckStore } from './store';
 
 import {
@@ -46,6 +47,7 @@ createPifuxelckStore(history)
               <div>
                 <Switch>
                   <Route path='/login' component={Login} />
+                  <Route path='/register' component={Register} />
                   <Route path='/' component={App} />
                 </Switch>
               </div>
