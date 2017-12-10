@@ -4,6 +4,7 @@ import { State } from '../state';
 import * as api from './api';
 
 export interface Params {
+  requireAuth?: boolean;
   allowConcurrent?: boolean;
   start?: string;
   success?: string;
@@ -39,8 +40,12 @@ export function call(
     params: Params) {
   const extra = params.extra || {};
   return (dispatch: Dispatch<State>, getState: () => State) => {
+    const state = getState();
     if (!params.allowConcurrent &&
-        getState().apiStatus.inProgress[params.name]) {
+        state.apiStatus.inProgress[params.name]) {
+      return;
+    }
+    if (params.requireAuth && !state.auth) {
       return;
     }
     if (params.start) {
