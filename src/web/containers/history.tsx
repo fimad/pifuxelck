@@ -1,4 +1,6 @@
+import { IconButton } from 'material-ui';
 import { StarBorder } from 'material-ui-icons';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -10,15 +12,26 @@ import Drawing from '../components/drawing';
 import { Desktop, Mobile, Tablet } from '../components/media-query';
 import { State } from '../state';
 
+const Infinite = require('react-infinite');
 const { push } = require('react-router-redux');
 
-import { IconButton } from 'material-ui';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+const styles = require('./history.css');
 
 interface Props {
   games: Game[];
   dispatch: Dispatch<State>;
 }
+
+const getNumCells = () => {
+  const clientWidth = document.documentElement.clientWidth;
+  if (clientWidth < 768) {
+    return 2;
+  }
+  if (clientWidth < 992) {
+    return 4;
+  }
+  return 6;
+};
 
 const gameToTile =
     ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
@@ -38,8 +51,10 @@ const gameToTile =
       drawing = (<Drawing drawing={turn.drawing} hideInivisible={true} />);
     }
   }
+  const width = `${100 / getNumCells()}%`;
   return (
     <GridListTile
+        style={{width, padding: '2px'}}
         key={game.id}
         onClick={() => dispatch(push(`/game/${game.id}`))}
     >
@@ -54,24 +69,25 @@ const HistoryComponent = ({games, dispatch}: Props) => {
       .filter((game) => game.turns.length > 1)
       .map((game) => ({game, dispatch}))
       .map(gameToTile);
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+  };
+  const numCells = getNumCells();
+  const cellHeight = document.documentElement.clientWidth / numCells;
+  const cellHeights =
+      tiles.map((x, i) => (i % numCells === 0) ? cellHeight : 0);
   return (
-    <div>
-      <Desktop>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={6}>
-          {tiles}
-        </GridList>
-      </Desktop>
-      <Tablet>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={4}>
-          {tiles}
-        </GridList>
-      </Tablet>
-      <Mobile>
-        <GridList style={{margin: '4px'}} cellHeight='auto' cols={2}>
-          {tiles}
-        </GridList>
-      </Mobile>
-    </div>
+    <ul style={{margin: '0px', padding: '0px', listStyle: 'none'}}>
+      <Infinite
+          preloadAdditionalHeight={Infinite.containerHeightScaleFactor(3)}
+          className={styles.infinite}
+          useWindowAsScrollContainer={true}
+          elementHeight={cellHeights}
+      >
+        {tiles}
+      </Infinite>
+    </ul>
   );
 };
 

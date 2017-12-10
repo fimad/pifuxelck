@@ -42,6 +42,7 @@ import {
 } from 'material-ui';
 import MenuIcon from 'material-ui-icons/Menu';
 
+const ResizeAware = require('react-resize-aware').default;
 const { push } = require('react-router-redux');
 
 interface Props {
@@ -162,7 +163,9 @@ class AppComponent extends React.Component<Props, any> {
           <Route path='/history'>
             <div>
               {appBar('History')}
-              <History />
+              <ResizeAware>
+                <History />
+              </ResizeAware>
             </div>
           </Route>
           <Route path='/game/:id'>
