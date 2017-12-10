@@ -32,20 +32,18 @@ export function createPifuxelckStore(history: History) {
   }));
   const idbEngine =
       require('redux-storage-engine-indexed-db').default('my-save-key');
-  let engine = debounce(
+  const engine = debounce(
       filter(
-          {
+          decorateEngineWithMigrations({
             load: () => idbEngine.load().then((state: any) => state || {}),
             save: (state) => idbEngine.save(state),
-          },
+          }),
           [], [
-            '_version',
             ['apiStatus'],
             ['entities', 'history'],
             ['ui', 'newGame'],
           ]),
       1500);
-  engine = decorateEngineWithMigrations(engine);
   middlewares.push(storage.createMiddleware(engine));
   const createStoreWithMiddleware =
       applyMiddleware(...middlewares)(createStore);
@@ -54,9 +52,7 @@ export function createPifuxelckStore(history: History) {
 }
 
 function decorateEngineWithMigrations(engine: storage.StorageEngine) {
-  const decoratedEngine = migrate(engine, 3, '_version', []);
-  decoratedEngine.addMigration(1, (state: any) => {});
-  decoratedEngine.addMigration(2, (state: any) => {});
-  decoratedEngine.addMigration(3, (state: any) => {});
+  const decoratedEngine = migrate(engine, 1);
+  decoratedEngine.addMigration(1, (state: any) => ({}));
   return decoratedEngine;
 }
