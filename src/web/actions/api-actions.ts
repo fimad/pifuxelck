@@ -74,10 +74,12 @@ export function getHistory() {
       inProgress: true,
       type: 'GET_HISTORY_START',
     });
+    const compareByCompletedAtId = (a: Game, b: Game) =>
+        compareStringsAsInts(a.completed_at_id, b.completed_at_id);
     const getSinceId = (history?: Game[]) =>
         (history || Object.values(getState().entities.history))
+        .sort(compareByCompletedAtId)
         .map((x) => x.id)
-        .sort(compareStringsAsInts)
         .pop() || 0;
     const getHistoryStep: any = (history?: Game[]) => api.get({
       allowConcurrent: true,
