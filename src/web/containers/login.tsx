@@ -15,6 +15,7 @@ import {
 interface Props {
   auth?: string;
   dispatch: Dispatch<State>;
+  inProgress: boolean;
 }
 
 const style: any = {
@@ -74,6 +75,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
         />
         <Button
             raised={true}
+            disabled={this.props.inProgress}
             color='primary'
             onClick={this.dispatchLogin}
             style={buttonStyle}
@@ -82,6 +84,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
         </Button>
         <Button
             raised={true}
+            disabled={this.props.inProgress}
             color='accent'
             onClick={this.dispatchRegister}
             style={buttonStyle}
@@ -93,7 +96,10 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
   }
 }
 
-const mapStateToProps = ({auth}: State) => ({auth});
+const mapStateToProps = ({auth, apiStatus}: State) => ({
+  auth,
+  inProgress: apiStatus.inProgress.LOGIN || apiStatus.inProgress.REGISTER,
+});
 
 const Login = connect(mapStateToProps)(LoginComponent as any);
 
