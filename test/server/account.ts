@@ -105,6 +105,23 @@ describe('Accounts', () => {
           .send({user: {password: 'abcdefgh'}})
           .expect(500);
     });
+
+    it('should not change email when changing password', async () => {
+      const app = agent(await server());
+      const user = await newUser(app, 'user', undefined, 'user@example.com');
+      await user.put('/api/2/account')
+          .send({user: {password: 'abcdefgh'}})
+          .expect(200);
+      await user.get('/api/2/account')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            user: {
+              display_name: 'user',
+              email: 'user@example.com',
+              id: 1,
+            },
+          }));
+    });
   });
 
   describe('Invalid auth token', () => {
@@ -131,6 +148,23 @@ describe('Accounts', () => {
             user: {
               display_name: 'user',
               email: 'user@example.com',
+              id: 1,
+            },
+          }));
+    });
+
+    it('should allow removing email', async () => {
+      const app = agent(await server());
+      const user = await newUser(app, 'user', undefined, 'user@example.com');
+      await user.put('/api/2/account')
+          .send({user: {email: ''}})
+          .expect(200);
+      await user.get('/api/2/account')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            user: {
+              display_name: 'user',
+              email: '',
               id: 1,
             },
           }));

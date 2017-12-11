@@ -41,8 +41,18 @@ const AccountComponent = (props: Props) => {
   );
 };
 
+const firstNonNull = (list: any[]) => {
+  for (const i in list) {
+    if (list[i] !== null) {
+      return list[i];
+    }
+  }
+  return null;
+};
+
 const mapStateToProps = (state: State) => ({
-  email: state.ui.account.email || state.entities.account.email || '',
+  email:
+      firstNonNull([state.ui.account.email, state.entities.account.email, '']),
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
   passwordError: state.ui.account.passwordError || '',

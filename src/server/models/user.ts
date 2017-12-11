@@ -72,7 +72,7 @@ export async function updateUser(db: Connection, user: User): Promise<User> {
     sqlQuery += ' password_hash = ? ';
     params.push(hashedPassword);
   }
-  if (user.email) {
+  if (user.email || user.email === '') {
     sqlQuery += ' email = ? ';
     params.push(user.email);
   }
