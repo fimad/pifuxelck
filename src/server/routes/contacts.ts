@@ -17,7 +17,7 @@ contacts.get('/lookup/:displayName', authRoute(async (userId, req, res) => {
   const {displayName} = req.params;
   const user = await contactLookup(req.db, displayName)
       .catch((error) => null);
-  res.success(user ? {user} : {});
+  res.success((user && `${user.id}` !== `${userId}`) ? {user} : {});
 }));
 
 contacts.get('/', authRoute(async (userId, req, res) => {
@@ -27,7 +27,9 @@ contacts.get('/', authRoute(async (userId, req, res) => {
 
 contacts.put('/:contactId', authRoute(async (userId, req, res) => {
   const {contactId} = req.params;
-  await addContact(req.db, userId, contactId);
+  if (`${contactId}` !== `${userId}`) {
+    await addContact(req.db, userId, contactId);
+  }
   res.success({});
 }));
 
