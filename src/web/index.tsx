@@ -7,6 +7,7 @@ import { Route, Router, Switch } from 'react-router';
 import * as actions from './actions';
 import ScrollToTop from './components/scroll-to-top';
 import App from './containers/app';
+import ErrorSnaks from './containers/error-snaks';
 import Login from './containers/login';
 import Register from './containers/register';
 import { createPifuxelckStore } from './store';
@@ -50,6 +51,7 @@ createPifuxelckStore(history)
                   <Route path='/register' component={Register} />
                   <Route path='/' component={App} />
                 </Switch>
+                <ErrorSnaks />
               </div>
             </ScrollToTop>
           </ConnectedRouter>

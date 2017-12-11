@@ -1,5 +1,5 @@
 import { drawingOrDefault, Turn } from '../../common/models/turn';
-import { mapFrom } from '../../common/utils';
+import { mapFrom, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
 import { Ui } from '../state';
 
@@ -22,6 +22,10 @@ const initialState = {
     },
     brushSize: .0125,
     inProgress: false,
+  },
+  errors: {
+    messages: {},
+    nextId: 0,
   },
   newGame: {
     topic: '',
@@ -262,6 +266,27 @@ export default function(state: Ui = initialState, action: Action) {
       account: {
         ...state.account,
         passwordError: action.error,
+      },
+    };
+  }
+  if (action.type === 'UI_ADD_ERROR_SNAK') {
+    return {
+      ...state,
+      errors: {
+        messages: {
+          ...state.errors.messages,
+          [state.errors.nextId]: action.error,
+        },
+        nextId: state.errors.nextId + 1,
+      },
+    };
+  }
+  if (action.type === 'UI_REMOVE_ERROR_SNAK') {
+    return {
+      ...state,
+      errors: {
+        ...state.errors,
+        messages: objectWithoutKeys(state.errors.messages, [action.errorId]),
       },
     };
   }

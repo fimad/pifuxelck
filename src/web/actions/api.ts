@@ -2,31 +2,36 @@ import { Message } from '../../common/models/message';
 
 const API_HOST = 'https://everythingissauce.com';
 
+export interface ApiResult {
+  message: (Message | null);
+  ok: boolean;
+}
+
 export function get(
     url: string,
     body?: Message,
-    token?: string): Promise<Message> {
+    token?: string): Promise<ApiResult> {
   return call('GET', url, body, token);
 }
 
 export function post(
     url: string,
     body?: Message,
-    token?: string): Promise<Message> {
+    token?: string): Promise<ApiResult> {
   return call('POST', url, body, token);
 }
 
 export function put(
     url: string,
     body?: Message,
-    token?: string): Promise<Message> {
+    token?: string): Promise<ApiResult> {
   return call('PUT', url, body, token);
 }
 
 export function del(
     url: string,
     body?: Message,
-    token?: string): Promise<Message> {
+    token?: string): Promise<ApiResult> {
   return call('DELETE', url, body, token);
 }
 
@@ -34,7 +39,7 @@ function call(
     method: string,
     url: string,
     body: Message,
-    token?: string): Promise<Message> {
+    token?: string): Promise<ApiResult> {
   const headers = new Headers({
     'Content-Type': 'application/json',
   });
@@ -46,5 +51,5 @@ function call(
       headers,
       method,
       mode: 'cors',
-  }).then((res) => res.json());
+  }).then((res) => res.json().then((message) => ({ok: res.ok, message})));
 }

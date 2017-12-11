@@ -95,4 +95,10 @@ export type Action = (ApiAction | {
 } | {
   type: 'UI_SET_ACCOUNT_PASSWORD_ERROR'
   error: string,
+} | {
+  type: 'UI_ADD_ERROR_SNAK'
+  error: string,
+} | {
+  type: 'UI_REMOVE_ERROR_SNAK'
+  errorId: string,
 });

@@ -32,20 +32,26 @@ export interface Ui {
     passwordConfirmation: (string|null),
     passwordError: string,
   };
-  outbox: {
-    [gameId: string]: Turn,
+  contacts: {
+    lookup: string,
   };
   drawing: {
     brushSize: number
     brushColor: Color
     inProgress: boolean,
   };
-  contacts: {
-    lookup: string,
+  errors: {
+    nextId: number,
+    messages: {
+      [id: string]: string,
+    },
   };
   newGame: {
     topic: string
     users: string[],
+  };
+  outbox: {
+    [gameId: string]: Turn,
   };
 }
 

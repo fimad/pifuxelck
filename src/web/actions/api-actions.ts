@@ -19,6 +19,7 @@ export function login(user: string, password: string) {
             password,
           },
         },
+        errorMessage: 'Invalid username or password.',
         failure: 'LOGIN_FAILURE',
         name: 'LOGIN',
         onSuccess: () => dispatch(getAllData()),
@@ -136,6 +137,7 @@ export function getInbox() {
 export function newGame(players: string[], label: string) {
   return api.post({
     body: {new_game: {label, players}},
+    errorMessage: 'Unable to create game.',
     failure: 'NEW_GAME_FAILURE',
     name: 'NEW_GAME',
     requireAuth: true,
@@ -148,6 +150,7 @@ export function newGame(players: string[], label: string) {
 export function playDrawingTurn(gameId: string, drawing: Drawing) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     body: {turn: {is_drawing: true, drawing}},
+    errorMessage: 'Unable to send reply.',
     extra: {gameId},
     failure: 'PLAY_GAME_FAILURE',
     name: 'PLAY_GAME',
@@ -162,6 +165,7 @@ export function playDrawingTurn(gameId: string, drawing: Drawing) {
 export function playLabelTurn(gameId: string, label: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     body: {turn: {is_drawing: false, label}},
+    errorMessage: 'Unable to send reply.',
     extra: {gameId},
     failure: 'PLAY_GAME_FAILURE',
     name: 'PLAY_GAME',
@@ -187,6 +191,7 @@ export function getContacts() {
 export function addContact(contactId: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     allowConcurrent: true,
+    errorMessage: 'Unable to add contact.',
     failure: 'ADD_CONTACT_FAILURE',
     name: 'ADD_CONTACT',
     onSuccess: () => dispatch(getContacts()),
@@ -200,6 +205,7 @@ export function addContact(contactId: string) {
 export function removeContact(contactId: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.del({
     allowConcurrent: true,
+    errorMessage: 'Unable to remove contact.',
     extra: {contactId},
     failure: 'REMOVE_CONTACT_FAILURE',
     name: 'REMOVE_CONTACT',
@@ -261,6 +267,7 @@ export function removeContactToGroup(group: string, contact: string) {
 export function updateAccount(user: User) {
   return api.put({
     body: {user},
+    errorMessage: 'Unable to update account info',
     failure: 'UPDATE_ACCOUNT_FAILURE',
     name: 'UPDATE_ACCOUNT',
     requireAuth: true,

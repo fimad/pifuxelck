@@ -64,3 +64,11 @@ export function updatePasswordConfirmation(passwordConfirmation: string) {
 export function setAccountPasswordError(error: string) {
   return {type: 'UI_SET_ACCOUNT_PASSWORD_ERROR', error};
 }
+
+export function addErrorSnak(error: string) {
+  return {type: 'UI_ADD_ERROR_SNAK', error};
+}
+
+export function removeErrorSnak(errorId: string) {
+  return {type: 'UI_REMOVE_ERROR_SNAK', errorId};
+}

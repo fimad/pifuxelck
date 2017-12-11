@@ -41,7 +41,7 @@ export function createPifuxelckStore(history: History) {
           [], [
             ['apiStatus'],
             ['entities', 'history'],
-            ['ui', 'newGame'],
+            ['ui', 'errors'],
           ]),
       1500);
   middlewares.push(storage.createMiddleware(engine));

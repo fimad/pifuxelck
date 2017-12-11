@@ -2,8 +2,10 @@ import { Dispatch } from 'redux';
 import { Message } from '../../common/models/message';
 import { State } from '../state';
 import * as api from './api';
+import { addErrorSnak } from './ui';
 
 export interface Params {
+  errorMessage?: string;
   requireAuth?: boolean;
   allowConcurrent?: boolean;
   start?: string;
@@ -36,7 +38,7 @@ export function del(params: Params) {
 
 export function call(
     apiCall: (url: string, message: Message, token?: string) =>
-        Promise<Message>,
+        Promise<api.ApiResult>,
     params: Params) {
   const extra = params.extra || {};
   return (dispatch: Dispatch<State>, getState: () => State) => {
@@ -57,8 +59,28 @@ export function call(
       });
     }
     const {auth} = getState();
+    const handleError = (message: (Message | null)) => {
+      dispatch({
+        ...extra,
+        apiName: params.name,
+        inProgress: false,
+        type: params.failure,
+      });
+      if (message &&
+          message.errors &&
+          message.errors.application &&
+          message.errors.application.length > 0) {
+        dispatch(addErrorSnak(message.errors.application[0]));
+      } else if (params.errorMessage) {
+        dispatch(addErrorSnak(params.errorMessage));
+      }
+    };
     apiCall(params.url, params.body, auth)
-        .then((message) => {
+        .then(({ok, message}) => {
+          if (!ok) {
+            handleError(message);
+            return;
+          }
           if (params.success) {
             dispatch({
               ...extra,
@@ -72,11 +94,6 @@ export function call(
             params.onSuccess(message);
           }
         })
-        .catch(() => dispatch({
-          ...extra,
-          apiName: params.name,
-          inProgress: false,
-          type: params.failure,
-        }));
+        .catch(handleError);
   };
 }
