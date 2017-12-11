@@ -27,6 +27,11 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
         ...state,
         contacts: objectWithoutKeys(state.contacts, [action.contactId]),
       };
+    case 'PLAY_GAME_SUCCESS':
+      return {
+        ...state,
+        inbox: objectWithoutKeys(state.inbox, [action.gameId]),
+      };
   }
   return state;
 }
