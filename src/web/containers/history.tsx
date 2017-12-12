@@ -12,6 +12,7 @@ import Drawing from '../components/drawing';
 import { Desktop, Mobile, Tablet } from '../components/media-query';
 import { State } from '../state';
 
+const Delay = require('react-delay').default;
 const Infinite = require('react-infinite');
 const { push } = require('react-router-redux');
 
@@ -34,6 +35,7 @@ const getNumCells = () => {
 };
 
 const gameToTile =
+    (cellHeight: number) =>
     ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
   let title = '';
   if (game.turns.length >= 1) {
@@ -48,35 +50,38 @@ const gameToTile =
   if (game.turns.length >= 2) {
     const turn = game.turns[1];
     if (turn.is_drawing === true) {
-      drawing = (<Drawing drawing={turn.drawing} hideInivisible={true} />);
+      drawing = (<Drawing drawing={turn.drawing} hideInivisible={false} />);
     }
   }
-  const width = `${100 / getNumCells()}%`;
+  const width = `${cellHeight}px`;
+  const height = `${cellHeight}px`;
   return (
     <GridListTile
-        style={{width, padding: '2px'}}
+        style={{width, height, padding: '2px'}}
         key={game.id}
         onClick={() => dispatch(push(`/game/${game.id}`))}
     >
-      {drawing}
+      <Delay wait={0}>
+        {drawing}
+      </Delay>
       <GridListTileBar title={title} subtitle={subtitle} />
     </GridListTile>
   );
 };
 
 const HistoryComponent = ({games, dispatch}: Props) => {
+  const numCells = getNumCells();
+  const cellHeight = document.documentElement.clientWidth / numCells;
   const tiles = games
       .filter((game) => game.turns.length > 1)
       .map((game) => ({game, dispatch}))
-      .map(gameToTile);
+      .map(gameToTile(cellHeight));
+  const cellHeights =
+      tiles.map((x, i) => (i % numCells === 0) ? cellHeight : 0);
   const style = {
     display: 'flex',
     flexDirection: 'row',
   };
-  const numCells = getNumCells();
-  const cellHeight = document.documentElement.clientWidth / numCells;
-  const cellHeights =
-      tiles.map((x, i) => (i % numCells === 0) ? cellHeight : 0);
   return (
     <ul style={{margin: '0px', padding: '0px', listStyle: 'none'}}>
       <Infinite
