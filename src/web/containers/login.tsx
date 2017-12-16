@@ -29,7 +29,7 @@ const style: any = {
 
 class LoginComponent extends React.Component<Props, {[key: string]: string}> {
 
-  private dispatchLogin: () => void;
+  private dispatchLogin: (e: any) => void;
   private dispatchRegister: () => void;
 
   constructor(props: Props) {
@@ -38,8 +38,9 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
       password: '',
       user: '',
     };
-    this.dispatchLogin = () => {
+    this.dispatchLogin = (e: any) => {
       this.props.dispatch(login(this.state.user, this.state.password));
+      e.preventDefault();
     };
     this.dispatchRegister = () => {
       this.props.dispatch(push('/register'));
@@ -65,43 +66,47 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
       marginTop: '8px',
     };
     return (
-      <Paper style={style}>
-        <Typography type='display1' style={{textAlign: 'center'}}>
-          pifuxelck
-        </Typography>
-        <TextField
-            style={textStyle}
-            onChange={this.onChange('user')}
-            value={this.state.user}
-            label='Username'
-        />
-        <TextField
-            style={textStyle}
-            onChange={this.onChange('password')}
-            value={this.state.password}
-            label='Password'
-            type='password'
-        />
-        <Button
-            raised={true}
-            disabled={this.props.inProgress}
-            color='primary'
-            onClick={this.dispatchLogin}
-            style={buttonStyle}
-        >
-          Login
-        </Button>
-        <Typography type='caption'>
-          Don't have an account?
+      <form onSubmit={this.dispatchLogin}>
+        <Paper style={style}>
+          <Typography type='display1' style={{textAlign: 'center'}}>
+            pifuxelck
+          </Typography>
+          <TextField
+              autoFocus={true}
+              style={textStyle}
+              onChange={this.onChange('user')}
+              value={this.state.user}
+              label='Username'
+          />
+          <TextField
+              style={textStyle}
+              onChange={this.onChange('password')}
+              value={this.state.password}
+              label='Password'
+              type='password'
+          />
           <Button
-              onClick={this.dispatchRegister}
+              type="submit"
+              raised={true}
               disabled={this.props.inProgress}
-              color='accent'
+              color='primary'
+              onClick={this.dispatchLogin}
+              style={buttonStyle}
           >
-            Register
+            Login
           </Button>
-        </Typography>
-      </Paper>
+          <Typography type='caption'>
+            Don't have an account?
+            <Button
+                onClick={this.dispatchRegister}
+                disabled={this.props.inProgress}
+                color='accent'
+            >
+              Register
+            </Button>
+          </Typography>
+        </Paper>
+      </form>
     );
   }
 }
