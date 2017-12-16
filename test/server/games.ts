@@ -73,17 +73,22 @@ describe('Games', () => {
           }));
       await user2.get('/api/2/games/inbox')
           .expect(200)
-          .expect((res: any) => expect(res.body).to.deep.equal({
-            inbox_entries: [
-              {
-                game_id: 1,
-                previous_turn: {
-                  is_drawing: false,
-                  label: 'start',
+          .expect((res: any) => {
+            expect(res.body).to.have.nested.property(
+                'inbox_entries[0].expiration_time');
+            expect(res.body).to.deep.equal({
+              inbox_entries: [
+                {
+                  expiration_time: res.body.inbox_entries[0].expiration_time,
+                  game_id: 1,
+                  previous_turn: {
+                    is_drawing: false,
+                    label: 'start',
+                  },
                 },
-              },
-            ],
-          }));
+              ],
+            });
+          });
     });
 
     it('should allow querying specific inbox entry', async () => {
@@ -98,26 +103,36 @@ describe('Games', () => {
           .expect(200);
       await user2.get('/api/2/games/inbox/1')
           .expect(200)
-          .expect((res: any) => expect(res.body).to.deep.equal({
-            inbox_entry: {
-              game_id: 1,
-              previous_turn: {
-                is_drawing: false,
-                label: 'start1',
+          .expect((res: any) => {
+            expect(res.body).to.have.nested.property(
+                'inbox_entry.expiration_time');
+            expect(res.body).to.deep.equal({
+              inbox_entry: {
+                  expiration_time: res.body.inbox_entry.expiration_time,
+                  game_id: 1,
+                  previous_turn: {
+                    is_drawing: false,
+                    label: 'start1',
+                  },
               },
-            },
-          }));
+            });
+          });
       await user2.get('/api/2/games/inbox/2')
           .expect(200)
-          .expect((res: any) => expect(res.body).to.deep.equal({
-            inbox_entry: {
-              game_id: 2,
-              previous_turn: {
-                is_drawing: false,
-                label: 'start2',
+          .expect((res: any) => {
+            expect(res.body).to.have.nested.property(
+                'inbox_entry.expiration_time');
+            expect(res.body).to.deep.equal({
+              inbox_entry: {
+                expiration_time: res.body.inbox_entry.expiration_time,
+                game_id: 2,
+                previous_turn: {
+                  is_drawing: false,
+                  label: 'start2',
+                },
               },
-            },
-          }));
+            });
+          });
       await user2.get('/api/2/games/inbox/3').expect(500);
     });
   });

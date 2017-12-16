@@ -13,14 +13,16 @@ import Drawing from '../components/drawing';
 interface Props {
   gameId: string;
   drawing: models.Drawing;
+  expirationTime: number;
   label: string;
   onChange: (turn: Turn) => void;
   onSubmit: (gameId: string, turn: Turn) => void;
   sendPending: boolean;
 }
 
-const InboxDrawingCard = (
-      {gameId, label, drawing, onChange, onSubmit, sendPending}: Props) => {
+const InboxDrawingCard = ({
+    gameId, label, drawing, onChange, onSubmit, sendPending,
+    expirationTime}: Props) => {
   const onChangeCallback =
       (event: React.ChangeEvent<HTMLInputElement>) => onChange({
         is_drawing: false,
@@ -41,6 +43,11 @@ const InboxDrawingCard = (
   const action = sendPending ? loading : sendButton;
   return (
     <Card style={{margin: '8px'}}>
+      <CardContent>
+        <Typography type='caption' align='right'>
+          Expires at {new Date(expirationTime * 1000).toLocaleString()}
+        </Typography>
+      </CardContent>
       <Drawing drawing={drawing} />
       <Divider />
       <CardActions>

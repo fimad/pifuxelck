@@ -21,6 +21,7 @@ export type Turn = {
 export interface InboxEntry {
   game_id: string;
   previous_turn: Turn;
+  expiration_time: number;
 }
 
 export function drawingOrDefault(turn: Turn): Drawing {

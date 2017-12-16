@@ -8,6 +8,7 @@ import { SendMail } from '../middleware/mail';
 async function rowToInboxEntry(row: any): Promise<InboxEntry> {
   const drawingJson = row.drawing;
   const entry = {
+    expiration_time: row.expiration_time,
     game_id: row.game_id,
     previous_turn: {
       is_drawing: !!row.is_drawing,
@@ -42,7 +43,8 @@ export async function getInboxEntryByGameId(
           T.game_id AS game_id,
           T.drawing AS drawing,
           T.label AS label,
-          T.is_drawing AS is_drawing
+          T.is_drawing AS is_drawing,
+          UNIX_TIMESTAMP(Games.next_expiration) AS expiration_time
        FROM Turns AS T
        INNER JOIN (
          SELECT MIN(CT.id) AS current_turn_id, CT.game_id
@@ -63,6 +65,7 @@ export async function getInboxEntryByGameId(
          WHERE is_complete = 1
          GROUP BY PT.game_id
        ) AS PT ON PT.previous_turn_id = T.id
+       INNER JOIN Games ON T.game_id = Games.id
        WHERE CT.game_id = ? AND CT.current_turn_id = UT.user_turn_id`,
       [userId, gameId]);
   if (results.length < 1) {
@@ -87,7 +90,8 @@ export async function getInboxEntriesForUser(
           T.game_id AS game_id,
           T.drawing AS drawing,
           T.label AS label,
-          T.is_drawing AS is_drawing
+          T.is_drawing AS is_drawing,
+          UNIX_TIMESTAMP(Games.next_expiration) AS expiration_time
        FROM Turns AS T
        INNER JOIN (
          SELECT MIN(CT.id) AS current_turn_id, CT.game_id
@@ -108,6 +112,7 @@ export async function getInboxEntriesForUser(
          WHERE is_complete = 1
          GROUP BY PT.game_id
        ) AS PT ON PT.previous_turn_id = T.id
+       INNER JOIN Games ON T.game_id = Games.id
        WHERE CT.current_turn_id = UT.user_turn_id`,
       [userId]);
   const entries = [];

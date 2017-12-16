@@ -22,6 +22,7 @@ interface ExternalProps {
 
 type Props = ExternalProps & {
   drawing: Drawing
+  expirationTime: number;
   label: string
   sendPending: boolean
   onSubmit: (gameId: string, turn: Turn) => void
@@ -40,6 +41,7 @@ function mapStateToProps(
     ownProps: ExternalProps) {
   const {gameId} = ownProps;
   const previous = inbox[gameId].previous_turn;
+  const expirationTime = inbox[gameId].expiration_time || 0;
   const previousIsDrawing = previous.is_drawing;
   const current = outbox[gameId] || ({} as Turn);
   const drawing = previousIsDrawing ?
@@ -49,7 +51,13 @@ function mapStateToProps(
       labelOrDefault(previous) :
       labelOrDefault(current);
   const sendPending = apiStatus.pendingTurns[gameId];
-  return { previousIsDrawing, label, drawing, sendPending } as Props;
+  return {
+    drawing,
+    expirationTime,
+    label,
+    previousIsDrawing,
+    sendPending,
+  } as Props;
 }
 
 const mapDispatchToProps =

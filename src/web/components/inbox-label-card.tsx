@@ -18,6 +18,7 @@ import Drawing from '../components/drawing';
 interface Props {
   gameId: string;
   drawing: models.Drawing;
+  expirationTime: number;
   label: string;
   onShowDrawing: (showDrawing: boolean) => void;
   onChange: (turn: Turn) => void;
@@ -26,7 +27,8 @@ interface Props {
 }
 
 const InboxLabelCard = ({
-    gameId, label, drawing, onShowDrawing, sendPending}: Props) => {
+    gameId, label, drawing, onShowDrawing, sendPending,
+    expirationTime}: Props) => {
   const drawButton = (
     <Button onClick={() => onShowDrawing(true)}>
       Draw
@@ -39,6 +41,9 @@ const InboxLabelCard = ({
   return (
     <Card style={{margin: '8px'}}>
       <CardContent>
+        <Typography type='caption' align='right'>
+          Expires at {new Date(expirationTime * 1000).toLocaleString()}
+        </Typography>
         <Typography type='headline' component='h2'>
           {label}
         </Typography>
