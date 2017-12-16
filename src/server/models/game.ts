@@ -41,8 +41,12 @@ export async function createGame(
 
     const results = await query(
         db,
-        `INSERT INTO Games (completed_at_id , next_expiration)
-         VALUES (NULL, NOW() + INTERVAL 2 DAY)`);
+        `INSERT INTO Games (
+           completed_at_id,
+           next_expiration,
+           created_at
+         )
+         VALUES (NULL, NOW() + INTERVAL 2 DAY, NOW())`);
     const gameId = results.insertId;
 
     // Insert the first turn into the database. This turn will correspond to the

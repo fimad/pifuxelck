@@ -136,6 +136,7 @@ export async function updateDrawingTurn(
        SET
           drawing = ?,
           is_complete = 1,
+          completed_at = NOW(),
           Games.next_expiration = NOW() + INTERVAL 2 DAY
        WHERE Turns.game_id = Games.id
          AND Turns.account_id = ?
@@ -172,6 +173,7 @@ export async function updateLabelTurn(
        SET
           Turns.label = ?,
           Turns.is_complete = 1,
+          completed_at = NOW(),
           Games.next_expiration = NOW() + INTERVAL 2 DAY
        WHERE Turns.game_id = Games.id
          AND Turns.account_id = ?
