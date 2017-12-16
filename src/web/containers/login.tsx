@@ -86,7 +86,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
               type='password'
           />
           <Button
-              type="submit"
+              type='submit'
               raised={true}
               disabled={this.props.inProgress}
               color='primary'

@@ -35,7 +35,7 @@ const getNumCells = () => {
 };
 
 const gameToTile =
-    (cellHeight: number) =>
+    (numCells: number, cellHeight: number) =>
     ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
   let title = '';
   if (game.turns.length >= 1) {
@@ -53,7 +53,7 @@ const gameToTile =
       drawing = (<Drawing drawing={turn.drawing} hideInivisible={false} />);
     }
   }
-  const width = `${cellHeight}px`;
+  const width = `${100 / numCells}%`;
   const height = `${cellHeight}px`;
   return (
     <GridListTile
@@ -71,13 +71,14 @@ const gameToTile =
 
 const HistoryComponent = ({games, dispatch}: Props) => {
   const numCells = getNumCells();
-  const cellHeight = document.documentElement.clientWidth / numCells;
+  const cellHeight = (document.documentElement.clientWidth / numCells);
   const tiles = games
       .filter((game) => game.turns.length > 1)
       .map((game) => ({game, dispatch}))
-      .map(gameToTile(cellHeight));
+      .map(gameToTile(numCells, cellHeight));
   const cellHeights =
-      tiles.map((x, i) => (i % numCells === 0) ? cellHeight : 0);
+      tiles.map(
+          (x, i) => (i % numCells === 0) ? (cellHeight - numCells + 1) : 1);
   const style = {
     display: 'flex',
     flexDirection: 'row',

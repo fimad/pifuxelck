@@ -95,7 +95,7 @@ class RegisterComponent extends
               type='password'
           />
           <Button
-              type="submit"
+              type='submit'
               raised={true}
               disabled={this.props.inProgress}
               color='primary'
