@@ -45,6 +45,15 @@ The integration tests can be executed by running:
 yarn test
 ```
 
+It also possible to bring up local server using the test configuration by
+running:
+
+```shell
+yarn server-local
+```
+
+This will not automatically re-compile however.
+
 ### Submitting Code
 
 Before submitting code ensure that all tests pass and that there are no style

@@ -10,6 +10,7 @@ import App from './containers/app';
 import ErrorSnaks from './containers/error-snaks';
 import Login from './containers/login';
 import Register from './containers/register';
+import startStats from './stats-index';
 import { createPifuxelckStore } from './store';
 
 import {
@@ -26,37 +27,40 @@ const {
   routerMiddleware,
 } = require('react-router-redux');
 
-// Hookup offline support.
-require('offline-plugin/runtime').install();
+(window as any).startStats = startStats;
+(window as any).startApp = () => {
+  // Hookup offline support.
+  require('offline-plugin/runtime').install();
 
-// Create a history of your choosing (we're using a browser history in this
-// case).
-const history = createBrowserHistory();
+  // Create a history of your choosing (we're using a browser history in this
+  // case).
+  const history = createBrowserHistory();
 
-// TODO(will): Need to handle errors here...
-createPifuxelckStore(history)
-  .then((store) => {
-    store.dispatch(actions.getAllData());
-    return store;
-  })
-  .then((store) => {
-    ReactDOM.render(
-      <MuiThemeProvider>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <ScrollToTop>
-              <div>
-                <Switch>
-                  <Route path='/login' component={Login} />
-                  <Route path='/register' component={Register} />
-                  <Route path='/' component={App} />
-                </Switch>
-                <ErrorSnaks />
-              </div>
-            </ScrollToTop>
-          </ConnectedRouter>
-        </Provider>
-      </MuiThemeProvider>,
-      document.getElementById('content'),
-    );
-  });
+  // TODO(will): Need to handle errors here...
+  createPifuxelckStore(history)
+    .then((store) => {
+      store.dispatch(actions.getAllData());
+      return store;
+    })
+    .then((store) => {
+      ReactDOM.render(
+        <MuiThemeProvider>
+          <Provider store={store}>
+            <ConnectedRouter history={history}>
+              <ScrollToTop>
+                <div>
+                  <Switch>
+                    <Route path='/login' component={Login} />
+                    <Route path='/register' component={Register} />
+                    <Route path='/' component={App} />
+                  </Switch>
+                  <ErrorSnaks />
+                </div>
+              </ScrollToTop>
+            </ConnectedRouter>
+          </Provider>
+        </MuiThemeProvider>,
+        document.getElementById('content'),
+      );
+    });
+};

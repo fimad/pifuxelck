@@ -10,6 +10,7 @@ import success from './middleware/success';
 import account from './routes/account';
 import contacts from './routes/contacts';
 import games from './routes/games';
+import stats from './routes/stats';
 
 interface Config {
   db: DbConfig;
@@ -28,6 +29,7 @@ export default function(config: Config) {
   app.use('/api/2/account', account);
   app.use('/api/2/contacts', contacts);
   app.use('/api/2/games', games);
+  app.use('/stats', stats);
   app.use(error());
   return app;
 }

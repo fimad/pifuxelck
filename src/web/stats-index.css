@@ -1,0 +1,42 @@
+@import './common.css';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0px;
+  margin: auto;
+  justify-content: space-between;
+}
+
+.gameStat {
+  width: calc(33% - 2px);
+  margin-top: 10px;
+  margin-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.gameSizes {
+  width: 100%;
+  margin-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.userStat {
+  margin-bottom: 8px;
+  padding: 2px;
+  width: calc(100%);
+  overflow-x: scroll;
+}
+
+@media (--non-mobile) and (min-aspect-ratio: 3/4) {
+  .container {
+    max-width: 80%;
+  }
+
+  .gameSizes {
+    width: calc(50% - 2px);
+  }
+}
