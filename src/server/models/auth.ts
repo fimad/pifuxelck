@@ -16,7 +16,9 @@ export async function newAuthToken(
   winston.info(`Generating new random token for user with ID ${userId}.`);
   const auth = uuid.v4();
   await query(
-      db, 'INSERT INTO Sessions (auth_token, account_id) VALUES (?, ?)',
+      db,
+      `INSERT INTO Sessions (auth_token, account_id, created_at, accessed_at)
+       VALUES (?, ?, NOW(), NOW())`,
       [auth, userId]);
   return auth;
 }
@@ -35,6 +37,8 @@ export async function authTokenLookup(
   if (!results[0]) {
     throw new ServerError({auth: 'Invalid authentication token'});
   }
+  await query(
+    db, 'UPDATE Sessions SET accessed_at = NOW() WHERE auth_token = ?', [auth]);
   return results[0].id;
 }
 
@@ -42,5 +46,5 @@ export async function authTokenLookup(
 async function pruneAuthTokens(db: Connection): Promise<any> {
   winston.info('Pruning all expired authentication tokens.');
   await query(
-      db, 'DELETE FROM Sessions WHERE created_at < NOW() - INTERVAL 7 DAY');
+      db, 'DELETE FROM Sessions WHERE accessed_at < NOW() - INTERVAL 7 DAY');
 }

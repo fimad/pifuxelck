@@ -1,1 +1,1 @@
-schema-006.sql
+schema-007.sql
