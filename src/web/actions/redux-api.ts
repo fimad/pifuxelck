@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 import { Message } from '../../common/models/message';
 import { State } from '../state';
 import * as api from './api';
+import { logout } from './logout';
 import { addErrorSnak } from './ui';
 
 export interface Params {
@@ -67,6 +68,10 @@ export function call(
         type: params.failure,
       });
       if (message &&
+          message.errors &&
+          message.errors.auth) {
+        dispatch(logout());
+      } else if (message &&
           message.errors &&
           message.errors.application &&
           message.errors.application.length > 0) {
