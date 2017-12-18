@@ -4,6 +4,7 @@ import ContactsIcon from 'material-ui-icons/Contacts';
 import LogoutIcon from 'material-ui-icons/Eject';
 import HistoryIcon from 'material-ui-icons/History';
 import InboxIcon from 'material-ui-icons/Inbox';
+import ChartIcon from 'material-ui-icons/InsertChart';
 import PersonIcon from 'material-ui-icons/Person';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { CircularProgress } from 'material-ui/Progress';
@@ -89,6 +90,10 @@ class AppComponent extends React.Component<Props, any> {
   public handleShowNewGame = () => {
     this.props.dispatch(push('/new'));
     this.handleShowDrawer(false);
+  }
+
+  public handleStats = () => {
+    window.location.href = '/stats';
   }
 
   public handleLogout = () => {
@@ -224,6 +229,12 @@ class AppComponent extends React.Component<Props, any> {
                 <HistoryIcon />
               </ListItemIcon>
               <ListItemText primary='History' />
+            </ListItem>
+            <ListItem button={true} onClick={this.handleStats}>
+              <ListItemIcon>
+                <ChartIcon />
+              </ListItemIcon>
+              <ListItemText primary='Stats' />
             </ListItem>
             <ListItem
                 style={{marginTop: 'auto'}}
