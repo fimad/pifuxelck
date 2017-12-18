@@ -1,5 +1,15 @@
+import AddIcon from 'material-ui-icons/Add';
+import ArchiveIcon from 'material-ui-icons/Archive';
+import BackIcon from 'material-ui-icons/ArrowBack';
+import ContactsIcon from 'material-ui-icons/Contacts';
+import LogoutIcon from 'material-ui-icons/Eject';
+import HistoryIcon from 'material-ui-icons/History';
+import InboxIcon from 'material-ui-icons/Inbox';
+import ChartIcon from 'material-ui-icons/InsertChart';
+import PersonIcon from 'material-ui-icons/Person';
 import AppBar from 'material-ui/AppBar';
 import { GridList, GridListTile } from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Table from 'material-ui/Table';
@@ -139,6 +149,13 @@ export default function(stats: Stats) {
     <MuiThemeProvider>
       <AppBar position='fixed'>
         <Toolbar>
+          <IconButton
+              onClick={() => window.history.back()}
+              color='contrast'
+              aria-label='Menu'
+          >
+            <BackIcon />
+          </IconButton>
           <Typography type='title' style={{flex: '1 1 auto'}} color='inherit'>
             Game Stats
           </Typography>

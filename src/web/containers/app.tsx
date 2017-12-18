@@ -5,6 +5,7 @@ import LogoutIcon from 'material-ui-icons/Eject';
 import HistoryIcon from 'material-ui-icons/History';
 import InboxIcon from 'material-ui-icons/Inbox';
 import ChartIcon from 'material-ui-icons/InsertChart';
+import MenuIcon from 'material-ui-icons/Menu';
 import PersonIcon from 'material-ui-icons/Person';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { CircularProgress } from 'material-ui/Progress';
@@ -41,7 +42,6 @@ import {
   Toolbar,
   Typography,
 } from 'material-ui';
-import MenuIcon from 'material-ui-icons/Menu';
 
 const ResizeAware = require('react-resize-aware').default;
 const { push } = require('react-router-redux');
