@@ -163,7 +163,7 @@ async function getGamesOverTime(db: Connection): Promise<GamesOverTime> {
         )
       ) X
       -- The date game creation time started being logged.
-      WHERE '2017-12-15 22:01:33' < timestamp
+      WHERE '2017-12-16 06:01:33' < timestamp
       GROUP BY 1
     ) Timestamps
     CROSS JOIN (
