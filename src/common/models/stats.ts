@@ -26,11 +26,12 @@ export type GameDurationHistogram = Array<{
 
 export type UserStats = Array<{
   displayName: string
-  inboxSize: number
-  pendingGames: number
-  startedGames: number
   drawings: number
+  inboxSize: number
   labels: number,
+  pendingGames: number
+  skips: number,
+  startedGames: number,
 }>;
 
 export type GamesOverTime = Array<{

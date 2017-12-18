@@ -50,6 +50,7 @@ const UserStats = ({userStats}: Stats) => {
       <TableCell>{stats.displayName}</TableCell>
       <TableCell numeric={true}>{stats.inboxSize}</TableCell>
       <TableCell numeric={true}>{stats.pendingGames}</TableCell>
+      <TableCell numeric={true}>{stats.skips}</TableCell>
       <TableCell numeric={true}>{stats.startedGames}</TableCell>
       <TableCell numeric={true}>{stats.drawings}</TableCell>
       <TableCell numeric={true}>{stats.labels}</TableCell>
@@ -63,6 +64,7 @@ const UserStats = ({userStats}: Stats) => {
             <TableCell>User</TableCell>
             <TableCell numeric={true}>Inbox</TableCell>
             <TableCell numeric={true}>Pending</TableCell>
+            <TableCell numeric={true}>Skips</TableCell>
             <TableCell numeric={true}>Games Started</TableCell>
             <TableCell numeric={true}>Drawings</TableCell>
             <TableCell numeric={true}>Labels</TableCell>

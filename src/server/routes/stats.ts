@@ -100,6 +100,7 @@ async function getUserStats(db: Connection): Promise<UserStats> {
     `
     SELECT
       display_name,
+      game_count - SUM(1) AS skips,
       SUM(NOT is_complete) AS pending_games,
       SUM(is_next_player) AS inbox_size,
       SUM(is_first_player) AS started_games,
@@ -138,6 +139,7 @@ async function getUserStats(db: Connection): Promise<UserStats> {
       inboxSize: row.inbox_size,
       labels: row.labels,
       pendingGames: row.pending_games,
+      skips: row.skips,
       startedGames: row.started_games,
     }));
 }
