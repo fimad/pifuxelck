@@ -194,6 +194,22 @@ stats.get('/', asyncRoute(async (req, res) => {
 <html>
   <head>
     <meta charset="UTF-8" />
+
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+        rel="stylesheet">
+
+    <!-- Apple web app settings. -->
+    <link rel="apple-touch-icon" href="/tnak.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#3f51b5">
+
+    <!-- Android web app settings. -->
+    <meta name="theme-color" content="#3f51b5"/>
+    <link rel="manifest" href="/manifest.json">
+
     <meta
       name="viewport"
       content="
