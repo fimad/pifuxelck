@@ -10,6 +10,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -71,7 +73,7 @@ const GameSizes = ({gameSizes}: Stats) => {
         Players Per Game
       </Typography>
       <ResponsiveContainer height={200}>
-        <BarChart data={gameSizes} margin={{left: -20, right: 5}}>
+        <BarChart data={gameSizes} margin={{left: -20, right: 10, top: 10}}>
           <XAxis dataKey='size' />
           <YAxis />
           <CartesianGrid />
@@ -92,7 +94,7 @@ const GameDurations = ({gameDurations}: Stats) => {
         Completed Game Duration In Days
       </Typography>
       <ResponsiveContainer height={200}>
-        <BarChart data={gameDurations} margin={{left: -20, right: 5}}>
+        <BarChart data={gameDurations} margin={{left: -20, right: 10, top: 10}}>
           <XAxis dataKey='gameDurationDays' />
           <YAxis />
           <CartesianGrid />
@@ -102,6 +104,32 @@ const GameDurations = ({gameDurations}: Stats) => {
       <Typography type='caption' align='center'>
         Days
       </Typography>
+    </Paper>
+  );
+};
+
+const GamesOverTime = ({gamesOverTime}: Stats) => {
+  const data = gamesOverTime.map(({timestamp, pendingGames}) => ({
+    pendingGames,
+    timestamp: timestamp * 1000,
+  }));
+  const tickFormatter = (x: number) => new Date(x).toLocaleString();
+  return (
+    <Paper className={styles.gamesOverTime}>
+      <Typography type='caption' align='center'>
+        Pending Games Over Time
+      </Typography>
+      <ResponsiveContainer height={200}>
+        <AreaChart data={data} margin={{left: -20, right: 10, top: 10}}>
+          <XAxis
+            dataKey='timestamp'
+            tickFormatter={tickFormatter}
+          />
+          <YAxis />
+          <CartesianGrid />
+          <Area dataKey='pendingGames' fill={barColor1} />
+        </AreaChart>
+      </ResponsiveContainer>
     </Paper>
   );
 };
@@ -144,6 +172,7 @@ export default function(stats: Stats) {
         </Paper>
         <GameSizes {...stats} />
         <GameDurations {...stats} />
+        <GamesOverTime {...stats} />
         <UserStats {...stats} />
       </div>
     </MuiThemeProvider>,

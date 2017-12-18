@@ -1,7 +1,8 @@
 export interface Stats {
-  gameStats: GameStats;
-  gameSizes: GameSizeHistogram;
   gameDurations: GameDurationHistogram;
+  gameSizes: GameSizeHistogram;
+  gameStats: GameStats;
+  gamesOverTime: GamesOverTime;
   userStats: UserStats;
 }
 
@@ -30,4 +31,9 @@ export type UserStats = Array<{
   startedGames: number
   drawings: number
   labels: number,
+}>;
+
+export type GamesOverTime = Array<{
+  timestamp: number
+  pendingGames: number,
 }>;

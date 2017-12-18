@@ -7,6 +7,7 @@ import asyncRoute from './async-route';
 import {
   GameDurationHistogram,
   GameSizeHistogram,
+  GamesOverTime,
   GameStats,
   UserStats,
 } from '../../common/models/stats';
@@ -141,11 +142,50 @@ async function getUserStats(db: Connection): Promise<UserStats> {
     }));
 }
 
+async function getGamesOverTime(db: Connection): Promise<GamesOverTime> {
+  return getStats(
+    db,
+    `
+    SELECT
+      UNIX_TIMESTAMP(timestamp) AS timestamp,
+      SUM(created_at <= timestamp
+          AND (timestamp < completed_at
+              OR completed_at IS NULL)) AS pendingGames
+    FROM (
+      SELECT timestamp AS timestamp
+      FROM (
+        SELECT
+          completed_at AS timestamp
+        FROM GamesCompletedAt
+        UNION ALL (
+          SELECT created_at AS timestamp
+          FROM Games
+        )
+      ) X
+      -- The date game creation time started being logged.
+      WHERE '2017-12-15 22:01:33' < timestamp
+      GROUP BY 1
+    ) Timestamps
+    CROSS JOIN (
+      SELECT
+        Games.created_at AS created_at,
+        GamesCompletedAt.completed_at AS completed_at
+      FROM Games
+      LEFT JOIN GamesCompletedAt
+      ON Games.completed_at_id = GamesCompletedAt.id
+    ) GameTimes
+    GROUP BY timestamp
+    ORDER BY timestamp ASC
+    `,
+    ({timestamp, pendingGames}) => ({timestamp, pendingGames}));
+}
+
 stats.get('/', asyncRoute(async (req, res) => {
   const allStats = {
     gameDurations: await getGameDurationHistogram(req.db),
     gameSizes: await getGameSizeHistogram(req.db),
     gameStats: await getActiveGames(req.db),
+    gamesOverTime: await getGamesOverTime(req.db),
     userStats: await getUserStats(req.db),
   };
   res.status(200).type('text/html').send(
@@ -171,7 +211,7 @@ stats.get('/', asyncRoute(async (req, res) => {
         left: 0px;
         position: absolute;" id="content">
     </div>
-    <script src="/bundle.js"></script>
+    <script src="http://localhost:3000/bundle.js"></script>
     <script>startStats(${JSON.stringify(allStats)});</script>
   </body>
 </html>
