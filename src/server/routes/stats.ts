@@ -211,7 +211,7 @@ stats.get('/', asyncRoute(async (req, res) => {
         left: 0px;
         position: absolute;" id="content">
     </div>
-    <script src="http://localhost:3000/bundle.js"></script>
+    <script src="/bundle.js"></script>
     <script>startStats(${JSON.stringify(allStats)});</script>
   </body>
 </html>
