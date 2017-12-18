@@ -63,6 +63,12 @@ export async function createGame(
          , drawing
          ) VALUES (?, ?, 1, 0, ?, '')`,
         [userId, gameId, newGame.label]);
+    await query(
+      db,
+      `UPDATE Accounts
+       SET game_count = game_count + 1
+       WHERE id = ?`,
+      [userId]);
 
     // Create a turn entry for each player (in a random order) in the Players
     // list of newGame, alternating drawing and label turns.
@@ -81,6 +87,12 @@ export async function createGame(
            , drawing
            ) VALUES (?, ?, 0, ?, '', '')`,
           [players[i], gameId, isDrawing]);
+      await query(
+        db,
+        `UPDATE Accounts
+         SET game_count = game_count + 1
+         WHERE id = ?`,
+        [players[i]]);
     }
   });
   await sendEmailUpdatesAfterTurn(db, sendMail);
