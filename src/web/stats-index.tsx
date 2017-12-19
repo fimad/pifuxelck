@@ -139,7 +139,7 @@ const GamesOverTime = ({gamesOverTime}: Stats) => {
           />
           <YAxis />
           <CartesianGrid />
-          <Area dataKey='pendingGames' fill={barColor1} />
+          <Area type='stepAfter' dataKey='pendingGames' fill={barColor1} />
         </AreaChart>
       </ResponsiveContainer>
     </Paper>
