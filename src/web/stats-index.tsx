@@ -134,6 +134,7 @@ const GamesOverTime = ({gamesOverTime}: Stats) => {
       <ResponsiveContainer height={200}>
         <AreaChart data={data} margin={{left: -20, right: 10, top: 10}}>
           <XAxis
+            scale='linear'
             dataKey='timestamp'
             tickFormatter={tickFormatter}
           />
