@@ -167,7 +167,9 @@ class Draw extends React.Component {
               <BrushIcon />
             </IconButton>
             <IconButton onClick={showBrushColorDialog}>
-              <PaletteIcon />
+              <Badge style={{boxShadow: '5px 5px red'}} color='primary' badgeContent=''>
+                <PaletteIcon />
+              </Badge>
             </IconButton>
             <IconButton onClick={showBackgroundColorDialog}>
               <LayersIcon />
