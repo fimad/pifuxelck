@@ -11,6 +11,7 @@ import Dialog from 'material-ui/Dialog';
 import { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
+import * as MobileDetect from 'mobile-detect';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import * as models from '../../common/models/drawing';
@@ -59,10 +60,24 @@ const passPointTo =
   appendLine({x, y});
 };
 
+interface State {
+  // On iOS this is used to force a redraw of the drawing SVG with fresh DOM
+  // elements.
+  drawKey: number;
+}
+
 class Draw extends React.Component {
 
   public divNode: HTMLDivElement;
   public props: Props;
+  public state: State;
+  private mobileDetect: MobileDetect;
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {drawKey: 0};
+    this.mobileDetect = new MobileDetect(window.navigator.userAgent);
+  }
 
   public componentDidMount() {
     (this.divNode as any).addEventListener(
@@ -76,6 +91,9 @@ class Draw extends React.Component {
   public onTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
     if (this.props.lineInProgress) {
       this.props.stopLine();
+      if (this.mobileDetect.os() === 'iOS') {
+        this.setState({drawKey: this.state.drawKey + 1});
+      }
     }
     event.preventDefault();
   }
@@ -83,6 +101,9 @@ class Draw extends React.Component {
   public onTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     if (this.props.lineInProgress) {
       this.props.stopLine();
+      if (this.mobileDetect.os() === 'iOS') {
+        this.setState({drawKey: this.state.drawKey + 1});
+      }
     } else {
       passPointTo(this.props.startLine, this.props.stopLine)(event);
     }
@@ -130,7 +151,11 @@ class Draw extends React.Component {
               onMouseDown={onMouseDown}
               onMouseMove={onMouseMove}
           >
-            <Drawing className={styles.drawing} drawing={drawing} />
+            <Drawing
+                key={`draw-${this.state.drawKey}`}
+                className={styles.drawing}
+                drawing={drawing}
+            />
           </div>
         </div>
         <Card className={styles.actionsCard}>

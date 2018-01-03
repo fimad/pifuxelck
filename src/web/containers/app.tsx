@@ -135,7 +135,9 @@ class AppComponent extends React.Component<Props, any> {
           {button}
         </Toolbar>
       </AppBar>
-      <AppBar position='static'><Toolbar /></AppBar>
+      <AppBar style={{visibility: 'hidden'}} position='static'>
+        <Toolbar />
+      </AppBar>
       </div>
     );
     const gameView = ({match}: any) => (
