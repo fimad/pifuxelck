@@ -172,6 +172,9 @@ export async function updateLabelTurn(
     gameId: string,
     label: string): Promise<void> {
   winston.info(`User ${userId} updating label in game ${gameId}.`);
+  if (!label || label === '') {
+    throw new Error('Labels must not be empty.');
+  }
   const results = await query(
       db,
       `UPDATE Turns, Games

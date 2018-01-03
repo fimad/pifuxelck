@@ -267,6 +267,43 @@ describe('Games', () => {
                 },
               }))));
     });
+
+    it('should disallow empty labels', async () => {
+      const testServer = await server();
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      const user3 = await newUser(app, 'user3');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2', '3'], label: 'start'}})
+          .expect(200);
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  drawing: {
+                    background_color: {
+                      alpha: 1,
+                      blue: 4,
+                      green: 3,
+                      red: 2,
+                    },
+                    lines: [],
+                  },
+                  is_drawing: true,
+                },
+              })));
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: false,
+                  label: '',
+                },
+              })
+              .expect(500)));
+    });
   });
 
   describe('Email', () => {
