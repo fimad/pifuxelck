@@ -170,8 +170,9 @@ export async function updateLabelTurn(
     sendMail: SendMail,
     userId: string,
     gameId: string,
-    label: string): Promise<void> {
+    rawLabel: string): Promise<void> {
   winston.info(`User ${userId} updating label in game ${gameId}.`);
+  const label = rawLabel.trim();
   if (!label || label === '') {
     throw new Error('Labels must not be empty.');
   }

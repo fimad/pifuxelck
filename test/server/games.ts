@@ -303,6 +303,30 @@ describe('Games', () => {
                 },
               })
               .expect(500)));
+      await Promise.all([user2, user3].map(async (user) =>
+          await user.put('/api/2/games/play/1')
+              .send({
+                turn: {
+                  is_drawing: false,
+                  label: '    ',
+                },
+              })
+              .expect(500)));
+    });
+
+    it('should disallow new games with empty labels', async () => {
+      const testServer = await server();
+      const sentMail = testServer.sentMail;
+      const app = agent(testServer);
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      const user3 = await newUser(app, 'user3');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2', '3'], label: ''}})
+          .expect(500);
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2', '3'], label: '  '}})
+          .expect(500);
     });
   });
 

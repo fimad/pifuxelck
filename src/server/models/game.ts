@@ -25,7 +25,8 @@ export async function createGame(
     sendMail: SendMail,
     userId: string,
     newGame: NewGame): Promise<void> {
-  if (newGame.label === '') {
+  const label = (newGame.label || '').trim();
+  if (label === '') {
     winston.info('Failed to create game due to lack of label.');
     throw new Error('A label is required to start a game.');
   }
@@ -62,7 +63,7 @@ export async function createGame(
          , label
          , drawing
          ) VALUES (?, ?, 1, 0, ?, '')`,
-        [userId, gameId, newGame.label]);
+        [userId, gameId, label]);
     await query(
       db,
       `UPDATE Accounts
