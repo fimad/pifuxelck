@@ -1,3 +1,4 @@
+import * as compression from 'compression';
 import * as cors from 'cors';
 import * as express from 'express';
 import { ConnectionConfig } from 'mysql';
@@ -20,6 +21,7 @@ interface Config {
 export default function(config: Config) {
   const app = express();
   app.use(cors());
+  app.use(compression());
   app.use(express.json({type: '*/*'}));
   app.use(log());
   app.use(models());
