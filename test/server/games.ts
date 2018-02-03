@@ -330,6 +330,59 @@ describe('Games', () => {
     });
   });
 
+  describe('History Summary', () => {
+    it('should return empty when no games are complete', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      await user1.get('/api/2/games/summary')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            game_summaries: [],
+          }));
+    });
+
+    it('should return completed games', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      await user1.post('/api/2/games/new')
+          .send({new_game: {players: ['2'], label: 'start'}})
+          .expect(200);
+      await user2.put('/api/2/games/play/1')
+          .send({
+            turn: {
+              drawing: {
+                background_color: {
+                  alpha: 1,
+                  blue: 4,
+                  green: 3,
+                  red: 2,
+                },
+                lines: [],
+              },
+              is_drawing: true,
+            },
+          })
+          .expect(200);
+      await user2.get('/api/2/games/summary')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.containSubset({
+            game_summaries: [{
+              background_color: {
+                alpha: 1,
+                blue: 4,
+                green: 3,
+                red: 2,
+              },
+              completed_at_id: 1,
+              first_label: 'start',
+              id: 1,
+              players: ['user1', 'user2'],
+            }],
+          }));
+    });
+  });
+
   describe('Email', () => {
     it('should send email to first player', async () => {
       const testServer = await(server());
