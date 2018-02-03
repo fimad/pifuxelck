@@ -21,6 +21,7 @@ import Drawing from '../components/drawing';
 const styles = require('./draw.css');
 
 interface Props {
+  brushColor: models.Color;
   gameId: string;
   drawing: models.Drawing;
   label: string;
@@ -65,6 +66,26 @@ interface State {
   // elements.
   drawKey: number;
 }
+
+const ColorBadge = ({color}: {color: models.Color}) => {
+  const backgroundColor = `rgb(
+      ${color.red * 255},
+      ${color.green * 255},
+      ${color.blue * 255})`;
+  const style = {
+    backgroundColor,
+    borderColor: 'rgba(0, 0, 0, .25)',
+    borderRadius: '50%',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    height: '8px',
+    position: 'absolute',
+    right: '8px',
+    top: '8px',
+    width: '8px',
+  } as React.CSSProperties;
+  return (<div style={style} />);
+};
 
 class Draw extends React.Component {
 
@@ -121,7 +142,7 @@ class Draw extends React.Component {
     const {
       gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
       showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
-      lineInProgress, onSubmit,
+      lineInProgress, onSubmit, brushColor,
     } = this.props;
     const onMouseUp = lineInProgress ? stopLine : undefined;
     const onMouseLeave = lineInProgress ? stopLine : undefined;
@@ -167,9 +188,8 @@ class Draw extends React.Component {
               <BrushIcon />
             </IconButton>
             <IconButton onClick={showBrushColorDialog}>
-              <Badge style={{boxShadow: '5px 5px red'}} color='primary' badgeContent=''>
-                <PaletteIcon />
-              </Badge>
+              <PaletteIcon />
+              <ColorBadge color={brushColor} />
             </IconButton>
             <IconButton onClick={showBackgroundColorDialog}>
               <LayersIcon />
