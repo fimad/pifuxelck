@@ -393,7 +393,7 @@ export async function completedGameSummaries(
         History.id AS id,
         History.completed_at_id AS completed_at_id,
         History.completed_at AS completed_at,
-        History.player AS player,
+        History.players AS players,
         LabelTurn.label AS first_label,
         SUBSTRING(
           DrawingTurn.drawing,
@@ -408,7 +408,10 @@ export async function completedGameSummaries(
           Games.id AS id,
           Games.completed_at_id AS completed_at_id,
           UNIX_TIMESTAMP(GamesCompletedAt.completed_at) AS completed_at,
-          AllPlayerTurns.player AS player,
+          GROUP_CONCAT(
+            AllPlayerTurns.player
+            ORDER BY AllPlayerTurns.id ASC
+            SEPARATOR ", ") AS players,
           MIN(LabelTurns.id) AS label_id,
           MIN(DrawingTurns.id) AS drawing_id
         FROM Games
@@ -431,12 +434,13 @@ export async function completedGameSummaries(
         ) AS DrawingTurns ON DrawingTurns.game_id = Games.id
         INNER JOIN (
           SELECT
+            Turns.id AS id,
             game_id,
             Accounts.display_name AS player
           FROM Turns
           INNER JOIN Accounts ON Turns.account_id = Accounts.id
-        ) AS AllPlayerTurns ON DrawingTurns.game_id = Games.id
-        GROUP BY 1, 2, 3, 4
+        ) AS AllPlayerTurns ON AllPlayerTurns.game_id = Games.id
+        GROUP BY 1, 2, 3
       ) AS History
       INNER JOIN Turns AS LabelTurn ON LabelTurn.id = label_id
       INNER JOIN Turns AS DrawingTurn ON DrawingTurn.id = drawing_id
@@ -444,15 +448,15 @@ export async function completedGameSummaries(
       `,
       [userId]);
 
-  const gameIdToSummary = {} as {[id: string]: GameSummary};
+  const summaries = [];
   for (let i = 0; i < rows.length; i++) {
     const backgroundColorJson = rows[i].background_color;
-    const player = rows[i].player;
     const {
       completed_at,
       completed_at_id,
       first_label,
       id,
+      players,
     } = rows[i] as GameSummary;
 
     let backgroundColor;
@@ -464,19 +468,14 @@ export async function completedGameSummaries(
       continue;
     }
 
-    let summary = gameIdToSummary[id];
-    if (summary === undefined) {
-      summary = {
-        background_color: backgroundColor,
-        completed_at,
-        completed_at_id,
-        first_label,
-        id,
-        players: [],
-      };
-      gameIdToSummary[id] = summary;
-    }
-    summary.players.push(player);
+    summaries.push({
+      background_color: backgroundColor,
+      completed_at,
+      completed_at_id,
+      first_label,
+      id,
+      players,
+    });
   }
-  return Object.keys(gameIdToSummary).map((x) => gameIdToSummary[x]);
+  return summaries;
 }

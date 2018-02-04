@@ -377,7 +377,7 @@ describe('Games', () => {
               completed_at_id: 1,
               first_label: 'start',
               id: 1,
-              players: ['user1', 'user2'],
+              players: 'user1, user2',
             }],
           }));
     });

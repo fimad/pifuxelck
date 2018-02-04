@@ -82,7 +82,7 @@ const summaryToTile = (
     numCells: number, cellHeight: number, dispatch: Dispatch<State>,
     summary: GameSummary) => {
   const title = summary.first_label;
-  const subtitle = 'by ' + summary.players.join(', ');
+  const subtitle = 'by ' + summary.players;
   const drawing = {
     background_color: summary.background_color,
     lines: [],

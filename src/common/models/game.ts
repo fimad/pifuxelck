@@ -14,7 +14,7 @@ export interface GameSummary {
   completed_at_id: string;
   first_label: string;
   id: string;
-  players: string[];
+  players: string;
 }
 
 export interface NewGame {
