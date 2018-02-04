@@ -5,7 +5,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
-import { Game } from '../../common/models/game';
+import * as models from '../../common/models/drawing';
+import { Game, GameSummary } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import Drawing from '../components/drawing';
@@ -18,8 +19,16 @@ const { push } = require('react-router-redux');
 
 const styles = require('./history.css');
 
+type GameOrSummary = {
+  is: 'GAME',
+  game: Game,
+} | {
+  is: 'SUMMARY',
+  summary: GameSummary,
+};
+
 interface Props {
-  games: Game[];
+  gameOrSummaries: GameOrSummary[];
   dispatch: Dispatch<State>;
 }
 
@@ -34,9 +43,9 @@ const getNumCells = () => {
   return 6;
 };
 
-const gameToTile =
-    (numCells: number, cellHeight: number) =>
-    ({dispatch, game}: {dispatch: Dispatch<State>, game: Game}) => {
+const gameToTile = (
+    numCells: number, cellHeight: number, dispatch: Dispatch<State>,
+    game: Game) => {
   let title = '';
   if (game.turns.length >= 1) {
     const turn = game.turns[0];
@@ -69,13 +78,49 @@ const gameToTile =
   );
 };
 
-const HistoryComponent = ({games, dispatch}: Props) => {
+const summaryToTile = (
+    numCells: number, cellHeight: number, dispatch: Dispatch<State>,
+    summary: GameSummary) => {
+  const title = summary.first_label;
+  const subtitle = 'by ' + summary.players.join(', ');
+  const drawing = {
+    background_color: summary.background_color,
+    lines: [],
+  } as models.Drawing;
+  const width = `${100 / numCells}%`;
+  const height = `${cellHeight}px`;
+  return (
+    <GridListTile
+        style={{width, height, padding: '2px'}}
+        key={summary.id}
+        onClick={() => dispatch(push(`/game/${summary.id}`))}
+    >
+      <Drawing drawing={drawing} hideInivisible={false} />
+      <GridListTileBar title={title} subtitle={subtitle} />
+    </GridListTile>
+  );
+};
+
+const gameOrSummaryToTile =
+    (numCells: number, cellHeight: number) =>
+    ({dispatch, gameOrSummary}: {
+      dispatch: Dispatch<State>,
+      gameOrSummary: GameOrSummary,
+    }) => {
+  if (gameOrSummary.is === 'GAME') {
+    return gameToTile(numCells, cellHeight, dispatch, gameOrSummary.game);
+  } else {
+    return summaryToTile(numCells, cellHeight, dispatch, gameOrSummary.summary);
+  }
+};
+
+const HistoryComponent = ({gameOrSummaries, dispatch}: Props) => {
   const numCells = getNumCells();
   const cellHeight = (document.documentElement.clientWidth / numCells);
-  const tiles = games
-      .filter((game) => game.turns.length > 1)
-      .map((game) => ({game, dispatch}))
-      .map(gameToTile(numCells, cellHeight));
+  const tiles = gameOrSummaries
+      .filter((x) => x.is === 'SUMMARY' || x.game.turns.length > 1)
+      .map((gameOrSummary) => ({gameOrSummary, dispatch}))
+      .map(gameOrSummaryToTile(numCells, cellHeight));
   const cellHeights =
       tiles.map(
           (x, i) => (i % numCells === 0) ? (cellHeight - numCells + 1) : 1);
@@ -97,11 +142,13 @@ const HistoryComponent = ({games, dispatch}: Props) => {
   );
 };
 
-const compareGameByCompletion = (a: Game, b: Game) =>
+const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
 const mapStateToProps = ({entities: {history}}: State) => ({
-  games: Object.values(history).sort(compareGameByCompletion),
+  gameOrSummaries: Object.values(history)
+      .sort(compareGameByCompletion)
+      .map((summary) => ({is: 'SUMMARY', summary} as GameOrSummary)),
 });
 
 const History = connect(mapStateToProps)(HistoryComponent);

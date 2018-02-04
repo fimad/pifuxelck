@@ -1,12 +1,12 @@
 import { ContactGroup } from '../common/models/contacts';
 import { Color } from '../common/models/drawing';
-import { Game } from '../common/models/game';
+import { Game, GameSummary } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
 
 export interface Entities {
   history: {
-    [id: string]: Game,
+    [id: string]: GameSummary,
   };
   inbox: {
     [id: string]: InboxEntry,
@@ -67,12 +67,27 @@ export interface ApiStatus {
   };
 }
 
+export interface GameCacheEntry {
+  game: Game;
+  lastAccess: number;
+}
+
+export interface GameCache {
+  [gameId: string]: GameCacheEntry;
+}
+
 /**
  * The overall state of the application.
  */
 export interface State {
   /** Locally cached server side state. */
   entities: Entities;
+
+  /**
+   * Histories can be very memory intensive and slow to load and work with.
+   * Therefore only a small number are kept loaded in memory at a time.
+   */
+  gameCache: GameCache;
 
   ui: Ui;
 

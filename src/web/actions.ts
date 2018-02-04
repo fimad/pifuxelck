@@ -38,7 +38,7 @@ export type ApiAction = {
   gameId: string,
   message: Message,
 } | {
-  type: 'LOGIN_SUCCESS' | 'USER_LOOKUP_SUCCESS' | 'GET_HISTORY_RECEIVE' |
+  type: 'LOGIN_SUCCESS' | 'USER_LOOKUP_SUCCESS' | 'GET_HISTORY_SUCCESS' |
       'GET_INBOX_SUCCESS' | 'NEW_GAME_SUCCESS' | 'GET_CONTACTS_SUCCESS' |
       'GET_CONTACT_GROUPS_SUCCESS' | 'GET_ACCOUNT_SUCCESS' | 'REGISTER_SUCCESS'
   message: Message,

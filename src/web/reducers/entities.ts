@@ -49,13 +49,12 @@ function handleApiResult(state: Entities, action: Action) {
         };
       }
       break;
-    case 'GET_HISTORY_RECEIVE':
-      if (action.message && action.message.games) {
+    case 'GET_HISTORY_SUCCESS':
+      if (action.message && action.message.game_summaries) {
         return {
           ...state,
           history: {
-            ...state.history,
-            ...mapFrom(action.message.games, (x) => x.id),
+            ...mapFrom(action.message.game_summaries, (x) => x.id),
           },
         };
       }
