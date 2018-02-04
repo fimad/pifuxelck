@@ -409,6 +409,7 @@ export async function completedGameSummaries(
           Games.completed_at_id AS completed_at_id,
           UNIX_TIMESTAMP(GamesCompletedAt.completed_at) AS completed_at,
           GROUP_CONCAT(
+            DISTINCT
             AllPlayerTurns.player
             ORDER BY AllPlayerTurns.id ASC
             SEPARATOR ", ") AS players,
