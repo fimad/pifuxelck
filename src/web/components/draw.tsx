@@ -150,6 +150,10 @@ class Draw extends React.Component {
         lineInProgress ?  stopLine : passPointTo(startLine, stopLine);
     const onMouseMove =
         lineInProgress ?  passPointTo(appendLine, stopLine) : undefined;
+    const undoLastLineAndIncKey = () => {
+      undoLastLine();
+      this.setState({drawKey: this.state.drawKey + 1});
+    };
     return (
       <div className={styles.drawingReplyContainer}>
         <Card className={styles.labelCard}>
@@ -181,7 +185,7 @@ class Draw extends React.Component {
         </div>
         <Card className={styles.actionsCard}>
           <CardActions className={styles.actions}>
-            <IconButton onClick={undoLastLine}>
+            <IconButton onClick={undoLastLineAndIncKey}>
               <UndoIcon />
             </IconButton>
             <IconButton onClick={showBrushSizeDialog}>
