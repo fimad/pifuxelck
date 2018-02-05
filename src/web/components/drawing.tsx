@@ -1,13 +1,10 @@
 import * as React from 'react';
 import * as models from '../../common/models/drawing';
 
-const VisibilitySensor = require('react-visibility-sensor');
-
 interface Props {
   style?: any;
   className?: string;
   drawing: models.Drawing;
-  hideInivisible?: boolean;
 }
 
 const toColor = ({red, green, blue, alpha}: models.Color) =>
@@ -30,11 +27,10 @@ const drawLine = ({color, points, size}: models.Line, i: number) => {
   );
 };
 
-const drawingHelper = ({
+const Drawing = ({
     className,
     drawing: {background_color, lines},
-    hideInivisible,
-    style}: Props) => (isVisible: boolean) => (
+    style}: Props) => (
   <svg className={className} style={style} viewBox='0 0 1 1'>
     <defs>
       <rect id='bg' width='1' height='1' fill={toColor(background_color)} />
@@ -45,21 +41,9 @@ const drawingHelper = ({
     <use xlinkHref='#rect'/>
     <g clipPath='url(#clip)'>
       <rect id='bg' width='1' height='1' fill={toColor(background_color)} />
-      {!hideInivisible || isVisible ?  lines.map(drawLine) : null}
+      {lines.map(drawLine)}
     </g>
   </svg>
-);
-
-const Drawing = (props: Props) => (
-  <VisibilitySensor
-      delayedCall={true}
-      scrollCheck={true}
-      scrollDelay={0}
-      intervalDelay={500}
-      partialVisibility={true}
-  >
-    {drawingHelper(props)}
-  </VisibilitySensor>
 );
 
 export default Drawing;

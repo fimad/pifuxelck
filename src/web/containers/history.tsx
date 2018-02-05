@@ -17,7 +17,6 @@ import { State } from '../state';
 
 const Delay = require('react-delay').default;
 const Infinite = require('react-infinite');
-const VisibilitySensor = require('react-visibility-sensor');
 const { push } = require('react-router-redux');
 
 const styles = require('./history.css');
