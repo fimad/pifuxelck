@@ -19,6 +19,6 @@ export function objectWithoutKeys(obj: {[x: string]: any}, keys: string[]) {
 
 export function objectWithKeys(obj: {[x: string]: any}, keys: string[]) {
   const result = {} as {[x: string]: any};
-  keys.forEach((key: string) => {result[key] = obj[key];});
+  keys.forEach((key: string) => {result[key] = obj[key]; });
   return result;
 }

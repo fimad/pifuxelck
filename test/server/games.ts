@@ -368,6 +368,7 @@ describe('Games', () => {
           .expect(200)
           .expect((res: any) => expect(res.body).to.containSubset({
             game_summaries: [{
+              all_labels: 'start\n',
               background_color: {
                 alpha: 1,
                 blue: 4,

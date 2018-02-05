@@ -395,6 +395,7 @@ export async function completedGameSummaries(
         History.completed_at AS completed_at,
         History.players AS players,
         LabelTurn.label AS first_label,
+        History.all_labels AS all_labels,
         SUBSTRING(
           DrawingTurn.drawing,
           LOCATE("background_color", DrawingTurn.drawing) + 18,
@@ -413,6 +414,11 @@ export async function completedGameSummaries(
             AllPlayerTurns.player
             ORDER BY AllPlayerTurns.id ASC
             SEPARATOR ", ") AS players,
+          GROUP_CONCAT(
+            DISTINCT
+            COALESCE(AllPlayerTurns.label, "")
+            ORDER BY AllPlayerTurns.id ASC
+            SEPARATOR "\n") AS all_labels,
           MIN(LabelTurns.id) AS label_id,
           MIN(DrawingTurns.id) AS drawing_id
         FROM Games
@@ -437,7 +443,8 @@ export async function completedGameSummaries(
           SELECT
             Turns.id AS id,
             game_id,
-            Accounts.display_name AS player
+            Accounts.display_name AS player,
+            label
           FROM Turns
           INNER JOIN Accounts ON Turns.account_id = Accounts.id
         ) AS AllPlayerTurns ON AllPlayerTurns.game_id = Games.id
@@ -453,6 +460,7 @@ export async function completedGameSummaries(
   for (let i = 0; i < rows.length; i++) {
     const backgroundColorJson = rows[i].background_color;
     const {
+      all_labels,
       completed_at,
       completed_at_id,
       first_label,
@@ -470,6 +478,7 @@ export async function completedGameSummaries(
     }
 
     summaries.push({
+      all_labels,
       background_color: backgroundColor,
       completed_at,
       completed_at_id,

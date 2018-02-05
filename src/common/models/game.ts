@@ -13,6 +13,7 @@ export interface GameSummary {
   completed_at: string;
   completed_at_id: string;
   first_label: string;
+  all_labels: string;
   id: string;
   players: string;
 }
