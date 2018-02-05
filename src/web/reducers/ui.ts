@@ -1,5 +1,5 @@
 import { drawingOrDefault, Turn } from '../../common/models/turn';
-import { mapFrom, objectWithoutKeys } from '../../common/utils';
+import { objectWithKeys, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
 import { Ui } from '../state';
 
@@ -44,6 +44,14 @@ export default function(state: Ui = initialState, action: Action) {
       action.type === 'LOGIN_START' ||
       action.type === 'REGISTER_START') {
     return initialState;
+  }
+  if (action.type === 'GET_INBOX_SUCCESS' && action.message.inbox_entries) {
+    return {
+      ...state,
+      outbox: objectWithKeys(
+        state.outbox,
+        action.message.inbox_entries.map(({game_id}) => game_id)),
+    };
   }
   if (action.type === 'UI_UPDATE_OUTBOX') {
     return {
