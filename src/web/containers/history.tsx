@@ -1,6 +1,7 @@
 import { IconButton } from 'material-ui';
 import { StarBorder } from 'material-ui-icons';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -21,16 +22,8 @@ const { push } = require('react-router-redux');
 
 const styles = require('./history.css');
 
-type GameOrSummary = {
-  is: 'GAME',
-  game: Game,
-} | {
-  is: 'SUMMARY',
-  summary: GameSummary,
-};
-
 interface Props {
-  gameOrSummaries: GameOrSummary[];
+  summaries: GameSummary[];
   dispatch: Dispatch<State>;
 }
 
@@ -45,105 +38,63 @@ const getNumCells = () => {
   return 6;
 };
 
-const gameToTile = (
-    numCells: number, cellHeight: number, dispatch: Dispatch<State>,
-    game: Game) => {
-  let title = '';
-  if (game.turns.length >= 1) {
-    const turn = game.turns[0];
-    if (turn.is_drawing === false) {
-      title = turn.label;
-    }
-  }
-  const subtitle =
-      'by ' + game.turns.map((turn: Turn) => turn.player).join(', ');
-  let drawing;
-  let backgroundDrawing;
-  if (game.turns.length >= 2) {
-    const turn = game.turns[1];
-    if (turn.is_drawing === true) {
-      drawing = (<Drawing drawing={turn.drawing} hideInivisible={false} />);
-      backgroundDrawing = {
-        background_color: turn.drawing.background_color,
-        lines: [],
-      } as models.Drawing;
-    }
-  }
-  const width = `${100 / numCells}%`;
-  const height = `${cellHeight}px`;
-  return (
-    <GridListTile
-        style={{width, height, padding: '2px'}}
-        key={game.id}
-        onClick={() => dispatch(push(`/game/${game.id}`))}
-    >
-      <Delay wait={0}>
-        {drawing}
-      </Delay>
-      <Drawing drawing={backgroundDrawing} hideInivisible={false} />
-      <GridListTileBar title={title} subtitle={subtitle} />
-    </GridListTile>
-  );
+const contrastColor = (color: models.Color, alpha: number = 1) => {
+  // Counting the perceptive luminance - human eye favors green color...
+  const a = 1 - ( 0.299 * color.red + 0.587 * color.green + 0.114 * color.blue);
+  return (a < 0.3) ?
+      `rgba(0, 0, 0, ${alpha})` :
+      `rgba(255, 255, 255, ${alpha})`;
 };
 
-const summaryToTile = (
-    numCells: number, cellHeight: number, dispatch: Dispatch<State>,
-    summary: GameSummary) => {
+const colorToCss = (c: models.Color) =>
+    `rgba(${c.red * 255}, ${c.green * 255}, ${c.blue * 255}, ${c.alpha})`;
+
+const summaryToTile =
+    (numCells: number, cellHeight: number) =>
+    ({dispatch, summary}: {
+      dispatch: Dispatch<State>,
+      summary: GameSummary,
+    }) => {
   const title = summary.first_label;
   const subtitle = 'by ' + summary.players;
-  const drawing = {
-    background_color: summary.background_color,
-    lines: [],
-  } as models.Drawing;
   const width = `${100 / numCells}%`;
   const height = `${cellHeight}px`;
-  const loadGameIfVisible = (isVisible: boolean) => {
-    if (isVisible) {
-      dispatch(getGame(summary.id));
-    }
-    return <div/>;
-  };
+  const textColor = contrastColor(summary.background_color);
+  const secondaryTextColor = contrastColor(summary.background_color, 0.8);
+  const backgroundColor = colorToCss(summary.background_color);
   return (
     <GridListTile
         style={{width, height, padding: '2px'}}
         key={summary.id}
         onClick={() => dispatch(push(`/game/${summary.id}`))}
     >
-      <VisibilitySensor
-          delayedCall={true}
-          scrollCheck={true}
-          scrollDelay={0}
-          intervalDelay={500}
-          partialVisibility={true}
-          onChange={loadGameIfVisible}
+      <Typography
+          align='center'
+          type='title'
+          classes={{root: styles.title}}
+          style={{color: textColor, backgroundColor}}
       >
-        <Drawing drawing={drawing} hideInivisible={false} />
-      </VisibilitySensor>
-      <GridListTileBar title={title} subtitle={subtitle} />
+        <div className={styles.titleInner}>
+          {title}
+        </div>
+      </Typography>
+      <Typography
+          noWrap={true}
+          classes={{root: styles.subtitle}}
+          style={{color: secondaryTextColor}}
+      >
+        {subtitle}
+      </Typography>
     </GridListTile>
   );
 };
 
-const gameOrSummaryToTile =
-    (numCells: number, cellHeight: number) =>
-    ({dispatch, gameOrSummary}: {
-      dispatch: Dispatch<State>,
-      gameOrSummary: GameOrSummary,
-    }) => {
-  if (gameOrSummary.is === 'GAME') {
-    return gameToTile(numCells, cellHeight, dispatch, gameOrSummary.game);
-  } else {
-    return summaryToTile(numCells, cellHeight, dispatch, gameOrSummary.summary);
-  }
-};
-
-const HistoryComponent = ({gameOrSummaries, dispatch}: Props) => {
+const HistoryComponent = ({summaries, dispatch}: Props) => {
   const numCells = getNumCells();
   const cellHeight = (document.documentElement.clientWidth / numCells);
-  const tiles = gameOrSummaries
-      .filter((x) => x.is === 'SUMMARY' || x.game.turns.length > 1)
-      .map((gameOrSummary) => ({gameOrSummary, dispatch}))
-      .map(gameOrSummaryToTile(numCells, cellHeight));
+  const tiles = summaries
+      .map((summary) => ({summary, dispatch}))
+      .map(summaryToTile(numCells, cellHeight));
   const cellHeights =
       tiles.map(
           (x, i) => (i % numCells === 0) ? (cellHeight - numCells + 1) : 1);
@@ -169,11 +120,8 @@ const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
 const mapStateToProps = ({entities: {gameCache, history}}: State) => ({
-  gameOrSummaries: Object.values(history)
-      .sort(compareGameByCompletion)
-      .map((summary) => (gameCache[summary.id]) ?
-          {is: 'GAME', game: gameCache[summary.id]} :
-          {is: 'SUMMARY', summary}),
+  summaries: Object.values(history)
+      .sort(compareGameByCompletion),
 });
 
 const History = connect(mapStateToProps)(HistoryComponent);
