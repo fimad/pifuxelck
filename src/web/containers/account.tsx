@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import AccountEmail from '../components/account-email';
 import AccountPassword from '../components/account-password';
+import Progress from '../components/progress';
 import { State } from '../state';
 
 import {
@@ -21,20 +22,22 @@ import {
 
 interface Props {
   email: string;
+  loading: boolean;
+  onEmailSubmit: (email: string) => void;
+  onEmailUpdate: (email: string) => void;
+  onPasswordConfirmationUpdate: (passwordConfirmation: string) => void;
+  onPasswordSubmit: (password: string, passwordConfirmation: string) => void;
+  onPasswordUpdate: (password: string) => void;
   password: string;
   passwordConfirmation: string;
   passwordError: string;
-  onEmailUpdate: (email: string) => void;
-  onEmailSubmit: (email: string) => void;
-  onPasswordUpdate: (password: string) => void;
-  onPasswordConfirmationUpdate: (passwordConfirmation: string) => void;
-  onPasswordSubmit: (password: string, passwordConfirmation: string) => void;
   sendInProgress: boolean;
 }
 
 const AccountComponent = (props: Props) => {
   return (
     <div>
+      <Progress visible={props.loading} />
       <AccountEmail {...props} />
       <AccountPassword {...props} />
     </div>
@@ -53,6 +56,7 @@ const firstNonNull = (list: any[]) => {
 const mapStateToProps = (state: State) => ({
   email:
       firstNonNull([state.ui.account.email, state.entities.account.email, '']),
+  loading: state.apiStatus.inProgress.GET_ACCOUNT,
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
   passwordError: state.ui.account.passwordError || '',

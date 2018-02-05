@@ -13,6 +13,7 @@ import { compareStringsAsInts } from '../../common/utils';
 import { getGame } from '../actions';
 import Drawing from '../components/drawing';
 import { Desktop, Mobile, Tablet } from '../components/media-query';
+import Progress from '../components/progress';
 import { State } from '../state';
 
 const Delay = require('react-delay').default;
@@ -22,8 +23,9 @@ const { push } = require('react-router-redux');
 const styles = require('./history.css');
 
 interface Props {
-  summaries: GameSummary[];
   dispatch: Dispatch<State>;
+  loading: boolean;
+  summaries: GameSummary[];
 }
 
 const getNumCells = () => {
@@ -88,7 +90,7 @@ const summaryToTile =
   );
 };
 
-const HistoryComponent = ({summaries, dispatch}: Props) => {
+const HistoryComponent = ({summaries, dispatch, loading}: Props) => {
   const numCells = getNumCells();
   const cellHeight = (document.documentElement.clientWidth / numCells);
   const tiles = summaries
@@ -102,23 +104,28 @@ const HistoryComponent = ({summaries, dispatch}: Props) => {
     flexDirection: 'row',
   };
   return (
-    <ul style={{margin: '0px', padding: '0px', listStyle: 'none'}}>
-      <Infinite
-          preloadAdditionalHeight={Infinite.containerHeightScaleFactor(3)}
-          className={styles.infinite}
-          useWindowAsScrollContainer={true}
-          elementHeight={cellHeights}
-      >
-        {tiles}
-      </Infinite>
-    </ul>
+    <div>
+      <Progress visible={loading} />
+      <ul style={{margin: '0px', padding: '0px', listStyle: 'none'}}>
+        <Infinite
+            preloadAdditionalHeight={Infinite.containerHeightScaleFactor(3)}
+            className={styles.infinite}
+            useWindowAsScrollContainer={true}
+            elementHeight={cellHeights}
+        >
+          {tiles}
+        </Infinite>
+      </ul>
+    </div>
   );
 };
 
 const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
-const mapStateToProps = ({entities: {gameCache, history}}: State) => ({
+const mapStateToProps =
+    ({entities: {gameCache, history}, apiStatus}: State) => ({
+  loading: apiStatus.inProgress.GET_HISTORY,
   summaries: Object.values(history)
       .sort(compareGameByCompletion),
 });

@@ -10,6 +10,7 @@ import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import Progress from '../components/progress';
 import { State } from '../state';
 
 import {
@@ -36,6 +37,7 @@ interface SlimContact {
 interface Props {
   addContactEnabled: boolean;
   contacts: SlimContact[];
+  loading: boolean;
   lookup: string;
   lookupId?: string;
   onAddContact: (lookupId: string) => void;
@@ -45,7 +47,7 @@ interface Props {
 
 const ContactsComponent = ({
     addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange,
-    onRemoveContact,
+    onRemoveContact, loading,
   }: Props) => {
   const contactListItem = ({name, id, pendingDelete}: SlimContact) => {
     const action = pendingDelete ? (<CircularProgress color='accent' />) : (
@@ -76,24 +78,27 @@ const ContactsComponent = ({
         </Paper>
       );
   return (
-    <div className={cx(styles.container, styles.contacts)}>
-      <Paper style={{display: 'flex', flexDirection: 'row'}}>
-        <TextField
-            onChange={(event) => onLookupChange(event.target.value)}
-            label='Lookup contact'
-            value={lookup}
-            fullWidth={true}
-        />
-        <Button
-            onClick={() => lookupId ? onAddContact(lookupId) : null}
-            disabled={!addContactEnabled}
-            raised={true}
-            color='accent'
-        >
-          <AddIcon />
-        </Button>
-      </Paper>
-      {contactList}
+    <div>
+      <Progress visible={loading} />
+      <div className={cx(styles.container, styles.contacts)}>
+        <Paper style={{display: 'flex', flexDirection: 'row'}}>
+          <TextField
+              onChange={(event) => onLookupChange(event.target.value)}
+              label='Lookup contact'
+              value={lookup}
+              fullWidth={true}
+          />
+          <Button
+              onClick={() => lookupId ? onAddContact(lookupId) : null}
+              disabled={!addContactEnabled}
+              raised={true}
+              color='accent'
+          >
+            <AddIcon />
+          </Button>
+        </Paper>
+        {contactList}
+      </div>
     </div>
   );
 };
@@ -110,6 +115,7 @@ const mapStateToProps = (state: State) => ({
         pendingDelete: state.apiStatus.pendingContactDeletes[i],
       }))
       .sort(compareByDisplayName),
+  loading: state.apiStatus.inProgress.GET_CONTACTS,
   lookup: state.ui.contacts.lookup,
   lookupId: state.entities.users[state.ui.contacts.lookup],
 });

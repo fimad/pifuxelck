@@ -7,6 +7,7 @@ import { Game } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { getGame } from '../actions';
 import Drawing from '../components/drawing';
+import Progress from '../components/progress';
 import { State } from '../state';
 
 interface Props {
@@ -48,8 +49,11 @@ const GameComponent = ({game, loadGame}: Props) => {
     loadGame();
   }
   return (
-    <div style={{maxWidth: '75vh', margin: 'auto'}}>
-      {(game.turns || []).map(toTurn)}
+    <div>
+      <Progress visible={!game.turns} />
+      <div style={{maxWidth: '75vh', margin: 'auto'}}>
+        {(game.turns || []).map(toTurn)}
+      </div>
     </div>
   );
 };
