@@ -9,12 +9,14 @@ import * as models from '../../common/models/drawing';
 import { Game, GameSummary } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
+import { getGame } from '../actions';
 import Drawing from '../components/drawing';
 import { Desktop, Mobile, Tablet } from '../components/media-query';
 import { State } from '../state';
 
 const Delay = require('react-delay').default;
 const Infinite = require('react-infinite');
+const VisibilitySensor = require('react-visibility-sensor');
 const { push } = require('react-router-redux');
 
 const styles = require('./history.css');
@@ -56,10 +58,15 @@ const gameToTile = (
   const subtitle =
       'by ' + game.turns.map((turn: Turn) => turn.player).join(', ');
   let drawing;
+  let backgroundDrawing;
   if (game.turns.length >= 2) {
     const turn = game.turns[1];
     if (turn.is_drawing === true) {
       drawing = (<Drawing drawing={turn.drawing} hideInivisible={false} />);
+      backgroundDrawing = {
+        background_color: turn.drawing.background_color,
+        lines: [],
+      } as models.Drawing;
     }
   }
   const width = `${100 / numCells}%`;
@@ -73,6 +80,7 @@ const gameToTile = (
       <Delay wait={0}>
         {drawing}
       </Delay>
+      <Drawing drawing={backgroundDrawing} hideInivisible={false} />
       <GridListTileBar title={title} subtitle={subtitle} />
     </GridListTile>
   );
@@ -89,13 +97,28 @@ const summaryToTile = (
   } as models.Drawing;
   const width = `${100 / numCells}%`;
   const height = `${cellHeight}px`;
+  const loadGameIfVisible = (isVisible: boolean) => {
+    if (isVisible) {
+      dispatch(getGame(summary.id));
+    }
+    return <div/>;
+  };
   return (
     <GridListTile
         style={{width, height, padding: '2px'}}
         key={summary.id}
         onClick={() => dispatch(push(`/game/${summary.id}`))}
     >
-      <Drawing drawing={drawing} hideInivisible={false} />
+      <VisibilitySensor
+          delayedCall={true}
+          scrollCheck={true}
+          scrollDelay={0}
+          intervalDelay={500}
+          partialVisibility={true}
+          onChange={loadGameIfVisible}
+      >
+        <Drawing drawing={drawing} hideInivisible={false} />
+      </VisibilitySensor>
       <GridListTileBar title={title} subtitle={subtitle} />
     </GridListTile>
   );
@@ -145,10 +168,12 @@ const HistoryComponent = ({gameOrSummaries, dispatch}: Props) => {
 const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
-const mapStateToProps = ({entities: {history}}: State) => ({
+const mapStateToProps = ({entities: {gameCache, history}}: State) => ({
   gameOrSummaries: Object.values(history)
       .sort(compareGameByCompletion)
-      .map((summary) => ({is: 'SUMMARY', summary} as GameOrSummary)),
+      .map((summary) => (gameCache[summary.id]) ?
+          {is: 'GAME', game: gameCache[summary.id]} :
+          {is: 'SUMMARY', summary}),
 });
 
 const History = connect(mapStateToProps)(HistoryComponent);

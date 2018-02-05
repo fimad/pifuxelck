@@ -23,6 +23,14 @@ export interface Entities {
   account: {
     email: string,
   };
+
+  /**
+   * Histories can be very memory intensive and slow to load and work with.
+   * Therefore only a small number are kept loaded in memory at a time.
+   */
+  gameCache: {
+    [id: string]: Game,
+  };
 }
 
 export interface Ui {
@@ -67,27 +75,12 @@ export interface ApiStatus {
   };
 }
 
-export interface GameCacheEntry {
-  game: Game;
-  lastAccess: number;
-}
-
-export interface GameCache {
-  [gameId: string]: GameCacheEntry;
-}
-
 /**
  * The overall state of the application.
  */
 export interface State {
   /** Locally cached server side state. */
   entities: Entities;
-
-  /**
-   * Histories can be very memory intensive and slow to load and work with.
-   * Therefore only a small number are kept loaded in memory at a time.
-   */
-  gameCache: GameCache;
 
   ui: Ui;
 

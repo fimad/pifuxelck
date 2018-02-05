@@ -41,7 +41,7 @@ export function createPifuxelckStore(history: History) {
           [], [
             // Blacklisted state.
             ['apiStatus'],
-            ['gameCache'],
+            ['entities', 'gameCache'],
             ['ui', 'errors'],
           ]),
       1500);

@@ -15,6 +15,7 @@ const initialState = {
   },
   contactGroups: {},
   contacts: {},
+  gameCache: {},
   history: {},
   inbox: {},
   users: {},
@@ -45,6 +46,17 @@ function handleApiResult(state: Entities, action: Action) {
           users: {
             ...state.users,
             [action.message.user.display_name]: action.message.user.id,
+          },
+        };
+      }
+      break;
+    case 'GET_GAME_SUCCESS':
+      if (action.message && action.message.game) {
+        return {
+          ...state,
+          gameCache: {
+            ...state.gameCache,
+            [action.message.game.id]: action.message.game,
           },
         };
       }

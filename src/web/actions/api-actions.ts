@@ -11,7 +11,7 @@ export function login(user: string, password: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
-    idbKeyval.set('game-history', {}).then(() => {
+    idbKeyval.clear().then(() => {
       api.post({
         body: {
           user: {
@@ -35,7 +35,7 @@ export function register(user: string, password: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
-    idbKeyval.set('game-history', {}).then(() => {
+    idbKeyval.clear().then(() => {
       api.post({
         body: {
           user: {
@@ -64,6 +64,38 @@ export function userLookup(user: string) {
     success: 'USER_LOOKUP_SUCCESS',
     url: `/api/2/contacts/lookup/${user}`,
   });
+}
+
+export function getGame(id: string) {
+  return (dispatch: Dispatch<State>, getState: () => State) => {
+    if (getState().entities.gameCache[id]) {
+      return;
+    }
+    const key = `game=${id}`;
+    idbKeyval.get(key).then((game) => {
+      if (game) {
+        dispatch({
+          message: {game},
+          type: 'GET_GAME_SUCCESS',
+        });
+      } else {
+        api.get({
+          allowConcurrent: false,
+          failure: 'GET_GAME_FAILURE',
+          name: `GET_GAME_${id}`,
+          onSuccess: (message) => {
+            if (message.game) {
+              idbKeyval.set(key, message.game);
+            }
+          },
+          requireAuth: true,
+          start: 'GET_GAME_START',
+          success: 'GET_GAME_SUCCESS',
+          url: `/api/2/games/${id}`,
+        })(dispatch, getState);
+      }
+    });
+  };
 }
 
 export function getHistory() {
