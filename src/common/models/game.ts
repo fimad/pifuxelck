@@ -1,3 +1,4 @@
+import { Color } from './drawing';
 import { Turn } from './turn';
 
 export interface Game {
@@ -5,6 +6,16 @@ export interface Game {
   turns: Turn[];
   completed_at: string;
   completed_at_id: string;
+}
+
+export interface GameSummary {
+  background_color: Color;
+  completed_at: string;
+  completed_at_id: string;
+  first_label: string;
+  all_labels: string;
+  id: string;
+  players: string;
 }
 
 export interface NewGame {

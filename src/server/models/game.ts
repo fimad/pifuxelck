@@ -1,7 +1,7 @@
 import { Connection } from 'mysql';
 import * as shuffle from 'shuffle-array';
 import * as winston from 'winston';
-import { Game, NewGame } from '../../common/models/game';
+import { Game, GameSummary, NewGame } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { query, transact } from '../db-promise';
 import { SendMail } from '../middleware/mail';
@@ -377,4 +377,115 @@ export async function completedGames(
        ORDER BY Games.id ASC, Turns.id ASC`,
       [userId, sinceId]);
   return rowsToGames(results);
+}
+
+/**
+ * Returns a list of games that a given user has participated in and that have
+ * been completed since the given completed at ID.
+ */
+export async function completedGameSummaries(
+    db: Connection,
+    userId: string): Promise<GameSummary[]> {
+  const rows = await query(
+      db,
+      `
+      SELECT
+        History.id AS id,
+        History.completed_at_id AS completed_at_id,
+        History.completed_at AS completed_at,
+        History.players AS players,
+        LabelTurn.label AS first_label,
+        History.all_labels AS all_labels,
+        SUBSTRING(
+          DrawingTurn.drawing,
+          LOCATE("background_color", DrawingTurn.drawing) + 18,
+          LOCATE(
+            "}",
+            DrawingTurn.drawing,
+            LOCATE("background_color", DrawingTurn.drawing)) - 20
+        ) AS background_color
+      FROM (
+        SELECT
+          Games.id AS id,
+          Games.completed_at_id AS completed_at_id,
+          UNIX_TIMESTAMP(GamesCompletedAt.completed_at) AS completed_at,
+          GROUP_CONCAT(
+            DISTINCT
+            AllPlayerTurns.player
+            ORDER BY AllPlayerTurns.id ASC
+            SEPARATOR ", ") AS players,
+          GROUP_CONCAT(
+            DISTINCT
+            COALESCE(AllPlayerTurns.label, "")
+            ORDER BY AllPlayerTurns.id ASC
+            SEPARATOR "\n") AS all_labels,
+          MIN(LabelTurns.id) AS label_id,
+          MIN(DrawingTurns.id) AS drawing_id
+        FROM Games
+        INNER JOIN GamesCompletedAt
+        ON GamesCompletedAt.id = Games.completed_at_id
+        INNER JOIN (
+          SELECT game_id
+          FROM Turns AS T
+          WHERE T.account_id = ?
+        ) AS UserGames ON UserGames.game_id = Games.id
+        INNER JOIN (
+          SELECT id, label, game_id
+          FROM Turns
+          WHERE NOT is_drawing
+        ) AS LabelTurns ON LabelTurns.game_id = Games.id
+        INNER JOIN (
+          SELECT id, label, game_id
+          FROM Turns
+          WHERE is_drawing
+        ) AS DrawingTurns ON DrawingTurns.game_id = Games.id
+        INNER JOIN (
+          SELECT
+            Turns.id AS id,
+            game_id,
+            Accounts.display_name AS player,
+            label
+          FROM Turns
+          INNER JOIN Accounts ON Turns.account_id = Accounts.id
+        ) AS AllPlayerTurns ON AllPlayerTurns.game_id = Games.id
+        GROUP BY 1, 2, 3
+      ) AS History
+      INNER JOIN Turns AS LabelTurn ON LabelTurn.id = label_id
+      INNER JOIN Turns AS DrawingTurn ON DrawingTurn.id = drawing_id
+      ORDER BY completed_at_id ASC
+      `,
+      [userId]);
+
+  const summaries = [];
+  for (let i = 0; i < rows.length; i++) {
+    const backgroundColorJson = rows[i].background_color;
+    const {
+      all_labels,
+      completed_at,
+      completed_at_id,
+      first_label,
+      id,
+      players,
+    } = rows[i] as GameSummary;
+
+    let backgroundColor;
+    try {
+      backgroundColor = JSON.parse(backgroundColorJson);
+    } catch (error) {
+      winston.warn(`Unable to unmarshal background color, ${error}`);
+      winston.warn(`Offending drawing: ${backgroundColorJson}`);
+      continue;
+    }
+
+    summaries.push({
+      all_labels,
+      background_color: backgroundColor,
+      completed_at,
+      completed_at_id,
+      first_label,
+      id,
+      players,
+    });
+  }
+  return summaries;
 }

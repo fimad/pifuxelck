@@ -11,6 +11,7 @@ import {
 
 import {
   completedGames,
+  completedGameSummaries,
   createGame,
   gameById,
   reapExpiredTurns,
@@ -25,6 +26,13 @@ games.get('/', authRoute(async (userId, req, res) => {
   const allGames = await completedGames(req.db, userId, sinceId);
   winston.info(`Looked up history since ${sinceId}.`, req.context);
   res.success({games: allGames});
+}));
+
+games.get('/summary', authRoute(async (userId, req, res) => {
+  winston.info(`Requesting history summary.`, req.context);
+  const allGames = await completedGameSummaries(req.db, userId);
+  winston.info(`Looked up history summary.`, req.context);
+  res.success({game_summaries: allGames});
 }));
 
 games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {

@@ -39,8 +39,9 @@ export function createPifuxelckStore(history: History) {
             save: (state) => idbEngine.save(state),
           }),
           [], [
+            // Blacklisted state.
             ['apiStatus'],
-            ['entities', 'history'],
+            ['entities', 'gameCache'],
             ['ui', 'errors'],
           ]),
       1500);

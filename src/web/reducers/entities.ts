@@ -15,6 +15,7 @@ const initialState = {
   },
   contactGroups: {},
   contacts: {},
+  gameCache: {},
   history: {},
   inbox: {},
   users: {},
@@ -49,13 +50,23 @@ function handleApiResult(state: Entities, action: Action) {
         };
       }
       break;
-    case 'GET_HISTORY_RECEIVE':
-      if (action.message && action.message.games) {
+    case 'GET_GAME_SUCCESS':
+      if (action.message && action.message.game) {
+        return {
+          ...state,
+          gameCache: {
+            ...state.gameCache,
+            [action.message.game.id]: action.message.game,
+          },
+        };
+      }
+      break;
+    case 'GET_HISTORY_SUCCESS':
+      if (action.message && action.message.game_summaries) {
         return {
           ...state,
           history: {
-            ...state.history,
-            ...mapFrom(action.message.games, (x) => x.id),
+            ...mapFrom(action.message.game_summaries, (x) => x.id),
           },
         };
       }

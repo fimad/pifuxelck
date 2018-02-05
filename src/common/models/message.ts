@@ -1,5 +1,5 @@
 import { ContactGroup } from './contacts';
-import { Game, NewGame, NewGameError } from './game';
+import { Game, GameSummary, NewGame, NewGameError } from './game';
 import { Meta } from './meta';
 import { InboxEntry, Turn } from './turn';
 import { User, UserError } from './user';
@@ -12,6 +12,7 @@ export interface Message {
   errors?: Errors;
   game?: Game;
   games?: Game[];
+  game_summaries?: GameSummary[];
   inbox_entries?: InboxEntry[];
   inbox_entry?: InboxEntry;
   meta?: Meta;

@@ -11,7 +11,7 @@ export function login(user: string, password: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
-    idbKeyval.set('game-history', {}).then(() => {
+    idbKeyval.clear().then(() => {
       api.post({
         body: {
           user: {
@@ -35,7 +35,7 @@ export function register(user: string, password: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
-    idbKeyval.set('game-history', {}).then(() => {
+    idbKeyval.clear().then(() => {
       api.post({
         body: {
           user: {
@@ -66,61 +66,47 @@ export function userLookup(user: string) {
   });
 }
 
-export function getHistory() {
+export function getGame(id: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => {
-    const state = getState();
-    if (state.apiStatus.inProgress.GET_HISTORY || !state.auth) {
+    if (getState().entities.gameCache[id]) {
       return;
     }
-    dispatch({
-      apiName: 'GET_HISTORY',
-      inProgress: true,
-      type: 'GET_HISTORY_START',
-    });
-    const compareByCompletedAtId = (a: Game, b: Game) =>
-        compareStringsAsInts(a.completed_at_id, b.completed_at_id);
-    const getSinceId = (history?: Game[]) =>
-        (history || Object.values(getState().entities.history))
-        .sort(compareByCompletedAtId)
-        .map((x) => x.id)
-        .pop() || 0;
-    const getHistoryStep: any = (history?: Game[]) => api.get({
-      allowConcurrent: true,
-      failure: 'GET_HISTORY_STOP',
-      name: 'GET_HISTORY',
-      onSuccess: (message) => {
-        const {games} = message;
-        if (!games || games.length <= 0) {
-          idbKeyval
-              .set('game-history', getState().entities.history)
-              .then(() => {
-                dispatch({
-                  apiName: 'GET_HISTORY',
-                  inProgress: false,
-                  type: 'GET_HISTORY_STOP',
-                });
-              });
-        } else {
-          dispatch({type: 'GET_HISTORY_RECEIVE', message});
-          getHistoryStep(games)(dispatch, getState);
-        }
-      },
-      url: `/api/2/games/?since=${getSinceId(history)}`,
-    });
-    // First pull any cached history out of IDB before requesting more history
-    // from the server.
-    idbKeyval.get('game-history').then((history) => {
-      if (history) {
+    const key = `game=${id}`;
+    idbKeyval.get(key).then((game) => {
+      if (game) {
         dispatch({
-          message: {
-            games: Object.values(history),
-          },
-          type: 'GET_HISTORY_RECEIVE',
+          message: {game},
+          type: 'GET_GAME_SUCCESS',
         });
+      } else {
+        api.get({
+          allowConcurrent: false,
+          failure: 'GET_GAME_FAILURE',
+          name: `GET_GAME_${id}`,
+          onSuccess: (message) => {
+            if (message.game) {
+              idbKeyval.set(key, message.game);
+            }
+          },
+          requireAuth: true,
+          start: 'GET_GAME_START',
+          success: 'GET_GAME_SUCCESS',
+          url: `/api/2/games/${id}`,
+        })(dispatch, getState);
       }
-      getHistoryStep()(dispatch, getState);
     });
   };
+}
+
+export function getHistory() {
+  return api.get({
+    failure: 'GET_HISTORY_FAILURE',
+    name: 'GET_HISTORY',
+    requireAuth: true,
+    start: 'GET_HISTORY_START',
+    success: 'GET_HISTORY_SUCCESS',
+    url: `/api/2/games/summary`,
+  });
 }
 
 export function getInbox() {

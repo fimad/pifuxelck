@@ -1,12 +1,12 @@
 import { ContactGroup } from '../common/models/contacts';
 import { Color } from '../common/models/drawing';
-import { Game } from '../common/models/game';
+import { Game, GameSummary } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
 
 export interface Entities {
   history: {
-    [id: string]: Game,
+    [id: string]: GameSummary,
   };
   inbox: {
     [id: string]: InboxEntry,
@@ -22,6 +22,14 @@ export interface Entities {
   };
   account: {
     email: string,
+  };
+
+  /**
+   * Histories can be very memory intensive and slow to load and work with.
+   * Therefore only a small number are kept loaded in memory at a time.
+   */
+  gameCache: {
+    [id: string]: Game,
   };
 }
 
@@ -45,6 +53,9 @@ export interface Ui {
     messages: {
       [id: string]: string,
     },
+  };
+  history: {
+    query: (string|null),
   };
   newGame: {
     topic: string
