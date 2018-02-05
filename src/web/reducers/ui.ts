@@ -27,6 +27,9 @@ const initialState = {
     messages: {},
     nextId: 0,
   },
+  history: {
+    query: null as (string | null),
+  },
   newGame: {
     topic: '',
     users: [] as string[],
@@ -295,6 +298,15 @@ export default function(state: Ui = initialState, action: Action) {
       errors: {
         ...state.errors,
         messages: objectWithoutKeys(state.errors.messages, [action.errorId]),
+      },
+    };
+  }
+  if (action.type === 'UI_FILTER_HISTORY') {
+    return {
+      ...state,
+      history: {
+        ...state.history,
+        query: action.query,
       },
     };
   }

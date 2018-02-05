@@ -72,3 +72,7 @@ export function addErrorSnak(error: string) {
 export function removeErrorSnak(errorId: string) {
   return {type: 'UI_REMOVE_ERROR_SNAK', errorId};
 }
+
+export function filterHistory(query: string) {
+  return {type: 'UI_FILTER_HISTORY', query};
+}

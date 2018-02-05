@@ -7,6 +7,7 @@ import InboxIcon from 'material-ui-icons/Inbox';
 import ChartIcon from 'material-ui-icons/InsertChart';
 import MenuIcon from 'material-ui-icons/Menu';
 import PersonIcon from 'material-ui-icons/Person';
+import SearchIcon from 'material-ui-icons/Search';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { CircularProgress } from 'material-ui/Progress';
 import * as React from 'react';
@@ -25,6 +26,7 @@ import Inbox from './inbox';
 import LoginRedirect from './login-redirect';
 
 import {
+  filterHistory,
   gotoAccount,
   gotoContacts,
   gotoHistory,
@@ -39,15 +41,18 @@ import {
   Drawer,
   IconButton,
   MenuItem,
+  TextField,
   Toolbar,
   Typography,
 } from 'material-ui';
 
+const styles = require('./app.css');
 const ResizeAware = require('react-resize-aware').default;
 const { push } = require('react-router-redux');
 
 interface Props {
   dispatch: Dispatch<State>;
+  historyQuery: string;
   isLoggedIn: boolean;
   newGameInProgress: boolean;
 }
@@ -78,6 +83,7 @@ class AppComponent extends React.Component<Props, any> {
   }
 
   public handleClickHistory = () => {
+    this.props.dispatch(filterHistory(''));
     this.props.dispatch(gotoHistory());
     this.handleShowDrawer(false);
   }
@@ -98,6 +104,10 @@ class AppComponent extends React.Component<Props, any> {
 
   public handleLogout = () => {
     this.props.dispatch(logout());
+  }
+
+  public handleHistoryQuery = (query: string) => {
+    this.props.dispatch(filterHistory(query));
   }
 
   public render() {
@@ -158,6 +168,18 @@ class AppComponent extends React.Component<Props, any> {
         New Game
       </Button>
     );
+    const historySearch = (
+      <div className={styles.historySearchContainer}>
+        <div className={styles.historySearch}>
+          <SearchIcon />
+          <TextField
+              onChange={(event) => this.handleHistoryQuery(event.target.value)}
+              value={this.props.historyQuery}
+              margin='normal'
+          />
+        </div>
+      </div>
+    );
     return (
       <div style={rootStyle}>
         <Switch>
@@ -169,7 +191,7 @@ class AppComponent extends React.Component<Props, any> {
           </Route>
           <Route path='/history'>
             <div>
-              {appBar('History')}
+              {appBar('History', historySearch)}
               <ResizeAware>
                 <History />
               </ResizeAware>
@@ -255,7 +277,8 @@ class AppComponent extends React.Component<Props, any> {
   }
 }
 
-const mapStateToProps = ({auth, apiStatus}: State) => ({
+const mapStateToProps = ({ui, auth, apiStatus}: State) => ({
+  historyQuery: ui.history.query,
   isLoggedIn: !!auth,
   newGameInProgress: apiStatus.inProgress.NEW_GAME,
 });

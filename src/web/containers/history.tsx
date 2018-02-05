@@ -24,6 +24,7 @@ const styles = require('./history.css');
 
 interface Props {
   dispatch: Dispatch<State>;
+  filter: (string | null);
   loading: boolean;
   summaries: GameSummary[];
 }
@@ -90,10 +91,13 @@ const summaryToTile =
   );
 };
 
-const HistoryComponent = ({summaries, dispatch, loading}: Props) => {
+const HistoryComponent = ({summaries, dispatch, loading, filter}: Props) => {
   const numCells = getNumCells();
   const cellHeight = (document.documentElement.clientWidth / numCells);
   const tiles = summaries
+      .filter((summary) =>
+          !filter ||
+          summary.all_labels.toLowerCase().indexOf(filter.toLowerCase()) >= 0)
       .map((summary) => ({summary, dispatch}))
       .map(summaryToTile(numCells, cellHeight));
   const cellHeights =
@@ -124,7 +128,8 @@ const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
     compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
 const mapStateToProps =
-    ({entities: {gameCache, history}, apiStatus}: State) => ({
+    ({entities: {gameCache, history}, apiStatus, ui}: State) => ({
+  filter: ui.history.query,
   loading: apiStatus.inProgress.GET_HISTORY,
   summaries: Object.values(history)
       .sort(compareGameByCompletion),

@@ -54,6 +54,9 @@ export interface Ui {
       [id: string]: string,
     },
   };
+  history: {
+    query: (string|null),
+  };
   newGame: {
     topic: string
     users: string[],

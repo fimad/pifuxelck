@@ -1,0 +1,40 @@
+.historySearchContainer {
+  padding: 8px;
+  width: auto;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.historySearch {
+  background-color: rgba(255, 255, 255, .1);
+  vertical-align: middle;
+  padding: 4px;
+  display: flex;
+  border-radius: 4px;
+  width: 80px;
+  transition: width .25s ease-in-out;
+}
+
+.historySearch input {
+  vertical-align: middle;
+  color: white;
+  margin: 4px;
+  padding: 0px;
+}
+
+.historySearch:focus-within {
+  width: 100%;
+}
+
+.historySearch div::before {
+  display: none;
+}
+.historySearch div::after {
+  display: none;
+}
+.historySearch div {
+  margin: 0px;
+}
+.historySearch svg {
+  vertical-align: middle;
+}

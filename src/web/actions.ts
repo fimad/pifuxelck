@@ -103,4 +103,7 @@ export type Action = (ApiAction | {
 } | {
   type: 'UI_REMOVE_ERROR_SNAK'
   errorId: string,
+} | {
+  type: 'UI_FILTER_HISTORY'
+  query: string,
 });
