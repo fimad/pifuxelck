@@ -1,7 +1,9 @@
+import * as FileSaver from 'file-saver';
 import AddIcon from 'material-ui-icons/Add';
 import ArchiveIcon from 'material-ui-icons/Archive';
 import ContactsIcon from 'material-ui-icons/Contacts';
 import LogoutIcon from 'material-ui-icons/Eject';
+import DownloadIcon from 'material-ui-icons/FileDownload';
 import HistoryIcon from 'material-ui-icons/History';
 import InboxIcon from 'material-ui-icons/Inbox';
 import ChartIcon from 'material-ui-icons/InsertChart';
@@ -46,6 +48,7 @@ import {
   Typography,
 } from 'material-ui';
 
+const domtoimage = require('dom-to-image');
 const styles = require('./app.css');
 const ResizeAware = require('react-resize-aware').default;
 const { push } = require('react-router-redux');
@@ -58,6 +61,8 @@ interface Props {
 }
 
 class AppComponent extends React.Component<Props, any> {
+  public gameRef: HTMLElement;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -110,6 +115,12 @@ class AppComponent extends React.Component<Props, any> {
     this.props.dispatch(filterHistory(query));
   }
 
+  public handleExportGame = (gameId: string) => {
+    domtoimage
+        .toBlob(this.gameRef)
+        .then((blob: Blob) => FileSaver.saveAs(blob, `${gameId}.png`));
+  }
+
   public render() {
     if (!this.props.isLoggedIn) {
       return (<LoginRedirect />);
@@ -150,10 +161,21 @@ class AppComponent extends React.Component<Props, any> {
       </AppBar>
       </div>
     );
+    const gameExport = (gameId: string) => (
+      <IconButton
+          onClick={() => this.handleExportGame(gameId)}
+          color='contrast'
+          aria-label='Menu'
+      >
+        <DownloadIcon />
+      </IconButton>
+    );
     const gameView = ({match}: any) => (
       <div>
-        {appBar('Game')}
-        <Game gameId={match.params.id} />
+        {appBar('Game', gameExport(match.params.id))}
+        <div ref={(gameRef: HTMLElement) => {this.gameRef = gameRef; }}>
+          <Game gameId={match.params.id} />
+        </div>
       </div>
     );
     const drawView = ({match}: any) => (
