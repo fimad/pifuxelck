@@ -6,6 +6,7 @@ import {
   createContactGroup,
   getContactGroups,
   getContacts,
+  getSuggestedContacts,
   removeContact,
   removeContactFromGroup,
 } from '../models/contacts';
@@ -21,8 +22,14 @@ contacts.get('/lookup/:displayName', authRoute(async (userId, req, res) => {
 }));
 
 contacts.get('/', authRoute(async (userId, req, res) => {
-  const usersContacts = await getContacts(req.db, userId);
-  res.success({contacts: usersContacts});
+  const [usersContacts, suggestedContacts] = await Promise.all([
+    getContacts(req.db, userId),
+    getSuggestedContacts(req.db, userId),
+  ]);
+  res.success({
+    contacts: usersContacts,
+    suggested_contacts: suggestedContacts,
+  });
 }));
 
 contacts.put('/:contactId', authRoute(async (userId, req, res) => {

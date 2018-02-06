@@ -1,4 +1,4 @@
-import { ContactGroup } from './contacts';
+import { ContactGroup, SuggestedContact } from './contacts';
 import { Game, GameSummary, NewGame, NewGameError } from './game';
 import { Meta } from './meta';
 import { InboxEntry, Turn } from './turn';
@@ -22,6 +22,7 @@ export interface Message {
   contacts?: User[];
   contact_group?: ContactGroup;
   contact_groups?: ContactGroup[];
+  suggested_contacts?: SuggestedContact[];
 }
 
 /**
