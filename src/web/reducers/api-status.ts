@@ -10,6 +10,7 @@ const initialState: ApiStatus = {
   inProgress: {},
   pendingContactAdds: {},
   pendingContactDeletes: {},
+  pendingSuggestionIgnores: {},
   pendingTurns: {},
 };
 
@@ -57,6 +58,17 @@ export default function(state: ApiStatus = initialState, action: Action) {
       ...nextState,
       pendingContactAdds: {
         ...nextState.pendingContactAdds,
+        [action.contactId]: action.inProgress,
+      },
+    };
+  }
+  if (action.type === 'IGNORE_SUGGESTION_START' ||
+      action.type === 'IGNORE_SUGGESTION_SUCCESS' ||
+      action.type === 'IGNORE_SUGGESTION_FAILURE') {
+    return {
+      ...nextState,
+      pendingSuggestionIgnores: {
+        ...nextState.pendingSuggestionIgnores,
         [action.contactId]: action.inProgress,
       },
     };

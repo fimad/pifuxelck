@@ -30,6 +30,7 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
         contacts: objectWithoutKeys(state.contacts, [action.contactId]),
       };
     case 'ADD_CONTACT_SUCCESS':
+    case 'IGNORE_SUGGESTION_SUCCESS':
       return {
         ...state,
         suggestedContacts: objectWithoutKeys(

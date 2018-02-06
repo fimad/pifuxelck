@@ -22,6 +22,7 @@ export function gotoInbox() {
   return (dispatch: Dispatch<State>) => {
     dispatch(push('/inbox'));
     dispatch(getInbox());
+    dispatch(getContacts());
   };
 }
 

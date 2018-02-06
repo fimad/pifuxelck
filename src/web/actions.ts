@@ -26,6 +26,10 @@ export type ApiAction = {
   type: 'ADD_CONTACT_START' | 'ADD_CONTACT_FAILURE' | 'ADD_CONTACT_SUCCESS',
   contactId: string,
 } | {
+  type: 'IGNORE_SUGGESTION_START' | 'IGNORE_SUGGESTION_FAILURE' |
+      'IGNORE_SUGGESTION_SUCCESS',
+  contactId: string,
+} | {
   type: 'REMOVE_CONTACT_START' | 'REMOVE_CONTACT_FAILURE',
   contactId: string,
 } | {

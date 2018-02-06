@@ -82,6 +82,9 @@ export interface ApiStatus {
   pendingContactAdds: {
     [id: string]: boolean,
   };
+  pendingSuggestionIgnores: {
+    [id: string]: boolean,
+  };
 }
 
 /**
