@@ -117,7 +117,13 @@ class AppComponent extends React.Component<Props, any> {
 
   public handleExportGame = (gameId: string) => {
     domtoimage
-        .toBlob(this.gameRef)
+        .toBlob(this.gameRef, {
+          bgcolor: '#CFD8DC',
+          style: {
+            margin: '0px',
+            padding: '0px',
+          },
+        })
         .then((blob: Blob) => FileSaver.saveAs(blob, `${gameId}.png`));
   }
 
@@ -173,9 +179,10 @@ class AppComponent extends React.Component<Props, any> {
     const gameView = ({match}: any) => (
       <div>
         {appBar('Game', gameExport(match.params.id))}
-        <div ref={(gameRef: HTMLElement) => {this.gameRef = gameRef; }}>
-          <Game gameId={match.params.id} />
-        </div>
+        <Game
+          gameRef={(gameRef: HTMLElement) => {this.gameRef = gameRef; }}
+          gameId={match.params.id}
+        />
       </div>
     );
     const drawView = ({match}: any) => (
