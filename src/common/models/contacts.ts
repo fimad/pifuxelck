@@ -29,4 +29,9 @@ export interface SuggestedContact {
    * True if this suggested user has added the current user as a contact.
    */
   added_current_user: boolean;
+
+  /**
+   * If true, the user does not wish to see this suggested in their inbox.
+   */
+  no_thanks: boolean;
 }

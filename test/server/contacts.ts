@@ -138,18 +138,73 @@ describe('Contacts', () => {
                 common_contacts: 0,
                 display_name: 'user5',
                 id: 5,
+                no_thanks: false,
               },
               {
                 added_current_user: false,
                 common_contacts: 1,
                 display_name: 'user3',
                 id: 3,
+                no_thanks: false,
               },
               {
                 added_current_user: false,
                 common_contacts: 1,
                 display_name: 'user4',
                 id: 4,
+                no_thanks: false,
+              },
+            ],
+          }));
+    });
+
+    it('should show sugested new additions', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      await user2.put('/api/2/contacts/1').expect(200);
+      await user1.get('/api/2/contacts')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            contacts: [],
+            suggested_contacts: [
+              {
+                added_current_user: true,
+                common_contacts: 0,
+                display_name: 'user2',
+                id: 2,
+                no_thanks: false,
+              },
+            ],
+          }));
+    });
+
+    it('should not show sugested new additions after no thanks', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      const user3 = await newUser(app, 'user3');
+      await user2.put('/api/2/contacts/1').expect(200);
+      await user3.put('/api/2/contacts/1').expect(200);
+      await user1.put('/api/2/contacts/nothanks/2').expect(200);
+      await user1.get('/api/2/contacts')
+          .expect(200)
+          .expect((res: any) => expect(res.body).to.deep.equal({
+            contacts: [],
+            suggested_contacts: [
+              {
+                added_current_user: true,
+                common_contacts: 0,
+                display_name: 'user2',
+                id: 2,
+                no_thanks: true,
+              },
+              {
+                added_current_user: true,
+                common_contacts: 0,
+                display_name: 'user3',
+                id: 3,
+                no_thanks: false,
               },
             ],
           }));

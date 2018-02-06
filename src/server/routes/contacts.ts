@@ -7,6 +7,7 @@ import {
   getContactGroups,
   getContacts,
   getSuggestedContacts,
+  noThanksSuggestedContact,
   removeContact,
   removeContactFromGroup,
 } from '../models/contacts';
@@ -36,6 +37,14 @@ contacts.put('/:contactId', authRoute(async (userId, req, res) => {
   const {contactId} = req.params;
   if (`${contactId}` !== `${userId}`) {
     await addContact(req.db, userId, contactId);
+  }
+  res.success({});
+}));
+
+contacts.put('/nothanks/:contactId', authRoute(async (userId, req, res) => {
+  const {contactId} = req.params;
+  if (`${contactId}` !== `${userId}`) {
+    await noThanksSuggestedContact(req.db, userId, contactId);
   }
   res.success({});
 }));
