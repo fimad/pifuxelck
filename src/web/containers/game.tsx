@@ -11,8 +11,9 @@ import Progress from '../components/progress';
 import { State } from '../state';
 
 interface Props {
-  gameId: string;
   game: Game;
+  gameId: string;
+  gameRef: (gameRef: HTMLElement) => void;
   loadGame: () => void;
 }
 
@@ -23,7 +24,7 @@ const LabelTurn = ({label, player}: {label: any, player: any}) => (
         {label}
       </Typography>
       <Typography type='subheading' component='h3' style={{textAlign: 'right'}}>
-        {player}
+       ref {player}
       </Typography>
     </CardContent>
   </Card>
@@ -44,14 +45,14 @@ const toTurn = (turn: Turn, i: number) => turn.is_drawing === true ?
     (<DrawingTurn key={i} drawing={turn.drawing} player={turn.player} />) :
     (<LabelTurn key={i} label={turn.label} player={turn.player} />);
 
-const GameComponent = ({game, loadGame}: Props) => {
+const GameComponent = ({game, gameRef, loadGame}: Props) => {
   if (!game.turns) {
     loadGame();
   }
   return (
     <div>
       <Progress visible={!game.turns} />
-      <div style={{maxWidth: '75vh', margin: 'auto'}}>
+      <div ref={gameRef} style={{maxWidth: '75vh', margin: 'auto'}}>
         {(game.turns || []).map(toTurn)}
       </div>
     </div>
