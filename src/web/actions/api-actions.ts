@@ -178,6 +178,7 @@ export function addContact(contactId: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     allowConcurrent: true,
     errorMessage: 'Unable to add contact.',
+    extra: {contactId},
     failure: 'ADD_CONTACT_FAILURE',
     name: 'ADD_CONTACT',
     onSuccess: () => dispatch(getContacts()),
@@ -272,6 +273,21 @@ export function getAccount() {
     success: 'GET_ACCOUNT_SUCCESS',
     url: `/api/2/account`,
   });
+}
+
+export function ignoreSuggestedContacts(contactId: string) {
+  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+    allowConcurrent: true,
+    errorMessage: 'Unable to ignore suggestion.',
+    extra: {contactId},
+    failure: 'IGNORE_SUGGESTION_FAILURE',
+    name: 'IGNORE_SUGGESTION',
+    onSuccess: () => dispatch(getContacts()),
+    requireAuth: true,
+    start: 'IGNORE_SUGGESTION_START',
+    success: 'IGNORE_SUGGESTION_SUCCESS',
+    url: `/api/2/contacts/nothanks/${contactId}`,
+  })(dispatch, getState);
 }
 
 export function getAllData() {

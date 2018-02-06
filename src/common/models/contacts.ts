@@ -13,3 +13,25 @@ export interface ContactGroup {
    */
   members?: User[];
 }
+
+export interface SuggestedContact {
+
+  /** The ID of the contact. */
+  id: string;
+
+  /** The contact's display name. */
+  display_name: string;
+
+  /** Number of contacts who have added both the current user and this user. */
+  common_contacts: number;
+
+  /**
+   * True if this suggested user has added the current user as a contact.
+   */
+  added_current_user: boolean;
+
+  /**
+   * If true, the user does not wish to see this suggested in their inbox.
+   */
+  no_thanks: boolean;
+}

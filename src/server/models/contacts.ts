@@ -1,6 +1,6 @@
 import { Connection } from 'mysql';
 import * as uuid from 'uuid';
-import { ContactGroup } from '../../common/models/contacts';
+import { ContactGroup, SuggestedContact } from '../../common/models/contacts';
 import { User } from '../../common/models/user';
 import { query } from '../db-promise';
 
@@ -29,6 +29,22 @@ export async function addContact(
      WHERE NOT EXISTS (
        SELECT *
        FROM Contacts
+       WHERE ? = account_id
+         AND ? = contact_id
+     )`, [id, contactId, id, contactId]);
+}
+
+/** Marks the user as not interested in the suggested contact. */
+export async function noThanksSuggestedContact(
+    db: Connection, id: string, contactId: string): Promise<void> {
+  await query(
+    db,
+    `INSERT INTO SuggestedContactNoThanks (account_id, contact_id)
+     SELECT ? AS account_id, ? AS contact_id
+     FROM DUAL
+     WHERE NOT EXISTS (
+       SELECT *
+       FROM SuggestedContactNoThanks
        WHERE ? = account_id
          AND ? = contact_id
      )`, [id, contactId, id, contactId]);
@@ -65,6 +81,71 @@ export async function getContacts(
     });
   }
   return contacts;
+}
+
+/** Returns all a list contacts that this user may know. */
+export async function getSuggestedContacts(
+    db: Connection, id: string): Promise<SuggestedContact[]> {
+  const results = await query(
+      db,
+      `
+      SELECT
+        X.contact_id,
+        display_name,
+        SUM(already_added) AS already_added,
+        SUM(contacts_in_common) AS contacts_in_common,
+        SUM(added_user) AS added_user,
+        SUM(NoThanks.contact_id IS NOT NULL) AS no_thanks
+      FROM (
+        SELECT
+          contact_id AS contact_id,
+          Accounts.display_name AS display_name,
+          SUM(account_id = ?) AS already_added,
+          0 AS added_user,
+          COUNT(*) AS contacts_in_common
+        FROM Contacts
+        LEFT JOIN (
+          SELECT contact_id AS id
+          FROM Contacts
+          WHERE account_id = ?
+        ) AS FirstOrderContacts
+        ON FirstOrderContacts.id = Contacts.account_id
+        INNER JOIN Accounts
+        ON Accounts.id = Contacts.contact_id
+        WHERE contact_id <> ?
+        GROUP BY 1, 2
+      UNION
+        SELECT
+          Contacts.account_id AS contact_id,
+          Accounts.display_name AS display_name,
+          0 AS already_added,
+          TRUE AS added_user,
+          0 AS contacts_in_common
+        FROM Contacts
+        INNER JOIN Accounts
+        ON Accounts.id = Contacts.account_id
+        WHERE Contacts.contact_id = ?
+      ) X
+      LEFT JOIN (
+        SELECT contact_id
+        FROM SuggestedContactNoThanks
+        WHERE account_id = ?
+      ) NoThanks ON NoThanks.contact_id = X.contact_id
+      GROUP BY 1, 2
+      HAVING NOT already_added
+      ORDER BY added_user DESC, contacts_in_common DESC, contact_id ASC
+      `, [id, id, id, id, id]);
+  const suggestedContacts: SuggestedContact[] = [];
+  for (let i = 0; i < results.length; i++) {
+    suggestedContacts.push({
+      added_current_user: results[i].added_user > 0,
+      common_contacts: results[i].contacts_in_common,
+      display_name: results[i].display_name,
+      id: results[i].contact_id,
+      no_thanks: results[i].no_thanks > 0,
+    });
+  }
+  return suggestedContacts;
 }
 
 /** Creates a new contact group and returns the ID. */

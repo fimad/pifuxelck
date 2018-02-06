@@ -18,6 +18,7 @@ const initialState = {
   gameCache: {},
   history: {},
   inbox: {},
+  suggestedContacts: {},
   users: {},
 };
 
@@ -27,6 +28,14 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
       return {
         ...state,
         contacts: objectWithoutKeys(state.contacts, [action.contactId]),
+      };
+    case 'ADD_CONTACT_SUCCESS':
+    case 'IGNORE_SUGGESTION_SUCCESS':
+      return {
+        ...state,
+        suggestedContacts: objectWithoutKeys(
+          state.suggestedContacts,
+          [action.contactId]),
       };
     case 'PLAY_GAME_SUCCESS':
       return {
@@ -85,21 +94,9 @@ function handleApiResult(state: Entities, action: Action) {
       if (action.message && action.message.contacts) {
         return {
           ...state,
-          contacts: action.message.contacts.reduce((obj, x) => {
-            obj[x.id] = x;
-            return obj;
-          }, {} as {[id: string]: User}),
-        };
-      }
-      break;
-    case 'GET_CONTACTS_SUCCESS':
-      if (action.message && action.message.contact_groups) {
-        return {
-          ...state,
-          contactGroups: action.message.contact_groups.reduce((obj, x) => {
-            obj[x.id] = x;
-            return obj;
-          }, {} as {[id: string]: ContactGroup}),
+          contacts: mapFrom(action.message.contacts, (x) => x.id),
+          suggestedContacts:
+              mapFrom(action.message.suggested_contacts, (x) => x.id),
         };
       }
       break;

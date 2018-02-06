@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { SuggestedContact } from '../../common/models/contacts';
 import { Drawing } from '../../common/models/drawing';
 import { compareStringsAsInts } from '../../common/utils';
 import { playDrawingTurn, playLabelTurn, updateOutbox } from '../actions';

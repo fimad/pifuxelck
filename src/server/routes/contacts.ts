@@ -6,6 +6,8 @@ import {
   createContactGroup,
   getContactGroups,
   getContacts,
+  getSuggestedContacts,
+  noThanksSuggestedContact,
   removeContact,
   removeContactFromGroup,
 } from '../models/contacts';
@@ -21,14 +23,28 @@ contacts.get('/lookup/:displayName', authRoute(async (userId, req, res) => {
 }));
 
 contacts.get('/', authRoute(async (userId, req, res) => {
-  const usersContacts = await getContacts(req.db, userId);
-  res.success({contacts: usersContacts});
+  const [usersContacts, suggestedContacts] = await Promise.all([
+    getContacts(req.db, userId),
+    getSuggestedContacts(req.db, userId),
+  ]);
+  res.success({
+    contacts: usersContacts,
+    suggested_contacts: suggestedContacts,
+  });
 }));
 
 contacts.put('/:contactId', authRoute(async (userId, req, res) => {
   const {contactId} = req.params;
   if (`${contactId}` !== `${userId}`) {
     await addContact(req.db, userId, contactId);
+  }
+  res.success({});
+}));
+
+contacts.put('/nothanks/:contactId', authRoute(async (userId, req, res) => {
+  const {contactId} = req.params;
+  if (`${contactId}` !== `${userId}`) {
+    await noThanksSuggestedContact(req.db, userId, contactId);
   }
   res.success({});
 }));

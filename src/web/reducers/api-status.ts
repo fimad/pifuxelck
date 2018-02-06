@@ -8,7 +8,9 @@ function isApiAction(action: Action): action is ApiAction {
 
 const initialState: ApiStatus = {
   inProgress: {},
+  pendingContactAdds: {},
   pendingContactDeletes: {},
+  pendingSuggestionIgnores: {},
   pendingTurns: {},
 };
 
@@ -45,6 +47,28 @@ export default function(state: ApiStatus = initialState, action: Action) {
       ...nextState,
       pendingContactDeletes: {
         ...nextState.pendingContactDeletes,
+        [action.contactId]: action.inProgress,
+      },
+    };
+  }
+  if (action.type === 'ADD_CONTACT_START' ||
+      action.type === 'ADD_CONTACT_SUCCESS' ||
+      action.type === 'ADD_CONTACT_FAILURE') {
+    return {
+      ...nextState,
+      pendingContactAdds: {
+        ...nextState.pendingContactAdds,
+        [action.contactId]: action.inProgress,
+      },
+    };
+  }
+  if (action.type === 'IGNORE_SUGGESTION_START' ||
+      action.type === 'IGNORE_SUGGESTION_SUCCESS' ||
+      action.type === 'IGNORE_SUGGESTION_FAILURE') {
+    return {
+      ...nextState,
+      pendingSuggestionIgnores: {
+        ...nextState.pendingSuggestionIgnores,
         [action.contactId]: action.inProgress,
       },
     };

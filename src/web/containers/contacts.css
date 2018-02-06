@@ -6,3 +6,23 @@
   flex-direction: column;
   margin-top: 16px;
 }
+
+.listContainerParent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+}
+
+.listContainer {
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+@media (--non-mobile) and (min-aspect-ratio: 3/4) {
+  .listContainer {
+    max-width: 75vh;
+  }
+}
