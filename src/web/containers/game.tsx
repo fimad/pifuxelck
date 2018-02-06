@@ -24,7 +24,7 @@ const LabelTurn = ({label, player}: {label: any, player: any}) => (
         {label}
       </Typography>
       <Typography type='subheading' component='h3' style={{textAlign: 'right'}}>
-       ref {player}
+       {player}
       </Typography>
     </CardContent>
   </Card>
