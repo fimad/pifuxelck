@@ -178,6 +178,7 @@ export function addContact(contactId: string) {
   return (dispatch: Dispatch<State>, getState: () => State) => api.put({
     allowConcurrent: true,
     errorMessage: 'Unable to add contact.',
+    extra: {contactId},
     failure: 'ADD_CONTACT_FAILURE',
     name: 'ADD_CONTACT',
     onSuccess: () => dispatch(getContacts()),

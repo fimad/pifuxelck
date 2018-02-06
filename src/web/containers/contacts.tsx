@@ -10,6 +10,7 @@ import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { SuggestedContact } from '../../common/models/contacts';
 import Progress from '../components/progress';
 import { State } from '../state';
 
@@ -28,6 +29,10 @@ import List, {
 
 const styles = require('./contacts.css');
 
+interface SuggestedContactWithApi extends SuggestedContact {
+  pendingAdd: boolean;
+}
+
 interface SlimContact {
   name: string;
   id: string;
@@ -43,11 +48,12 @@ interface Props {
   onAddContact: (lookupId: string) => void;
   onRemoveContact: (lookupId: string) => void;
   onLookupChange: (lookup: string) => void;
+  suggestedContacts: SuggestedContact[];
 }
 
 const ContactsComponent = ({
     addContactEnabled, contacts, lookup, lookupId, onAddContact, onLookupChange,
-    onRemoveContact, loading,
+    onRemoveContact, loading, suggestedContacts,
   }: Props) => {
   const contactListItem = ({name, id, pendingDelete}: SlimContact) => {
     const action = pendingDelete ? (<CircularProgress color='accent' />) : (
@@ -58,6 +64,41 @@ const ContactsComponent = ({
     return (
       <ListItem key={id}>
         <ListItemText primary={name} />
+        <ListItemSecondaryAction>
+          {action}
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
+  };
+  const suggestedContactListItem = ({
+      id, display_name, added_current_user, common_contacts,
+      pendingAdd}: SuggestedContactWithApi) => {
+    const addedYou = (
+      <div>
+        <Typography color='accent'>
+          Added you!
+        </Typography>
+      </div>
+    );
+    const commonContacts = (
+      <div>
+      {common_contacts} friends in common
+      </div>
+    );
+    const subText = (
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        {added_current_user ? addedYou : undefined}
+        {common_contacts ? commonContacts : undefined}
+      </div>
+    );
+    const action = pendingAdd ? (<CircularProgress color='accent' />) : (
+      <IconButton onClick={() => onAddContact(id)}>
+        <AddIcon />
+      </IconButton>
+    );
+    return (
+      <ListItem key={id}>
+        <ListItemText primary={display_name} secondary={subText} />
         <ListItemSecondaryAction>
           {action}
         </ListItemSecondaryAction>
@@ -77,6 +118,13 @@ const ContactsComponent = ({
           </List>
         </Paper>
       );
+  const suggestedList = (
+    <Paper style={{marginTop: '16px'}}>
+      <List>
+        {suggestedContacts.map(suggestedContactListItem)}
+      </List>
+    </Paper>
+  );
   return (
     <div>
       <Progress visible={loading} />
@@ -97,7 +145,28 @@ const ContactsComponent = ({
             <AddIcon />
           </Button>
         </Paper>
-        {contactList}
+      </div>
+      <div className={styles.listContainerParent}>
+        <div className={styles.listContainer}>
+          <Typography
+              type='subheading'
+              align='center'
+              style={{marginTop: '16px'}}
+          >
+            People you may know
+          </Typography>
+          {suggestedList}
+        </div>
+        <div className={cx(styles.listContainer)}>
+          <Typography
+              type='subheading'
+              align='center'
+              style={{marginTop: '16px'}}
+          >
+            Your Contacts
+          </Typography>
+          {contactList}
+        </div>
       </div>
     </div>
   );
@@ -105,6 +174,18 @@ const ContactsComponent = ({
 
 const compareByDisplayName =
     (a: SlimContact, b: SlimContact) => a.name.localeCompare(b.name);
+
+const compareByAddedAndCommon = (a: SuggestedContact, b: SuggestedContact) => {
+  if (a.added_current_user && !b.added_current_user) {
+    return -1;
+  }
+  if (b.added_current_user && !a.added_current_user) {
+    return 1;
+  }
+  return (b.common_contacts === a.common_contacts) ?
+      a.display_name.localeCompare(b.display_name) :
+      b.common_contacts - a.common_contacts;
+};
 
 const mapStateToProps = (state: State) => ({
   addContactEnabled: !!state.entities.users[state.ui.contacts.lookup],
@@ -118,6 +199,12 @@ const mapStateToProps = (state: State) => ({
   loading: state.apiStatus.inProgress.GET_CONTACTS,
   lookup: state.ui.contacts.lookup,
   lookupId: state.entities.users[state.ui.contacts.lookup],
+  suggestedContacts: Object.keys(state.entities.suggestedContacts)
+      .map((i) => ({
+        ...state.entities.suggestedContacts[i],
+        pendingAdd: state.apiStatus.pendingContactAdds[i],
+      }))
+      .sort(compareByAddedAndCommon),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<State>) => ({

@@ -1,4 +1,4 @@
-import { ContactGroup } from '../common/models/contacts';
+import { ContactGroup, SuggestedContact } from '../common/models/contacts';
 import { Color } from '../common/models/drawing';
 import { Game, GameSummary } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
@@ -13,6 +13,9 @@ export interface Entities {
   };
   contacts: {
     [id: string]: User,
+  };
+  suggestedContacts: {
+    [id: string]: SuggestedContact,
   };
   contactGroups: {
     [id: string]: ContactGroup,
@@ -74,6 +77,9 @@ export interface ApiStatus {
     [gameId: string]: boolean,
   };
   pendingContactDeletes: {
+    [id: string]: boolean,
+  };
+  pendingContactAdds: {
     [id: string]: boolean,
   };
 }
