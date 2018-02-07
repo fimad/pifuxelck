@@ -28,13 +28,13 @@ const InboxComponent = ({entries, loading, suggestedContacts}: Props) => (
   </div>
 );
 
-const compareByGameId = (a: models.InboxEntry, b: models.InboxEntry) =>
-    compareStringsAsInts(a.game_id, b.game_id);
+const compareByExpiration = (a: models.InboxEntry, b: models.InboxEntry) =>
+    a.expiration_time - b.expiration_time;
 
 const mapStateToProps = (
     {entities: {inbox, suggestedContacts}, apiStatus}: State) => ({
   entries: Object.values(inbox)
-      .sort(compareByGameId)
+      .sort(compareByExpiration)
       .map((entry) => entry.game_id),
   loading: apiStatus.inProgress.GET_INBOX,
   suggestedContacts: Object.values(suggestedContacts)
