@@ -36,6 +36,11 @@ export interface Entities {
   };
 }
 
+export interface OutboxEntry {
+  redo: Line[];
+  turn: Turn;
+}
+
 export interface Ui {
   account: {
     email: (string|null)
@@ -65,10 +70,7 @@ export interface Ui {
     users: string[],
   };
   outbox: {
-    [gameId: string]: {
-      turn: Turn,
-      redo: Line[],
-    },
+    [gameId: string]: OutboxEntry,
   };
 }
 

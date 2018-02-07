@@ -7,7 +7,7 @@ import { compareStringsAsInts } from '../../common/utils';
 import { playDrawingTurn, playLabelTurn, updateOutbox } from '../actions';
 import InboxDrawingCard from '../components/inbox-drawing-card';
 import InboxLabelCard from '../components/inbox-label-card';
-import { State } from '../state';
+import { OutboxEntry, State } from '../state';
 
 import {
   drawingOrDefault,
@@ -44,7 +44,7 @@ function mapStateToProps(
   const previous = inbox[gameId].previous_turn;
   const expirationTime = inbox[gameId].expiration_time || 0;
   const previousIsDrawing = previous.is_drawing;
-  const current = (outbox[gameId] || {turn: ({} as Turn)}).turn || {} as Turn;
+  const current = (outbox[gameId] || {} as OutboxEntry).turn || {} as Turn;
   const drawing = previousIsDrawing ?
       drawingOrDefault(previous) :
       drawingOrDefault(current);

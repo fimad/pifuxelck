@@ -7,7 +7,7 @@ import { Color, Drawing, Point} from '../../common/models/drawing';
 import BrushSizePicker from '../components/brush-size-picker';
 import ColorPicker from '../components/color-picker';
 import Draw from '../components/draw';
-import { State } from '../state';
+import { OutboxEntry, State } from '../state';
 
 import {
   drawingOrDefault,
@@ -27,10 +27,10 @@ import {
   chooseBrushSize,
   gotoInbox,
   playDrawingTurn,
+  redoDrawingLine,
   startDrawingLine,
   stopDrawingLine,
   undoDrawingLine,
-  redoDrawingLine,
   updateBackgroundColor,
   updateOutbox,
 } from '../actions';
@@ -92,7 +92,7 @@ function mapStateToProps(
   if (!previous || previous.is_drawing) {
     return {redirectToInbox: true} as Props;
   }
-  const current = (ui.outbox[gameId] || {turn: ({} as Turn)}).turn || {} as Turn;
+  const current = (ui.outbox[gameId] || {} as OutboxEntry).turn || {} as Turn;
   return {
     brushColor: ui.drawing.brushColor,
     drawing: drawingOrDefault(current),
@@ -123,13 +123,13 @@ const mapDispatchToProps =
     dispatch(playDrawingTurn(id, drawing));
     dispatch(gotoInbox());
   },
+  redoLastLine: () => dispatch(redoDrawingLine(gameId)),
   showBackgroundColorDialog: () => dispatch(push(`/draw/${gameId}/bg/color`)),
   showBrushColorDialog: () => dispatch(push(`/draw/${gameId}/brush/color`)),
   showBrushSizeDialog: () => dispatch(push(`/draw/${gameId}/brush/size`)),
   startLine: (point: Point) => dispatch(startDrawingLine(gameId, point)),
   stopLine: () => dispatch(stopDrawingLine()),
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
-  redoLastLine: () => dispatch(redoDrawingLine(gameId)),
 });
 
 const DrawReply = connect(
