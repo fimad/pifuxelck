@@ -1,5 +1,5 @@
 import { ContactGroup, SuggestedContact } from '../common/models/contacts';
-import { Color } from '../common/models/drawing';
+import { Color, Line } from '../common/models/drawing';
 import { Game, GameSummary } from '../common/models/game';
 import { InboxEntry, Turn } from '../common/models/turn';
 import { User } from '../common/models/user';
@@ -65,7 +65,10 @@ export interface Ui {
     users: string[],
   };
   outbox: {
-    [gameId: string]: Turn,
+    [gameId: string]: {
+      turn: Turn,
+      redo: Line[],
+    },
   };
 }
 

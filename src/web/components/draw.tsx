@@ -4,6 +4,7 @@ import LayersIcon from 'material-ui-icons/Layers';
 import PaletteIcon from 'material-ui-icons/Palette';
 import SendIcon from 'material-ui-icons/Send';
 import UndoIcon from 'material-ui-icons/Undo';
+import RedoIcon from 'material-ui-icons/Redo';
 import Badge from 'material-ui/Badge';
 import Button from 'material-ui/Button';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
@@ -34,6 +35,7 @@ interface Props {
   appendLine: (point: models.Point) => void;
   stopLine: () => void;
   undoLastLine: () => void;
+  redoLastLine: () => void;
   lineInProgress: boolean;
 }
 
@@ -142,7 +144,7 @@ class Draw extends React.Component {
     const {
       gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
       showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
-      lineInProgress, onSubmit, brushColor,
+      redoLastLine, lineInProgress, onSubmit, brushColor,
     } = this.props;
     const onMouseUp = lineInProgress ? stopLine : undefined;
     const onMouseLeave = lineInProgress ? stopLine : undefined;
@@ -152,6 +154,10 @@ class Draw extends React.Component {
         lineInProgress ?  passPointTo(appendLine, stopLine) : undefined;
     const undoLastLineAndIncKey = () => {
       undoLastLine();
+      this.setState({drawKey: this.state.drawKey + 1});
+    };
+    const redoLastLineAndIncKey = () => {
+      redoLastLine();
       this.setState({drawKey: this.state.drawKey + 1});
     };
     return (
@@ -187,6 +193,9 @@ class Draw extends React.Component {
           <CardActions className={styles.actions}>
             <IconButton onClick={undoLastLineAndIncKey}>
               <UndoIcon />
+            </IconButton>
+            <IconButton onClick={redoLastLineAndIncKey}>
+              <RedoIcon />
             </IconButton>
             <IconButton onClick={showBrushSizeDialog}>
               <BrushIcon />

@@ -79,6 +79,9 @@ export type Action = (ApiAction | {
   type: 'UI_UNDO_DRAWING_LINE'
   gameId: string,
 } | {
+  type: 'UI_REDO_DRAWING_LINE'
+  gameId: string,
+} | {
   type: 'UI_CHANGE_CONTACT_LOOKUP'
   lookup: string,
 } | {

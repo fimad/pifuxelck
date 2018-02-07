@@ -30,6 +30,7 @@ import {
   startDrawingLine,
   stopDrawingLine,
   undoDrawingLine,
+  redoDrawingLine,
   updateBackgroundColor,
   updateOutbox,
 } from '../actions';
@@ -54,6 +55,7 @@ type Props = ExternalProps & {
   appendLine: (point: Point) => void
   stopLine: () => void
   undoLastLine: () => void
+  redoLastLine: () => void
   lineInProgress: boolean
   brushColor: Color
   onPickBrushSize: (size: number) => void
@@ -90,7 +92,7 @@ function mapStateToProps(
   if (!previous || previous.is_drawing) {
     return {redirectToInbox: true} as Props;
   }
-  const current = ui.outbox[gameId] || ({} as Turn);
+  const current = (ui.outbox[gameId] || {turn: ({} as Turn)}).turn || {} as Turn;
   return {
     brushColor: ui.drawing.brushColor,
     drawing: drawingOrDefault(current),
@@ -127,6 +129,7 @@ const mapDispatchToProps =
   startLine: (point: Point) => dispatch(startDrawingLine(gameId, point)),
   stopLine: () => dispatch(stopDrawingLine()),
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
+  redoLastLine: () => dispatch(redoDrawingLine(gameId)),
 });
 
 const DrawReply = connect(

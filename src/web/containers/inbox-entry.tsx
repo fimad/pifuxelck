@@ -44,7 +44,7 @@ function mapStateToProps(
   const previous = inbox[gameId].previous_turn;
   const expirationTime = inbox[gameId].expiration_time || 0;
   const previousIsDrawing = previous.is_drawing;
-  const current = outbox[gameId] || ({} as Turn);
+  const current = (outbox[gameId] || {turn: ({} as Turn)}).turn || {} as Turn;
   const drawing = previousIsDrawing ?
       drawingOrDefault(previous) :
       drawingOrDefault(current);
