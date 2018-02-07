@@ -1,7 +1,8 @@
+import { Line } from '../../common/models/drawing';
 import { drawingOrDefault, Turn } from '../../common/models/turn';
 import { objectWithKeys, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
-import { Ui } from '../state';
+import { OutboxEntry, Ui } from '../state';
 
 const initialState = {
   account: {
@@ -42,7 +43,16 @@ const defaultDrawingTurn: Turn = {
   is_drawing: true,
 };
 
+const defaultOutbox = {
+  redo: [] as Line[],
+  turn: defaultDrawingTurn,
+};
+
 export default function(state: Ui = initialState, action: Action) {
+  const getRedo = (entry: OutboxEntry) => (entry || defaultOutbox).redo || [];
+  const getTurn =
+    (entry: OutboxEntry) => (entry || defaultOutbox).turn || defaultDrawingTurn;
+
   if (action.type === 'LOGOUT' ||
       action.type === 'LOGIN_START' ||
       action.type === 'REGISTER_START') {
@@ -84,7 +94,8 @@ export default function(state: Ui = initialState, action: Action) {
     };
   }
   if (action.type === 'UI_UPDATE_BACKGROUND_COLOR') {
-    const turn = state.outbox[action.gameId] || defaultDrawingTurn;
+    const redo = getRedo(state.outbox[action.gameId]);
+    const turn = getTurn(state.outbox[action.gameId]);
     if (turn.is_drawing !== true) {
       return state;
     }
@@ -93,10 +104,13 @@ export default function(state: Ui = initialState, action: Action) {
       outbox: {
         ...state.outbox,
         [action.gameId]: {
-          ...turn,
-          drawing: {
-            ...turn.drawing,
-            background_color: action.color,
+          redo,
+          turn: {
+            ...turn,
+            drawing: {
+              ...turn.drawing,
+              background_color: action.color,
+            },
           },
         },
       },
@@ -107,7 +121,7 @@ export default function(state: Ui = initialState, action: Action) {
       return state;
     }
 
-    const turn = state.outbox[action.gameId] || defaultDrawingTurn;
+    const turn = getTurn(state.outbox[action.gameId]);
     if (turn.is_drawing !== true) {
       return state;
     }
@@ -121,17 +135,20 @@ export default function(state: Ui = initialState, action: Action) {
       outbox: {
         ...state.outbox,
         [action.gameId]: {
-          ...turn,
-          drawing: {
-            ...turn.drawing,
-            lines: [
-              ...turn.drawing.lines,
-              {
-                color: state.drawing.brushColor,
-                points: [action.point],
-                size: state.drawing.brushSize,
-              },
-            ],
+          redo: [],
+          turn: {
+            ...turn,
+            drawing: {
+              ...turn.drawing,
+              lines: [
+                ...turn.drawing.lines,
+                {
+                  color: state.drawing.brushColor,
+                  points: [action.point],
+                  size: state.drawing.brushSize,
+                },
+              ],
+            },
           },
         },
       },
@@ -142,7 +159,7 @@ export default function(state: Ui = initialState, action: Action) {
       return state;
     }
 
-    const turn = state.outbox[action.gameId] || defaultDrawingTurn;
+    const turn = getTurn(state.outbox[action.gameId]);
     if (turn.is_drawing !== true) {
       return state;
     }
@@ -172,24 +189,28 @@ export default function(state: Ui = initialState, action: Action) {
       outbox: {
         ...state.outbox,
         [action.gameId]: {
-          ...turn,
-          drawing: {
-            ...turn.drawing,
-            lines: [
-              ...turn.drawing.lines.slice(0, -1),
-              {
-                ...lastLine,
-                points: [...lastLine.points, action.point],
-              },
-            ],
+          redo: [],
+          turn: {
+            ...turn,
+            drawing: {
+              ...turn.drawing,
+              lines: [
+                ...turn.drawing.lines.slice(0, -1),
+                {
+                  ...lastLine,
+                  points: [...lastLine.points, action.point],
+                },
+              ],
+            },
           },
         },
       },
     };
   }
   if (action.type === 'UI_UNDO_DRAWING_LINE') {
-    const turn = state.outbox[action.gameId] || defaultDrawingTurn;
-    if (turn.is_drawing !== true) {
+    const redo = getRedo(state.outbox[action.gameId]);
+    const turn = getTurn(state.outbox[action.gameId]);
+    if (turn.is_drawing !== true || turn.drawing.lines.length === 0) {
       return state;
     }
     return {
@@ -197,10 +218,36 @@ export default function(state: Ui = initialState, action: Action) {
       outbox: {
         ...state.outbox,
         [action.gameId]: {
-          ...turn,
-          drawing: {
-            ...turn.drawing,
-            lines: [...turn.drawing.lines.slice(0, -1)],
+          redo: [turn.drawing.lines[turn.drawing.lines.length - 1], ...redo],
+          turn: {
+            ...turn,
+            drawing: {
+              ...turn.drawing,
+              lines: [...turn.drawing.lines.slice(0, -1)],
+            },
+          },
+        },
+      },
+    };
+  }
+  if (action.type === 'UI_REDO_DRAWING_LINE') {
+    const redo = getRedo(state.outbox[action.gameId]);
+    const turn = getTurn(state.outbox[action.gameId]);
+    if (turn.is_drawing !== true || redo.length === 0) {
+      return state;
+    }
+    return {
+      ...state,
+      outbox: {
+        ...state.outbox,
+        [action.gameId]: {
+          redo: redo.slice(1),
+          turn: {
+            ...turn,
+            drawing: {
+              ...turn.drawing,
+              lines: [...turn.drawing.lines, redo[0]],
+            },
           },
         },
       },
