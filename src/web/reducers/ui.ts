@@ -67,11 +67,15 @@ export default function(state: Ui = initialState, action: Action) {
     };
   }
   if (action.type === 'UI_UPDATE_OUTBOX') {
+    const redo = getRedo(state.outbox[action.gameId]);
     return {
       ...state,
       outbox: {
         ...state.outbox,
-        [action.gameId]: action.turn,
+        [action.gameId]: {
+          redo,
+          turn: action.turn,
+        },
       },
     };
   }
