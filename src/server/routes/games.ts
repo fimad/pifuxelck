@@ -35,6 +35,10 @@ games.get('/summary', authRoute(async (userId, req, res) => {
   res.success({game_summaries: allGames});
 }));
 
+games.get('/tick', asyncRoute(async (req, res) => {
+  await reapExpiredTurns(req.db, req.sendMail);
+}));
+
 games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
   const gameId = req.params.id;
   winston.info(`Requesting game ${gameId}.`, req.context);
