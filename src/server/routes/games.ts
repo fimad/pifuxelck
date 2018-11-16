@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as winston from 'winston';
+import asyncRoute from './async-route';
 import authRoute from './auth-route';
 
 import {
@@ -37,6 +38,7 @@ games.get('/summary', authRoute(async (userId, req, res) => {
 
 games.get('/tick', asyncRoute(async (req, res) => {
   await reapExpiredTurns(req.db, req.sendMail);
+  res.success({});
 }));
 
 games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
