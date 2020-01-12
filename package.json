@@ -88,7 +88,7 @@
     "typescript": "^2.5.3",
     "typings-for-css-modules-loader": "^1.7.0",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "webpack-dev-server": "^3.1.11"
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^0.7.0",
