@@ -50,7 +50,6 @@ games.get('/:id(\\d+)', authRoute(async (userId, req, res) => {
 }));
 
 games.get('/inbox', authRoute(async (userId, req, res) => {
-  await reapExpiredTurns(req.db, req.sendMail);
   winston.info(`Attempting to query inbox.`, req.context);
   const entries = await getInboxEntriesForUser(req.db, userId);
   winston.info(`Retrieved inbox.`, req.context);
