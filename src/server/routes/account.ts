@@ -74,4 +74,8 @@ account.get('/', authRoute(async (userId, req, res) => {
   res.success({user});
 }));
 
+account.get('/check', authRoute(async (userId, req, res) => {
+  res.success({});
+}));
+
 export default account;
