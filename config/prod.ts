@@ -2,7 +2,7 @@ import functions = require('firebase-functions');
 
 export default {
   db: {
-    database: 'pifuxelck',
+    database: functions.config().sql['database'],
     socketPath: '/cloudsql/custom-router-762:us-central1:pifuxelck2',
     user: 'pifuxelck',
   },
