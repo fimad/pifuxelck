@@ -291,10 +291,18 @@ export function ignoreSuggestedContacts(contactId: string) {
 }
 
 export function getAllData() {
-  return (dispatch: Dispatch<State>) => {
-    dispatch(getAccount());
-    dispatch(getContacts());
-    dispatch(getInbox());
-    dispatch(getHistory());
-  };
+  return (dispatch: Dispatch<State>, getState: () => State) => api.get({
+    failure: 'CHECK_ACCOUNT_FAILURE',
+    name: 'CHECK_ACCOUNT',
+    requireAuth: true,
+    start: 'CHECK_ACCOUNT_START',
+    success: 'CHECK_ACCOUNT_SUCCESS',
+    onSuccess: () => {
+      dispatch(getAccount());
+      dispatch(getContacts());
+      dispatch(getInbox());
+      dispatch(getHistory());
+    },
+    url: `/api/2/account/check`,
+  })(dispatch, getState);
 }
