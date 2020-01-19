@@ -1,6 +1,9 @@
 import { Message } from '../../common/models/message';
 
-const API_HOST = 'https://everythingissauce.com';
+const API_HOST =
+  location.hostname === 'canary.everythingissauce'
+  ? 'https://canary.everythingissauce.com'
+  : 'https://everythingissauce.com';
 
 export interface ApiResult {
   message: Message | null;
