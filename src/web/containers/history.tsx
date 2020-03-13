@@ -1,7 +1,9 @@
-import { IconButton } from 'material-ui';
-import { StarBorder } from 'material-ui-icons';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
-import Typography from 'material-ui/Typography';
+import { IconButton } from '@material-ui/core';
+import { StarBorder } from '@material-ui/icons';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -15,6 +17,7 @@ import Drawing from '../components/drawing';
 import { Desktop, Mobile, Tablet } from '../components/media-query';
 import Progress from '../components/progress';
 import { State } from '../state';
+import { WebDispatch } from '../store';
 
 const Delay = require('react-delay').default;
 const Infinite = require('react-infinite');
@@ -23,7 +26,7 @@ const { push } = require('react-router-redux');
 const styles = require('./history.css');
 
 interface Props {
-  dispatch: Dispatch<State>;
+  dispatch: WebDispatch;
   filter: (string | null);
   loading: boolean;
   summaries: GameSummary[];
@@ -54,7 +57,7 @@ const colorToCss = (c: models.Color) =>
 const summaryToTile =
     (numCells: number, cellHeight: number) =>
     ({dispatch, summary}: {
-      dispatch: Dispatch<State>,
+      dispatch: WebDispatch,
       summary: GameSummary,
     }) => {
   const title = summary.first_label;
@@ -72,7 +75,7 @@ const summaryToTile =
     >
       <Typography
           align='center'
-          type='title'
+          variant='h6'
           classes={{root: styles.title}}
           style={{color: textColor, backgroundColor}}
       >

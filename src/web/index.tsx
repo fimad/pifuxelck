@@ -1,5 +1,4 @@
-import { createBrowserHistory } from 'history';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -32,34 +31,32 @@ const {
   // Hookup offline support.
   require('offline-plugin/runtime').install();
 
-  // Create a history of your choosing (we're using a browser history in this
-  // case).
-  const history = createBrowserHistory();
-
   // TODO(will): Need to handle errors here...
-  createPifuxelckStore(history)
-    .then((store) => {
+  createPifuxelckStore()
+    .then((store: any) => {
       store.dispatch(actions.getAllData());
       return store;
     })
-    .then((store) => {
+    .then((store: any) => {
       ReactDOM.render(
-        <MuiThemeProvider>
-          <Provider store={store}>
-            <ConnectedRouter history={history}>
-              <ScrollToTop>
-                <div>
-                  <Switch>
-                    <Route path='/login' component={Login} />
-                    <Route path='/register' component={Register} />
-                    <Route path='/' component={App} />
-                  </Switch>
-                  <ErrorSnaks />
-                </div>
-              </ScrollToTop>
-            </ConnectedRouter>
-          </Provider>
-        </MuiThemeProvider>,
+        (
+          <MuiThemeProvider theme={createMuiTheme()}>
+            <Provider store={store}>
+              <ConnectedRouter history={history}>
+                <ScrollToTop>
+                  <div>
+                    <Switch>
+                      <Route path='/login' component={Login} />
+                      <Route path='/register' component={Register} />
+                      <Route path='/' component={App} />
+                    </Switch>
+                    <ErrorSnaks />
+                  </div>
+                </ScrollToTop>
+              </ConnectedRouter>
+            </Provider>
+          </MuiThemeProvider>
+        ),
         document.getElementById('content'),
       );
     });

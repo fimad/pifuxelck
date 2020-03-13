@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux';
 import { Message } from '../../common/models/message';
+import { ActionType, WebThunkAction } from '../actions';
 import { State } from '../state';
 import * as api from './api';
 import { logout } from './logout';
@@ -9,9 +10,9 @@ export interface Params {
   errorMessage?: string;
   requireAuth?: boolean;
   allowConcurrent?: boolean;
-  start?: string;
-  success?: string;
-  failure: string;
+  start?: ActionType;
+  success?: ActionType;
+  failure: ActionType;
   url: string;
   body?: Message;
   onSuccess?: (message: Message) => void;
@@ -40,9 +41,9 @@ export function del(params: Params) {
 export function call(
     apiCall: (url: string, message: Message, token?: string) =>
         Promise<api.ApiResult>,
-    params: Params) {
+    params: Params): WebThunkAction {
   const extra = params.extra || {};
-  return (dispatch: Dispatch<State>, getState: () => State) => {
+  return (dispatch, getState) => {
     const state = getState();
     if (!params.allowConcurrent &&
         state.apiStatus.inProgress[params.name]) {

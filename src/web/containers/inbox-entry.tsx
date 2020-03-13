@@ -8,6 +8,7 @@ import { playDrawingTurn, playLabelTurn, updateOutbox } from '../actions';
 import InboxDrawingCard from '../components/inbox-drawing-card';
 import InboxLabelCard from '../components/inbox-label-card';
 import { OutboxEntry, State } from '../state';
+import { WebDispatch } from '../store';
 
 import {
   drawingOrDefault,
@@ -62,7 +63,7 @@ function mapStateToProps(
 }
 
 const mapDispatchToProps =
-    (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
+    (dispatch: WebDispatch, {gameId}: ExternalProps) => ({
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
   onShowDrawing: (showDrawing: boolean) =>
       dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),

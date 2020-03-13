@@ -1,16 +1,28 @@
-import AddIcon from 'material-ui-icons/Add';
-import Button from 'material-ui/Button';
-import Checkbox from 'material-ui/Checkbox';
-import Chip from 'material-ui/Chip';
-import Divider from 'material-ui/Divider';
-import { Breakpoint } from 'material-ui/styles/createBreakpoints';
-import TextField from 'material-ui/TextField';
-import { WithWidthProps } from 'material-ui/utils/withWidth';
+import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
+import Divider from '@material-ui/core/Divider';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
+import TextField from '@material-ui/core/TextField';
+import { WithWidthProps } from '@material-ui/core/withWidth';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { User } from '../../common/models/user';
 import { State } from '../state';
+import Dialog from '@material-ui/core/Dialog';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import { WebDispatch } from '../store';
 
 import {
   gotoInbox,
@@ -19,21 +31,6 @@ import {
   newGameChangeTopic,
   newGameRemovePlayer,
 } from '../actions';
-
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from 'material-ui/List';
-
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  withMobileDialog,
-} from 'material-ui/Dialog';
 
 const styles = require('./new-game-dialog.css');
 
@@ -56,7 +53,7 @@ const NewGameDialog = ({
     <Chip
         key={player.id}
         label={player.display_name}
-        onRequestDelete={() => onRemovePlayer(player.id)}
+        onDelete={() => onRemovePlayer(player.id)}
     />
   );
   const contactToListEntry = (c: User) => (
@@ -76,7 +73,7 @@ const NewGameDialog = ({
     <Dialog
         fullScreen={fullScreen}
         open={true}
-        onRequestClose={onCancel}
+        onClose={onCancel}
     >
       <DialogTitle>
         <TextField
@@ -128,7 +125,7 @@ const mapStateToProps = (state: State) => ({
   topic: state.ui.newGame.topic,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
+const mapDispatchToProps = (dispatch: WebDispatch) => ({
   onAddPlayer: (playerId: string) => {
     dispatch(newGameAddPlayer(playerId));
   },

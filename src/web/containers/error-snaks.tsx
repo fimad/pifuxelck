@@ -1,6 +1,6 @@
-import CloseIcon from 'material-ui-icons/Close';
-import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
@@ -12,6 +12,7 @@ import BrushSizePicker from '../components/brush-size-picker';
 import ColorPicker from '../components/color-picker';
 import Draw from '../components/draw';
 import { State } from '../state';
+import { WebDispatch } from '../store';
 
 interface ErrorSnak {
   id: string;
@@ -37,7 +38,7 @@ const toErrorSnak =
       anchorOrigin={{vertical: 'bottom', horizontal: 'center' }}
       open={true}
       autoHideDuration={6000}
-      onRequestClose={() => dismiss(id)}
+      onClose={() => dismiss(id)}
       message={(<span>{message}</span>)}
       action={actions}
     />
@@ -57,7 +58,7 @@ const mapStateToProps = ({ui}: State) => ({
   })),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
+const mapDispatchToProps = (dispatch: WebDispatch) => ({
   dismiss: (errorId: string) => dispatch(removeErrorSnak(errorId)),
 });
 

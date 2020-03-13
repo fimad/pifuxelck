@@ -1,17 +1,20 @@
 import * as FileSaver from 'file-saver';
-import AddIcon from 'material-ui-icons/Add';
-import ArchiveIcon from 'material-ui-icons/Archive';
-import ContactsIcon from 'material-ui-icons/Contacts';
-import LogoutIcon from 'material-ui-icons/Eject';
-import DownloadIcon from 'material-ui-icons/FileDownload';
-import HistoryIcon from 'material-ui-icons/History';
-import InboxIcon from 'material-ui-icons/Inbox';
-import ChartIcon from 'material-ui-icons/InsertChart';
-import MenuIcon from 'material-ui-icons/Menu';
-import PersonIcon from 'material-ui-icons/Person';
-import SearchIcon from 'material-ui-icons/Search';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import { CircularProgress } from 'material-ui/Progress';
+import AddIcon from '@material-ui/icons/Add';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import LogoutIcon from '@material-ui/icons/Eject';
+import DownloadIcon from '@material-ui/icons/GetApp';
+import HistoryIcon from '@material-ui/icons/History';
+import InboxIcon from '@material-ui/icons/Inbox';
+import ChartIcon from '@material-ui/icons/InsertChart';
+import MenuIcon from '@material-ui/icons/Menu';
+import PersonIcon from '@material-ui/icons/Person';
+import SearchIcon from '@material-ui/icons/Search';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
@@ -26,6 +29,7 @@ import Game from './game';
 import History from './history';
 import Inbox from './inbox';
 import LoginRedirect from './login-redirect';
+import { WebDispatch } from '../store';
 
 import {
   filterHistory,
@@ -46,7 +50,7 @@ import {
   TextField,
   Toolbar,
   Typography,
-} from 'material-ui';
+} from '@material-ui/core';
 
 const domtoimage = require('dom-to-image');
 const styles = require('./app.css');
@@ -54,7 +58,7 @@ const ResizeAware = require('react-resize-aware').default;
 const { push } = require('react-router-redux');
 
 interface Props {
-  dispatch: Dispatch<State>;
+  dispatch: WebDispatch;
   historyQuery: string;
   isLoggedIn: boolean;
   newGameInProgress: boolean;
@@ -151,12 +155,12 @@ class AppComponent extends React.Component<Props, any> {
         <Toolbar>
           <IconButton
               onClick={this.handleToggleDrawer}
-              color='contrast'
+              color='secondary'
               aria-label='Menu'
           >
             <MenuIcon />
           </IconButton>
-          <Typography type='title' style={{flex: '1 1 auto'}} color='inherit'>
+          <Typography variant='h6' style={{flex: '1 1 auto'}} color='inherit'>
             {title}
           </Typography>
           {button}
@@ -170,7 +174,7 @@ class AppComponent extends React.Component<Props, any> {
     const gameExport = (gameId: string) => (
       <IconButton
           onClick={() => this.handleExportGame(gameId)}
-          color='contrast'
+          color='secondary'
           aria-label='Menu'
       >
         <DownloadIcon />
@@ -192,8 +196,8 @@ class AppComponent extends React.Component<Props, any> {
       </div>
     );
     const newGameButton = this.props.newGameInProgress ?
-      (<CircularProgress color='accent' />) : (
-      <Button color='contrast' onClick={this.handleShowNewGame}>
+      (<CircularProgress color='secondary' />) : (
+      <Button color='secondary' onClick={this.handleShowNewGame}>
         New Game
       </Button>
     );
@@ -252,10 +256,10 @@ class AppComponent extends React.Component<Props, any> {
         </Switch>
 
         <Drawer
-            type='temporary'
+            variant='temporary'
             anchor='left'
             open={this.state.showDrawer}
-            onRequestClose={this.handleToggleDrawer}
+            onClose={this.handleToggleDrawer}
         >
           <div style={{width: '240px'}} />
           <List style={{display: 'flex', flexDirection: 'column'}}>

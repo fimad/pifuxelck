@@ -1,18 +1,23 @@
 import * as cx from 'classnames';
-import AddIcon from 'material-ui-icons/Add';
-import RemoveIcon from 'material-ui-icons/Delete';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import Paper from 'material-ui/Paper';
-import { CircularProgress } from 'material-ui/Progress';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { WebDispatch } from '../store';
 import { SuggestedContact } from '../../common/models/contacts';
 import Progress from '../components/progress';
 import { State } from '../state';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import {
   addContact,
@@ -20,12 +25,6 @@ import {
   removeContact,
   userLookup,
 } from '../actions';
-
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-} from 'material-ui/List';
 
 const styles = require('./contacts.css');
 
@@ -56,7 +55,7 @@ const ContactsComponent = ({
     onRemoveContact, loading, suggestedContacts,
   }: Props) => {
   const contactListItem = ({name, id, pendingDelete}: SlimContact) => {
-    const action = pendingDelete ? (<CircularProgress color='accent' />) : (
+    const action = pendingDelete ? (<CircularProgress color='secondary' />) : (
       <IconButton onClick={() => onRemoveContact(id)}>
         <RemoveIcon />
       </IconButton>
@@ -75,7 +74,7 @@ const ContactsComponent = ({
       pendingAdd}: SuggestedContactWithApi) => {
     const addedYou = (
       <div>
-        <Typography color='accent'>
+        <Typography color='secondary'>
           Added you!
         </Typography>
       </div>
@@ -91,7 +90,7 @@ const ContactsComponent = ({
         {common_contacts ? commonContacts : undefined}
       </div>
     );
-    const action = pendingAdd ? (<CircularProgress color='accent' />) : (
+    const action = pendingAdd ? (<CircularProgress color='secondary' />) : (
       <IconButton onClick={() => onAddContact(id)}>
         <AddIcon />
       </IconButton>
@@ -139,8 +138,8 @@ const ContactsComponent = ({
           <Button
               onClick={() => lookupId ? onAddContact(lookupId) : null}
               disabled={!addContactEnabled}
-              raised={true}
-              color='accent'
+              variant='contained'
+              color='secondary'
           >
             <AddIcon />
           </Button>
@@ -149,7 +148,7 @@ const ContactsComponent = ({
       <div className={styles.listContainerParent}>
         <div className={styles.listContainer}>
           <Typography
-              type='subheading'
+              variant='subtitle1'
               align='center'
               style={{marginTop: '16px'}}
           >
@@ -159,7 +158,7 @@ const ContactsComponent = ({
         </div>
         <div className={cx(styles.listContainer)}>
           <Typography
-              type='subheading'
+              variant='subtitle1'
               align='center'
               style={{marginTop: '16px'}}
           >
@@ -207,7 +206,7 @@ const mapStateToProps = (state: State) => ({
       .sort(compareByAddedAndCommon),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
+const mapDispatchToProps = (dispatch: WebDispatch) => ({
   onAddContact: (lookupId: string) => {
     dispatch(addContact(lookupId));
     dispatch(changeContactLookup(''));

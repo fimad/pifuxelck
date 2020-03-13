@@ -8,18 +8,17 @@ import BrushSizePicker from '../components/brush-size-picker';
 import ColorPicker from '../components/color-picker';
 import Draw from '../components/draw';
 import { OutboxEntry, State } from '../state';
+import { WebDispatch } from '../store';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import {
   drawingOrDefault,
   labelOrDefault,
   Turn,
 } from '../../common/models/turn';
-
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from 'material-ui/Dialog';
 
 import {
   appendDrawingLine,
@@ -103,7 +102,7 @@ function mapStateToProps(
 }
 
 const mapDispatchToProps =
-    (dispatch: Dispatch<State>, {gameId}: ExternalProps) => ({
+    (dispatch: WebDispatch, {gameId}: ExternalProps) => ({
   appendLine: (point: Point) => dispatch(appendDrawingLine(gameId, point)),
   hideDialog: () => dispatch(push(`/draw/${gameId}`)),
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),

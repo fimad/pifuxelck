@@ -1,14 +1,19 @@
-import BrushIcon from 'material-ui-icons/Brush';
-import LayersIcon from 'material-ui-icons/Layers';
-import PaletteIcon from 'material-ui-icons/Palette';
-import SendIcon from 'material-ui-icons/Send';
-import Button from 'material-ui/Button';
-import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
-import { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import Dialog from 'material-ui/Dialog';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import BrushIcon from '@material-ui/icons/Brush';
+import LayersIcon from '@material-ui/icons/Layers';
+import PaletteIcon from '@material-ui/icons/Palette';
+import SendIcon from '@material-ui/icons/Send';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import * as models from '../../common/models/drawing';
@@ -35,16 +40,16 @@ const InboxLabelCard = ({
     </Button>
   );
   const loading = (
-    <CircularProgress color='accent' />
+    <CircularProgress color='secondary' />
   );
   const action = sendPending ? loading : drawButton;
   return (
     <Card style={{margin: '8px'}}>
       <CardContent>
-        <Typography type='caption' align='right'>
+        <Typography variant='caption' align='right'>
           Expires at {new Date(expirationTime * 1000).toLocaleString()}
         </Typography>
-        <Typography type='headline' component='h2'>
+        <Typography variant='h5' component='h2'>
           {label}
         </Typography>
       </CardContent>

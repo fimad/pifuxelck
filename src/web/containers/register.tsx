@@ -4,19 +4,20 @@ import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
 import { login, register } from '../actions';
 import { State } from '../state';
+import { WebDispatch } from '../store';
 
 import {
   Button,
   Paper,
   TextField,
   Typography,
-} from 'material-ui';
+} from '@material-ui/core';
 
 const { push } = require('react-router-redux');
 
 interface Props {
   auth?: string;
-  dispatch: Dispatch<State>;
+  dispatch: WebDispatch;
   inProgress: boolean;
 }
 
@@ -70,7 +71,7 @@ class RegisterComponent extends
     return (
       <form onSubmit={this.dispatchRegister}>
         <Paper style={style}>
-          <Typography type='display1' style={{textAlign: 'center'}}>
+          <Typography variant='h4' style={{textAlign: 'center'}}>
             pifuxelck
           </Typography>
           <TextField
@@ -96,7 +97,7 @@ class RegisterComponent extends
           />
           <Button
               type='submit'
-              raised={true}
+              variant='contained'
               disabled={this.props.inProgress}
               color='primary'
               onClick={this.dispatchRegister}
@@ -104,12 +105,12 @@ class RegisterComponent extends
           >
             Register
           </Button>
-          <Typography type='caption'>
+          <Typography variant='caption'>
             Already have an account?
             <Button
                 onClick={this.dispatchLogin}
                 disabled={this.props.inProgress}
-                color='accent'
+                color='secondary'
             >
               Sign in
             </Button>

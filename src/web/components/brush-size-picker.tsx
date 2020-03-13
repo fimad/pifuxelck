@@ -1,4 +1,4 @@
-import { AppBar, Toolbar } from 'material-ui';
+import { AppBar, Toolbar } from '@material-ui/core';
 import * as React from 'react';
 import { Color } from '../../common/models/drawing';
 
@@ -43,7 +43,9 @@ const sizes: number[] = [
 const BrushSizePicker = (props: Props) => (
   <div className={styles.brushSizePickerContainer}>
     <div className={styles.brushSizePicker}>
-      {sizes.map((size: number) => (<SizeButton size={size} {...props} />))}
+      {sizes.map((size: number) => (
+        <SizeButton key={size} size={size} {...props} />
+      ))}
     </div>
   </div>
 );

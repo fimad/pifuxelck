@@ -66,7 +66,9 @@ const ColorButton = ({color, onPickColor}: ColorButtonProps) => (
 const ColorPicker = (props: Props) => (
   <div className={styles.colorPickerContainer}>
     <div className={styles.colorPicker}>
-      {colors.map((color: Color) => (<ColorButton color={color} {...props} />))}
+      {colors.map((color: Color) => (
+        <ColorButton key={JSON.stringify(color)} color={color} {...props} />
+      ))}
     </div>
   </div>
 );

@@ -47,8 +47,8 @@ const mailMiddleware = (config?: MailConfig) => {
           return;
         }
 
-        const dataToSend = {to, message: message.toString('ascii')};
-        mail.messages().sendMime(dataToSend, (sendError) => {
+        const dataToSend = {to, html: message.toString('ascii')};
+        mail.messages().send(dataToSend, (sendError) => {
           if (sendError) {
             winston.error(`Unable to send mail ${sendError}`);
           }

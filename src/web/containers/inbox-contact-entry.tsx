@@ -1,13 +1,17 @@
-import Button from 'material-ui/Button';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { SuggestedContact } from '../../common/models/contacts';
 import { addContact, ignoreSuggestedContacts } from '../actions';
 import { State } from '../state';
+import { WebDispatch } from '../store';
 
 type Props = SuggestedContact & {
   actionPending: boolean;
@@ -17,7 +21,7 @@ type Props = SuggestedContact & {
 
 const EntryComponent = (
     {actionPending, display_name, common_contacts, onAdd, onIgnore}: Props) => {
-  const actions = actionPending ? (<CircularProgress color='accent' />) : (
+  const actions = actionPending ? (<CircularProgress color='secondary' />) : (
     <div>
       <Button onClick={onAdd}>Add</Button>
       <Button onClick={onIgnore}>Ignore</Button>
@@ -32,10 +36,10 @@ const EntryComponent = (
   return (
     <Card style={{margin: '8px'}}>
       <CardContent>
-        <Typography type='caption' align='right'>
+        <Typography variant='caption' align='right'>
           Suggested contact
         </Typography>
-        <Typography type='headline' component='h2'>
+        <Typography variant='h5' component='h2'>
           <span style={{color: '#f50057'}}>{display_name} </span>
           added you! {contactsInCommon}
         </Typography>
@@ -53,7 +57,7 @@ const mapStateToProps = ({apiStatus}: State, {id}: SuggestedContact) => ({
 }) as Props;
 
 const mapDispatchToProps =
-    (dispatch: Dispatch<State>, {id}: SuggestedContact) => ({
+    (dispatch: WebDispatch, {id}: SuggestedContact) => ({
   onAdd: () => dispatch(addContact(id)),
   onIgnore: () => dispatch(ignoreSuggestedContacts(id)),
 });

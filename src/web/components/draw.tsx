@@ -1,17 +1,22 @@
 import * as cx from 'classnames';
-import BrushIcon from 'material-ui-icons/Brush';
-import LayersIcon from 'material-ui-icons/Layers';
-import PaletteIcon from 'material-ui-icons/Palette';
-import RedoIcon from 'material-ui-icons/Redo';
-import SendIcon from 'material-ui-icons/Send';
-import UndoIcon from 'material-ui-icons/Undo';
-import Badge from 'material-ui/Badge';
-import Button from 'material-ui/Button';
-import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
-import Dialog from 'material-ui/Dialog';
-import { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
+import BrushIcon from '@material-ui/icons/Brush';
+import LayersIcon from '@material-ui/icons/Layers';
+import PaletteIcon from '@material-ui/icons/Palette';
+import RedoIcon from '@material-ui/icons/Redo';
+import SendIcon from '@material-ui/icons/Send';
+import UndoIcon from '@material-ui/icons/Undo';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import * as MobileDetect from 'mobile-detect';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
@@ -166,7 +171,7 @@ class Draw extends React.Component {
           <CardContent>
             <Typography
                 className={styles.labelTypography}
-                type='headline'
+                variant='h5'
                 component='h2'
             >
               {label}

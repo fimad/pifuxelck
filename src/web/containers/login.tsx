@@ -4,19 +4,20 @@ import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
 import { login, register } from '../actions';
 import { State } from '../state';
+import { WebDispatch } from '../store';
 
 import {
   Button,
   Paper,
   TextField,
   Typography,
-} from 'material-ui';
+} from '@material-ui/core';
 
 const { push } = require('react-router-redux');
 
 interface Props {
   auth?: string;
-  dispatch: Dispatch<State>;
+  dispatch: WebDispatch;
   inProgress: boolean;
 }
 
@@ -68,7 +69,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     return (
       <form onSubmit={this.dispatchLogin}>
         <Paper style={style}>
-          <Typography type='display1' style={{textAlign: 'center'}}>
+          <Typography variant='h4' style={{textAlign: 'center'}}>
             pifuxelck
           </Typography>
           <TextField
@@ -87,7 +88,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
           />
           <Button
               type='submit'
-              raised={true}
+              variant='contained'
               disabled={this.props.inProgress}
               color='primary'
               onClick={this.dispatchLogin}
@@ -95,12 +96,12 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
           >
             Login
           </Button>
-          <Typography type='caption'>
+          <Typography variant='caption'>
             Don't have an account?
             <Button
                 onClick={this.dispatchRegister}
                 disabled={this.props.inProgress}
-                color='accent'
+                color='secondary'
             >
               Register
             </Button>

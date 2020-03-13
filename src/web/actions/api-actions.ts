@@ -4,11 +4,12 @@ import { Drawing } from '../../common/models/drawing';
 import { Game } from '../../common/models/game';
 import { User } from '../../common/models/user';
 import { compareStringsAsInts } from '../../common/utils';
+import { WebThunkAction } from '../actions';
 import { State } from '../state';
 import * as api from './redux-api';
 
-export function login(user: string, password: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => {
+export function login(user: string, password: string): WebThunkAction {
+  return (dispatch, getState, extra) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
     idbKeyval.clear().then(() => {
@@ -26,13 +27,13 @@ export function login(user: string, password: string) {
         start: 'LOGIN_START',
         success: 'LOGIN_SUCCESS',
         url: '/api/2/account/login',
-      })(dispatch, getState);
+      })(dispatch, getState, extra);
     });
   };
 }
 
-export function register(user: string, password: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => {
+export function register(user: string, password: string): WebThunkAction {
+  return (dispatch, getState, extra) => {
     // Before logging in wipe the user's history. We don't want to conflate use
     // history between users sharing the same browser...
     idbKeyval.clear().then(() => {
@@ -49,7 +50,7 @@ export function register(user: string, password: string) {
         start: 'REGISTER_START',
         success: 'REGISTER_SUCCESS',
         url: '/api/2/account/register',
-      })(dispatch, getState);
+      })(dispatch, getState, extra);
     });
   };
 }
@@ -66,8 +67,8 @@ export function userLookup(user: string) {
   });
 }
 
-export function getGame(id: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => {
+export function getGame(id: string): WebThunkAction {
+  return (dispatch, getState, extra) => {
     if (getState().entities.gameCache[id]) {
       return;
     }
@@ -92,7 +93,7 @@ export function getGame(id: string) {
           start: 'GET_GAME_START',
           success: 'GET_GAME_SUCCESS',
           url: `/api/2/games/${id}`,
-        })(dispatch, getState);
+        })(dispatch, getState, extra);
       }
     });
   };
@@ -133,8 +134,9 @@ export function newGame(players: string[], label: string) {
   });
 }
 
-export function playDrawingTurn(gameId: string, drawing: Drawing) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+export function playDrawingTurn(
+    gameId: string, drawing: Drawing): WebThunkAction {
+  return (dispatch, getState, extra) => api.put({
     body: {turn: {is_drawing: true, drawing}},
     errorMessage: 'Unable to send reply.',
     extra: {gameId},
@@ -145,11 +147,11 @@ export function playDrawingTurn(gameId: string, drawing: Drawing) {
     start: 'PLAY_GAME_START',
     success: 'PLAY_GAME_SUCCESS',
     url: `/api/2/games/play/${gameId}`,
-  })(dispatch, getState);
+  })(dispatch, getState, extra);
 }
 
-export function playLabelTurn(gameId: string, label: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+export function playLabelTurn(gameId: string, label: string): WebThunkAction {
+  return (dispatch, getState, extra) => api.put({
     body: {turn: {is_drawing: false, label}},
     errorMessage: 'Unable to send reply.',
     extra: {gameId},
@@ -160,7 +162,7 @@ export function playLabelTurn(gameId: string, label: string) {
     start: 'PLAY_GAME_START',
     success: 'PLAY_GAME_SUCCESS',
     url: `/api/2/games/play/${gameId}`,
-  })(dispatch, getState);
+  })(dispatch, getState, extra);
 }
 
 export function getContacts() {
@@ -174,8 +176,8 @@ export function getContacts() {
   });
 }
 
-export function addContact(contactId: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+export function addContact(contactId: string): WebThunkAction {
+  return (dispatch, getState, extra) => api.put({
     allowConcurrent: true,
     errorMessage: 'Unable to add contact.',
     extra: {contactId},
@@ -186,11 +188,11 @@ export function addContact(contactId: string) {
     start: 'ADD_CONTACT_START',
     success: 'ADD_CONTACT_SUCCESS',
     url: `/api/2/contacts/${contactId}`,
-  })(dispatch, getState);
+  })(dispatch, getState, extra);
 }
 
-export function removeContact(contactId: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.del({
+export function removeContact(contactId: string): WebThunkAction {
+  return (dispatch, getState, extra) => api.del({
     allowConcurrent: true,
     errorMessage: 'Unable to remove contact.',
     extra: {contactId},
@@ -201,7 +203,7 @@ export function removeContact(contactId: string) {
     start: 'REMOVE_CONTACT_START',
     success: 'REMOVE_CONTACT_SUCCESS',
     url: `/api/2/contacts/${contactId}`,
-  })(dispatch, getState);
+  })(dispatch, getState, extra);
 }
 
 export function getContactGroups() {
@@ -275,8 +277,8 @@ export function getAccount() {
   });
 }
 
-export function ignoreSuggestedContacts(contactId: string) {
-  return (dispatch: Dispatch<State>, getState: () => State) => api.put({
+export function ignoreSuggestedContacts(contactId: string): WebThunkAction {
+  return (dispatch, getState, extra) => api.put({
     allowConcurrent: true,
     errorMessage: 'Unable to ignore suggestion.',
     extra: {contactId},
@@ -287,11 +289,11 @@ export function ignoreSuggestedContacts(contactId: string) {
     start: 'IGNORE_SUGGESTION_START',
     success: 'IGNORE_SUGGESTION_SUCCESS',
     url: `/api/2/contacts/nothanks/${contactId}`,
-  })(dispatch, getState);
+  })(dispatch, getState, extra);
 }
 
-export function getAllData() {
-  return (dispatch: Dispatch<State>) => {
+export function getAllData(): WebThunkAction {
+  return (dispatch) => {
     dispatch(getAccount());
     dispatch(getContacts());
     dispatch(getInbox());

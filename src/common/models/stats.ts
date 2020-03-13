@@ -12,19 +12,19 @@ export interface GameStats {
   complete: number;
 }
 
-export type GameSizeHistogram = Array<{
+export type GameSizeHistogram = {
   size: number
   total: number
   pending: number
   complete: number,
-}>;
+}[];
 
-export type GameDurationHistogram = Array<{
+export type GameDurationHistogram = {
   gameDurationDays: number,
   count: number,
-}>;
+}[];
 
-export type UserStats = Array<{
+export type UserStats = {
   displayName: string
   drawings: number
   inboxSize: number
@@ -32,9 +32,9 @@ export type UserStats = Array<{
   pendingGames: number
   skips: number,
   startedGames: number,
-}>;
+}[];
 
-export type GamesOverTime = Array<{
+export type GamesOverTime = {
   timestamp: number
   pendingGames: number,
-}>;
+}[];
