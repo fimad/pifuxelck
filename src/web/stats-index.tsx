@@ -158,7 +158,7 @@ export default function(stats: Stats) {
         <Toolbar>
           <IconButton
             onClick={() => window.history.back()}
-            color="secondary"
+            color="inherit"
             aria-label="Menu"
           >
             <BackIcon />
