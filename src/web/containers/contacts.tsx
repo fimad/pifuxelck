@@ -1,30 +1,30 @@
-import * as cx from 'classnames';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { WebDispatch } from '../store';
-import { SuggestedContact } from '../../common/models/contacts';
-import Progress from '../components/progress';
-import { State } from '../state';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Delete';
+import * as cx from 'classnames';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
+import { SuggestedContact } from '../../common/models/contacts';
 import {
   addContact,
   changeContactLookup,
   removeContact,
   userLookup,
 } from '../actions';
+import Progress from '../components/progress';
+import { State } from '../state';
+import { WebDispatch } from '../store';
 
 const styles = require('./contacts.css');
 

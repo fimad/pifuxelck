@@ -1,4 +1,5 @@
 import * as winston from 'winston';
+
 import config from '../../config/test';
 import server from '../server/server';
 

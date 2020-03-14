@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+
 import { Message } from '../../common/models/message';
 import { ActionType, WebThunkAction } from '../actions';
 import { State } from '../state';

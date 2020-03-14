@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as winston from 'winston';
+
 import { Message } from '../../common/models/message';
 import ServerError from '../error';
 

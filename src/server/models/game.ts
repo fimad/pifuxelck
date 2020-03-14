@@ -1,6 +1,7 @@
 import { Connection } from 'mysql';
 import * as shuffle from 'shuffle-array';
 import * as winston from 'winston';
+
 import { Game, GameSummary, NewGame } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { query, transact } from '../db-promise';

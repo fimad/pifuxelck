@@ -1,29 +1,27 @@
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
-import Divider from '@material-ui/core/Divider';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
-import TextField from '@material-ui/core/TextField';
-import { WithWidthProps } from '@material-ui/core/withWidth';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { User } from '../../common/models/user';
-import { State } from '../state';
 import Dialog from '@material-ui/core/Dialog';
-import withMobileDialog from '@material-ui/core/withMobileDialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import { WebDispatch } from '../store';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
+import TextField from '@material-ui/core/TextField';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import { WithWidthProps } from '@material-ui/core/withWidth';
+import AddIcon from '@material-ui/icons/Add';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
+import { User } from '../../common/models/user';
 import {
   gotoInbox,
   newGame,
@@ -31,6 +29,8 @@ import {
   newGameChangeTopic,
   newGameRemovePlayer,
 } from '../actions';
+import { State } from '../state';
+import { WebDispatch } from '../store';
 
 const styles = require('./new-game-dialog.css');
 

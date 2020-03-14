@@ -1,8 +1,17 @@
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ConnectedRouter } from 'connected-react-router';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Route, Router, Switch } from 'react-router';
+import {
+  Reducer,
+  applyMiddleware,
+  combineReducers,
+  compose,
+  createStore,
+} from 'redux';
+
 import * as actions from './actions';
 import ScrollToTop from './components/scroll-to-top';
 import App from './containers/app';
@@ -11,15 +20,6 @@ import Login from './containers/login';
 import Register from './containers/register';
 import startStats from './stats-index';
 import { createPifuxelckStore, history } from './store';
-import { ConnectedRouter } from 'connected-react-router';
-
-import {
-  applyMiddleware,
-  combineReducers,
-  compose,
-  createStore,
-  Reducer,
-} from 'redux';
 
 (window as any).startStats = startStats;
 (window as any).startApp = () => {

@@ -2,6 +2,7 @@ import * as compression from 'compression';
 import * as cors from 'cors';
 import * as express from 'express';
 import { ConnectionConfig } from 'mysql';
+
 import db, { DbConfig } from './middleware/db';
 import error from './middleware/error';
 import log from './middleware/log';

@@ -1,5 +1,6 @@
+import { Dispatch, Action as ReduxAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { Action as ReduxAction, Dispatch } from 'redux';
+
 import { Color, Point } from '../common/models/drawing';
 import { Message } from '../common/models/message';
 import { Turn } from '../common/models/turn';

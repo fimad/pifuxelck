@@ -1,5 +1,6 @@
 import { Connection } from 'mysql';
 import * as uuid from 'uuid';
+
 import { ContactGroup, SuggestedContact } from '../../common/models/contacts';
 import { User } from '../../common/models/user';
 import { query } from '../db-promise';

@@ -1,10 +1,3 @@
-import * as cx from 'classnames';
-import BrushIcon from '@material-ui/icons/Brush';
-import LayersIcon from '@material-ui/icons/Layers';
-import PaletteIcon from '@material-ui/icons/Palette';
-import RedoIcon from '@material-ui/icons/Redo';
-import SendIcon from '@material-ui/icons/Send';
-import UndoIcon from '@material-ui/icons/Undo';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -17,9 +10,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import BrushIcon from '@material-ui/icons/Brush';
+import LayersIcon from '@material-ui/icons/Layers';
+import PaletteIcon from '@material-ui/icons/Palette';
+import RedoIcon from '@material-ui/icons/Redo';
+import SendIcon from '@material-ui/icons/Send';
+import UndoIcon from '@material-ui/icons/Undo';
+import * as cx from 'classnames';
 import * as MobileDetect from 'mobile-detect';
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
+
 import * as models from '../../common/models/drawing';
 import { Turn } from '../../common/models/turn';
 import Drawing from '../components/drawing';

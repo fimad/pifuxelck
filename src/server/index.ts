@@ -1,6 +1,7 @@
 require('@google-cloud/trace-agent').start();
 
 import * as winston from 'winston';
+
 import config from '../../config/prod';
 import server from './server';
 

@@ -1,13 +1,13 @@
-import * as React from 'react';
+import { Button, Paper, TextField, Typography } from '@material-ui/core';
 import { push } from 'connected-react-router';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
+
 import { login, register } from '../actions';
 import { State } from '../state';
 import { WebDispatch } from '../store';
-
-import { Button, Paper, TextField, Typography } from '@material-ui/core';
 
 interface Props {
   auth?: string;

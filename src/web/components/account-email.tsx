@@ -1,12 +1,13 @@
-import * as cx from 'classnames';
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import * as cx from 'classnames';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+
 import { updateAccount, updateEmail } from '../actions';
 import { State } from '../state';
 

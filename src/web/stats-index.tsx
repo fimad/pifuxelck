@@ -1,12 +1,3 @@
-import AddIcon from '@material-ui/icons/Add';
-import ArchiveIcon from '@material-ui/icons/Archive';
-import BackIcon from '@material-ui/icons/ArrowBack';
-import ContactsIcon from '@material-ui/icons/Contacts';
-import LogoutIcon from '@material-ui/icons/Eject';
-import HistoryIcon from '@material-ui/icons/History';
-import InboxIcon from '@material-ui/icons/Inbox';
-import ChartIcon from '@material-ui/icons/InsertChart';
-import PersonIcon from '@material-ui/icons/Person';
 import AppBar from '@material-ui/core/AppBar';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -20,9 +11,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import BackIcon from '@material-ui/icons/ArrowBack';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import LogoutIcon from '@material-ui/icons/Eject';
+import HistoryIcon from '@material-ui/icons/History';
+import InboxIcon from '@material-ui/icons/Inbox';
+import ChartIcon from '@material-ui/icons/InsertChart';
+import PersonIcon from '@material-ui/icons/Person';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
 import {
   Area,
   AreaChart,

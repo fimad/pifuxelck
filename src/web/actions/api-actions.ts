@@ -1,5 +1,6 @@
 import * as idbKeyval from 'idb-keyval';
 import { Dispatch } from 'redux';
+
 import { Drawing } from '../../common/models/drawing';
 import { Game } from '../../common/models/game';
 import { User } from '../../common/models/user';

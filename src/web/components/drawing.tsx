@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import * as models from '../../common/models/drawing';
 
 interface Props {

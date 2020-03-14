@@ -1,8 +1,8 @@
-import { Dispatch } from 'redux';
-import { State } from '../state';
-import { WebThunkAction } from '../actions';
 import { push } from 'connected-react-router';
+import { Dispatch } from 'redux';
 
+import { WebThunkAction } from '../actions';
+import { State } from '../state';
 import {
   getAccount,
   getContactGroups,

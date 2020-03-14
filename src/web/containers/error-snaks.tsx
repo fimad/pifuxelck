@@ -1,11 +1,12 @@
-import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
+
 import { Color, Drawing, Point } from '../../common/models/drawing';
 import { removeErrorSnak } from '../actions';
 import BrushSizePicker from '../components/brush-size-picker';

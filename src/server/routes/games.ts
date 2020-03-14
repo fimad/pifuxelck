@@ -1,23 +1,22 @@
 import { Router } from 'express';
 import * as winston from 'winston';
-import asyncRoute from './async-route';
-import authRoute from './auth-route';
 
+import {
+  completedGameSummaries,
+  completedGames,
+  createGame,
+  gameById,
+  reapExpiredTurns,
+  updateGameCompletedAtTime,
+} from '../models/game';
 import {
   getInboxEntriesForUser,
   getInboxEntryByGameId,
   updateDrawingTurn,
   updateLabelTurn,
 } from '../models/turn';
-
-import {
-  completedGames,
-  completedGameSummaries,
-  createGame,
-  gameById,
-  reapExpiredTurns,
-  updateGameCompletedAtTime,
-} from '../models/game';
+import asyncRoute from './async-route';
+import authRoute from './auth-route';
 
 const games = Router();
 

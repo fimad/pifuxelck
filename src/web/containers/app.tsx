@@ -1,4 +1,18 @@
-import * as FileSaver from 'file-saver';
+import {
+  AppBar,
+  Button,
+  Drawer,
+  IconButton,
+  MenuItem,
+  TextField,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import ContactsIcon from '@material-ui/icons/Contacts';
@@ -10,27 +24,13 @@ import ChartIcon from '@material-ui/icons/InsertChart';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
 import SearchIcon from '@material-ui/icons/Search';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { push } from 'connected-react-router';
+import * as FileSaver from 'file-saver';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
-import NewGameDialog from '../containers/new-game-dialog';
-import { State } from '../state';
-import Account from './account';
-import Contacts from './contacts';
-import DrawReply from './draw-reply';
-import Game from './game';
-import History from './history';
-import Inbox from './inbox';
-import LoginRedirect from './login-redirect';
-import { WebDispatch } from '../store';
-import { push } from 'connected-react-router';
 
 import {
   filterHistory,
@@ -41,17 +41,16 @@ import {
   login,
   logout,
 } from '../actions';
-
-import {
-  AppBar,
-  Button,
-  Drawer,
-  IconButton,
-  MenuItem,
-  TextField,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import NewGameDialog from '../containers/new-game-dialog';
+import { State } from '../state';
+import { WebDispatch } from '../store';
+import Account from './account';
+import Contacts from './contacts';
+import DrawReply from './draw-reply';
+import Game from './game';
+import History from './history';
+import Inbox from './inbox';
+import LoginRedirect from './login-redirect';
 
 const domtoimage = require('dom-to-image');
 const styles = require('./app.css');

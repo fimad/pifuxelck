@@ -1,5 +1,6 @@
 import { AppBar, Toolbar } from '@material-ui/core';
 import * as React from 'react';
+
 import { Color } from '../../common/models/drawing';
 
 const styles = require('./brush-size-picker.css');

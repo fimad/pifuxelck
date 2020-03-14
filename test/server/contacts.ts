@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { agent } from 'supertest';
+
 import server from './fake-server';
 import { newUser } from './fake-user';
 

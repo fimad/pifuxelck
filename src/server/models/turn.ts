@@ -1,5 +1,6 @@
 import { Connection } from 'mysql';
 import * as winston from 'winston';
+
 import { Drawing } from '../../common/models/drawing';
 import { InboxEntry, Turn } from '../../common/models/turn';
 import { query, transact } from '../db-promise';

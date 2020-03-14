@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+
 import { SuggestedContact } from '../../common/models/contacts';
 import * as models from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';

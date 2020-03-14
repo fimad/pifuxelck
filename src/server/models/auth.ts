@@ -1,6 +1,7 @@
 import { Connection } from 'mysql';
 import * as uuid from 'uuid';
 import * as winston from 'winston';
+
 import { query } from '../db-promise';
 import ServerError from '../error';
 

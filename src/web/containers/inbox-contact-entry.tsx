@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+
 import { SuggestedContact } from '../../common/models/contacts';
 import { addContact, ignoreSuggestedContacts } from '../actions';
 import { State } from '../state';

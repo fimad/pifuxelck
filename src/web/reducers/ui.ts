@@ -1,5 +1,5 @@
 import { Line } from '../../common/models/drawing';
-import { drawingOrDefault, Turn } from '../../common/models/turn';
+import { Turn, drawingOrDefault } from '../../common/models/turn';
 import { objectWithKeys, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
 import { OutboxEntry, Ui } from '../state';

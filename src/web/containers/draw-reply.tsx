@@ -1,26 +1,20 @@
-import * as React from 'react';
-import { push } from 'connected-react-router';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
-import { Route, Switch } from 'react-router';
-import { Dispatch } from 'redux';
-import { Color, Drawing, Point } from '../../common/models/drawing';
-import BrushSizePicker from '../components/brush-size-picker';
-import ColorPicker from '../components/color-picker';
-import Draw from '../components/draw';
-import { OutboxEntry, State } from '../state';
-import { WebDispatch } from '../store';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { push } from 'connected-react-router';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
+import { Route, Switch } from 'react-router';
+import { Dispatch } from 'redux';
 
+import { Color, Drawing, Point } from '../../common/models/drawing';
 import {
+  Turn,
   drawingOrDefault,
   labelOrDefault,
-  Turn,
 } from '../../common/models/turn';
-
 import {
   appendDrawingLine,
   chooseBrushColor,
@@ -34,6 +28,11 @@ import {
   updateBackgroundColor,
   updateOutbox,
 } from '../actions';
+import BrushSizePicker from '../components/brush-size-picker';
+import ColorPicker from '../components/color-picker';
+import Draw from '../components/draw';
+import { OutboxEntry, State } from '../state';
+import { WebDispatch } from '../store';
 
 interface ExternalProps {
   gameId: string;

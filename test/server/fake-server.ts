@@ -1,5 +1,7 @@
 import { readFile } from 'fs';
+
 import { Connection, createConnection } from 'mysql';
+
 import config from '../../config/test';
 import { SendMailParams } from '../../src/server/middleware/mail';
 import server from '../../src/server/server';

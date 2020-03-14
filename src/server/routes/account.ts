@@ -1,15 +1,15 @@
 import * as express from 'express';
 import * as winston from 'winston';
-import { newAuthToken } from '../models/auth';
-import asyncRoute from './async-route';
-import authRoute from './auth-route';
 
+import { newAuthToken } from '../models/auth';
 import {
   createUser,
   getUserById,
   lookupByPassword,
   updateUser,
 } from '../models/user';
+import asyncRoute from './async-route';
+import authRoute from './auth-route';
 
 const account = express.Router();
 

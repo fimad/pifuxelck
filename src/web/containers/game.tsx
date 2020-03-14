@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+
 import { Game } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';
 import { getGame } from '../actions';

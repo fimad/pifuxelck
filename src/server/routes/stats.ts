@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { Connection } from 'mysql';
 import * as winston from 'winston';
-import { query, transact } from '../db-promise';
-import asyncRoute from './async-route';
 
 import {
   GameDurationHistogram,
   GameSizeHistogram,
-  GamesOverTime,
   GameStats,
+  GamesOverTime,
   UserStats,
 } from '../../common/models/stats';
+import { query, transact } from '../db-promise';
+import asyncRoute from './async-route';
 
 const stats = Router();
 

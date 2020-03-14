@@ -1,14 +1,15 @@
 import { IconButton } from '@material-ui/core';
-import { push } from 'connected-react-router';
-import { StarBorder } from '@material-ui/icons';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
+import { StarBorder } from '@material-ui/icons';
+import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
+
 import * as models from '../../common/models/drawing';
 import { Game, GameSummary } from '../../common/models/game';
 import { Turn } from '../../common/models/turn';

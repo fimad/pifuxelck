@@ -1,21 +1,21 @@
-import * as React from 'react';
 import { push } from 'connected-react-router';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+
 import { SuggestedContact } from '../../common/models/contacts';
 import { Drawing } from '../../common/models/drawing';
+import {
+  Turn,
+  drawingOrDefault,
+  labelOrDefault,
+} from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
 import { playDrawingTurn, playLabelTurn, updateOutbox } from '../actions';
 import InboxDrawingCard from '../components/inbox-drawing-card';
 import InboxLabelCard from '../components/inbox-label-card';
 import { OutboxEntry, State } from '../state';
 import { WebDispatch } from '../store';
-
-import {
-  drawingOrDefault,
-  labelOrDefault,
-  Turn,
-} from '../../common/models/turn';
 
 interface ExternalProps {
   gameId: string;

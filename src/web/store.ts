@@ -1,22 +1,22 @@
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history';
 import { createBrowserHistory } from 'history';
-import { logger } from 'redux-logger';
-import * as storage from 'redux-storage';
-import filter from 'redux-storage-decorator-filter';
-import thunk, { ThunkDispatch } from 'redux-thunk';
 import { Action as ReduxAction } from 'redux';
-import { reducers } from './reducers';
-import { State } from './state';
-import { ActionType } from './actions';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-
 import {
+  Reducer,
   applyMiddleware,
   combineReducers,
   compose,
   createStore,
-  Reducer,
 } from 'redux';
+import { logger } from 'redux-logger';
+import * as storage from 'redux-storage';
+import filter from 'redux-storage-decorator-filter';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+
+import { ActionType } from './actions';
+import { reducers } from './reducers';
+import { State } from './state';
 
 const debounce = require('redux-storage-decorator-debounce').default;
 const migrate = require('redux-storage-decorator-migrate').default;

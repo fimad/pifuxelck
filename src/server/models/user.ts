@@ -1,6 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import { Connection } from 'mysql';
 import * as winston from 'winston';
+
 import { User, UserError } from '../../common/models/user';
 import { query } from '../db-promise';
 import ServerError from '../error';

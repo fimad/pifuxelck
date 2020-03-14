@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { Color } from '../../common/models/drawing';
 
 const styles = require('./color-picker.css');
