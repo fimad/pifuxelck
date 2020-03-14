@@ -5,6 +5,9 @@
   "repository": "https://github.com/fimad/pifuxelck-server-node",
   "author": "Will Coster <willcoster@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "10"
+  },
   "scripts": {
     "lint": "prettier --write '{src,test}/**/*.ts*'",
     "fix": "prettier --write '{src,test}/**/*.ts*'",
