@@ -27,7 +27,7 @@ const styles = require('./history.css');
 
 interface Props {
   dispatch: WebDispatch;
-  filter: (string | null);
+  filter: string | null;
   loading: boolean;
   summaries: GameSummary[];
 }
@@ -45,21 +45,20 @@ const getNumCells = () => {
 
 const contrastColor = (color: models.Color, alpha: number = 1) => {
   // Counting the perceptive luminance - human eye favors green color...
-  const a = 1 - ( 0.299 * color.red + 0.587 * color.green + 0.114 * color.blue);
-  return (a < 0.3) ?
-      `rgba(0, 0, 0, ${alpha})` :
-      `rgba(255, 255, 255, ${alpha})`;
+  const a = 1 - (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue);
+  return a < 0.3 ? `rgba(0, 0, 0, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
 };
 
 const colorToCss = (c: models.Color) =>
-    `rgba(${c.red * 255}, ${c.green * 255}, ${c.blue * 255}, ${c.alpha})`;
+  `rgba(${c.red * 255}, ${c.green * 255}, ${c.blue * 255}, ${c.alpha})`;
 
-const summaryToTile =
-    (numCells: number, cellHeight: number) =>
-    ({dispatch, summary}: {
-      dispatch: WebDispatch,
-      summary: GameSummary,
-    }) => {
+const summaryToTile = (numCells: number, cellHeight: number) => ({
+  dispatch,
+  summary,
+}: {
+  dispatch: WebDispatch;
+  summary: GameSummary;
+}) => {
   const title = summary.first_label;
   const subtitle = 'by ' + summary.players;
   const width = `${100 / numCells}%`;
@@ -69,24 +68,22 @@ const summaryToTile =
   const backgroundColor = colorToCss(summary.background_color);
   return (
     <GridListTile
-        style={{width, height, padding: '2px'}}
-        key={summary.id}
-        onClick={() => dispatch(push(`/game/${summary.id}`))}
+      style={{ width, height, padding: '2px' }}
+      key={summary.id}
+      onClick={() => dispatch(push(`/game/${summary.id}`))}
     >
       <Typography
-          align='center'
-          variant='h6'
-          classes={{root: styles.title}}
-          style={{color: textColor, backgroundColor}}
+        align="center"
+        variant="h6"
+        classes={{ root: styles.title }}
+        style={{ color: textColor, backgroundColor }}
       >
-        <div className={styles.titleInner}>
-          {title}
-        </div>
+        <div className={styles.titleInner}>{title}</div>
       </Typography>
       <Typography
-          noWrap={true}
-          classes={{root: styles.subtitle}}
-          style={{color: secondaryTextColor}}
+        noWrap={true}
+        classes={{ root: styles.subtitle }}
+        style={{ color: secondaryTextColor }}
       >
         {subtitle}
       </Typography>
@@ -94,18 +91,20 @@ const summaryToTile =
   );
 };
 
-const HistoryComponent = ({summaries, dispatch, loading, filter}: Props) => {
+const HistoryComponent = ({ summaries, dispatch, loading, filter }: Props) => {
   const numCells = getNumCells();
-  const cellHeight = (document.documentElement.clientWidth / numCells);
+  const cellHeight = document.documentElement.clientWidth / numCells;
   const tiles = summaries
-      .filter((summary) =>
-          !filter ||
-          summary.all_labels.toLowerCase().indexOf(filter.toLowerCase()) >= 0)
-      .map((summary) => ({summary, dispatch}))
-      .map(summaryToTile(numCells, cellHeight));
-  const cellHeights =
-      tiles.map(
-          (x, i) => (i % numCells === 0) ? (cellHeight - numCells + 1) : 1);
+    .filter(
+      (summary) =>
+        !filter ||
+        summary.all_labels.toLowerCase().indexOf(filter.toLowerCase()) >= 0
+    )
+    .map((summary) => ({ summary, dispatch }))
+    .map(summaryToTile(numCells, cellHeight));
+  const cellHeights = tiles.map((x, i) =>
+    i % numCells === 0 ? cellHeight - numCells + 1 : 1
+  );
   const style = {
     display: 'flex',
     flexDirection: 'row',
@@ -113,12 +112,12 @@ const HistoryComponent = ({summaries, dispatch, loading, filter}: Props) => {
   return (
     <div>
       <Progress visible={loading} />
-      <ul style={{margin: '0px', padding: '0px', listStyle: 'none'}}>
+      <ul style={{ margin: '0px', padding: '0px', listStyle: 'none' }}>
         <Infinite
-            preloadAdditionalHeight={Infinite.containerHeightScaleFactor(3)}
-            className={styles.infinite}
-            useWindowAsScrollContainer={true}
-            elementHeight={cellHeights}
+          preloadAdditionalHeight={Infinite.containerHeightScaleFactor(3)}
+          className={styles.infinite}
+          useWindowAsScrollContainer={true}
+          elementHeight={cellHeights}
         >
           {tiles}
         </Infinite>
@@ -128,14 +127,16 @@ const HistoryComponent = ({summaries, dispatch, loading, filter}: Props) => {
 };
 
 const compareGameByCompletion = (a: GameSummary, b: GameSummary) =>
-    compareStringsAsInts(b.completed_at_id, a.completed_at_id);
+  compareStringsAsInts(b.completed_at_id, a.completed_at_id);
 
-const mapStateToProps =
-    ({entities: {gameCache, history}, apiStatus, ui}: State) => ({
+const mapStateToProps = ({
+  entities: { gameCache, history },
+  apiStatus,
+  ui,
+}: State) => ({
   filter: ui.history.query,
   loading: apiStatus.inProgress.GET_HISTORY,
-  summaries: Object.values(history)
-      .sort(compareGameByCompletion),
+  summaries: Object.values(history).sort(compareGameByCompletion),
 });
 
 const History = connect(mapStateToProps)(HistoryComponent);

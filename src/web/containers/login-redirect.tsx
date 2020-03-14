@@ -7,10 +7,10 @@ interface Props {
   auth?: string;
 }
 
-const RedirectComponent = ({auth}: Props) =>
-  !auth ? (<Redirect to='/login' />) : null;
+const RedirectComponent = ({ auth }: Props) =>
+  !auth ? <Redirect to="/login" /> : null;
 
-const mapStateToProps = ({auth}: State) => ({
+const mapStateToProps = ({ auth }: State) => ({
   auth,
 });
 

@@ -11,7 +11,7 @@ import Login from './containers/login';
 import Register from './containers/register';
 import startStats from './stats-index';
 import { createPifuxelckStore, history } from './store';
-import { ConnectedRouter } from 'connected-react-router'
+import { ConnectedRouter } from 'connected-react-router';
 
 import {
   applyMiddleware,
@@ -33,24 +33,24 @@ import {
       return store;
     })
     .then((store: any) => {
-      ReactDOM.render((
+      ReactDOM.render(
         <MuiThemeProvider theme={createMuiTheme()}>
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <ScrollToTop>
                 <div>
                   <Switch>
-                    <Route path='/login' component={Login} />
-                    <Route path='/register' component={Register} />
-                    <Route path='/' component={App} />
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
+                    <Route path="/" component={App} />
                   </Switch>
                   <ErrorSnaks />
                 </div>
               </ScrollToTop>
             </ConnectedRouter>
           </Provider>
-        </MuiThemeProvider>),
-        document.getElementById('content'),
+        </MuiThemeProvider>,
+        document.getElementById('content')
       );
     });
 };

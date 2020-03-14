@@ -31,31 +31,31 @@ const mailMiddleware = (config?: MailConfig) => {
     sendMail = (config as TestMailConfig).sendMail;
   } else if (config as ProdMailConfig) {
     const mail = mailgun(config as ProdMailConfig);
-    sendMail = ({to, subject, body}: SendMailParams) =>
-        new Promise((resolve) => {
-      const composer = mailcomposer({
-        from: `noreply@${(config as ProdMailConfig).domain}`,
-        html: body,
-        subject,
-        text: subject,
-        to,
-      });
-      composer.build((buildError: Error, message: any) => {
-        if (buildError) {
-          winston.error(`Unable to build mail ${buildError}`);
-          resolve();
-          return;
-        }
-
-        const dataToSend = {to, html: message.toString('ascii')};
-        mail.messages().send(dataToSend, (sendError) => {
-          if (sendError) {
-            winston.error(`Unable to send mail ${sendError}`);
+    sendMail = ({ to, subject, body }: SendMailParams) =>
+      new Promise((resolve) => {
+        const composer = mailcomposer({
+          from: `noreply@${(config as ProdMailConfig).domain}`,
+          html: body,
+          subject,
+          text: subject,
+          to,
+        });
+        composer.build((buildError: Error, message: any) => {
+          if (buildError) {
+            winston.error(`Unable to build mail ${buildError}`);
+            resolve();
+            return;
           }
-          resolve();
+
+          const dataToSend = { to, html: message.toString('ascii') };
+          mail.messages().send(dataToSend, (sendError) => {
+            if (sendError) {
+              winston.error(`Unable to send mail ${sendError}`);
+            }
+            resolve();
+          });
         });
       });
-    });
   }
 
   return (req: Request, res: Response, next: NextFunction) => {

@@ -23,58 +23,63 @@ interface Props {
 }
 
 export default ({
-    password, passwordConfirmation, passwordError, onPasswordUpdate,
-    onPasswordConfirmationUpdate: onConfirmationUpdate,
-    onPasswordSubmit, sendInProgress}: Props) => {
-  const onChange=(event: React.SyntheticEvent) =>
-      onPasswordUpdate((event.target as HTMLInputElement).value);
+  password,
+  passwordConfirmation,
+  passwordError,
+  onPasswordUpdate,
+  onPasswordConfirmationUpdate: onConfirmationUpdate,
+  onPasswordSubmit,
+  sendInProgress,
+}: Props) => {
+  const onChange = (event: React.SyntheticEvent) =>
+    onPasswordUpdate((event.target as HTMLInputElement).value);
   return (
     <div className={cx(styles.container)}>
       <Paper className={styles.paper}>
-          <Typography variant='h6' classes={{root: styles.title}}>
-            Password
-          </Typography>
-          <Typography variant='caption' classes={{root: styles.caption}}>
-            Passwords must be longer than 8 characters. There are no other
-            requirements. There is not yet a mechanism to reset your password.
-            Beware.
-          </Typography>
-          <TextField
-              classes={{root: styles.text}}
-              disabled={sendInProgress}
-              onChange={onChange}
-              type='password'
-              label='Password'
-              value={password}
-              fullWidth={true}
-          />
-          <TextField
-              classes={{root: styles.text}}
-              disabled={sendInProgress}
-              onChange={(event) => onConfirmationUpdate(event.target.value)}
-              type='password'
-              label='Confirm Password'
-              value={passwordConfirmation}
-              fullWidth={true}
-          />
-          <Typography
-              variant='caption'
-              color='secondary'
-              className={styles.caption}
+        <Typography variant="h6" classes={{ root: styles.title }}>
+          Password
+        </Typography>
+        <Typography variant="caption" classes={{ root: styles.caption }}>
+          Passwords must be longer than 8 characters. There are no other
+          requirements. There is not yet a mechanism to reset your password.
+          Beware.
+        </Typography>
+        <TextField
+          classes={{ root: styles.text }}
+          disabled={sendInProgress}
+          onChange={onChange}
+          type="password"
+          label="Password"
+          value={password}
+          fullWidth={true}
+        />
+        <TextField
+          classes={{ root: styles.text }}
+          disabled={sendInProgress}
+          onChange={(event) => onConfirmationUpdate(event.target.value)}
+          type="password"
+          label="Confirm Password"
+          value={passwordConfirmation}
+          fullWidth={true}
+        />
+        <Typography
+          variant="caption"
+          color="secondary"
+          className={styles.caption}
+        >
+          {passwordError}
+        </Typography>
+        <div className={styles.buttonContainer}>
+          <Button
+            disabled={sendInProgress}
+            onClick={() => onPasswordSubmit(password, passwordConfirmation)}
+            variant="contained"
+            color="secondary"
+            classes={{ root: styles.button }}
           >
-            {passwordError}
-          </Typography>
-          <div className={styles.buttonContainer}>
-            <Button
-                disabled={sendInProgress}
-                onClick={() => onPasswordSubmit(password, passwordConfirmation)}
-                variant='contained'
-                color='secondary'
-                classes={{root: styles.button}}
-            >
-              Update
-            </Button>
-          </div>
+            Update
+          </Button>
+        </div>
       </Paper>
     </div>
   );

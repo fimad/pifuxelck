@@ -5,12 +5,14 @@ interface Props {
   visible: boolean;
 }
 
-const Progress = ({visible}: Props) => visible ?
-  (
+const Progress = ({ visible }: Props) =>
+  visible ? (
     <LinearProgress
-      style={{zIndex: 100, height: '4px', marginBottom: '-4px'}}
-      color='secondary'
+      style={{ zIndex: 100, height: '4px', marginBottom: '-4px' }}
+      color="secondary"
     />
-  ) : (<div />);
+  ) : (
+    <div />
+  );
 
 export default Progress;

@@ -22,35 +22,38 @@ interface ExternalProps {
 }
 
 type Props = ExternalProps & {
-  drawing: Drawing
+  drawing: Drawing;
   expirationTime: number;
-  label: string
-  sendPending: boolean
-  onSubmit: (gameId: string, turn: Turn) => void
-  previousIsDrawing: boolean
-  onChange: (turn: Turn) => void
-  onShowDrawing: (showDrawing: boolean) => void,
+  label: string;
+  sendPending: boolean;
+  onSubmit: (gameId: string, turn: Turn) => void;
+  previousIsDrawing: boolean;
+  onChange: (turn: Turn) => void;
+  onShowDrawing: (showDrawing: boolean) => void;
 };
 
 const EntryComponent = (props: Props) =>
-  props.previousIsDrawing === true ?
-      (<InboxDrawingCard {...props} />) :
-      (<InboxLabelCard {...props} />);
+  props.previousIsDrawing === true ? (
+    <InboxDrawingCard {...props} />
+  ) : (
+    <InboxLabelCard {...props} />
+  );
 
 function mapStateToProps(
-    {entities: {inbox}, ui: {outbox}, apiStatus}: State,
-    ownProps: ExternalProps) {
-  const {gameId} = ownProps;
+  { entities: { inbox }, ui: { outbox }, apiStatus }: State,
+  ownProps: ExternalProps
+) {
+  const { gameId } = ownProps;
   const previous = inbox[gameId].previous_turn;
   const expirationTime = inbox[gameId].expiration_time || 0;
   const previousIsDrawing = previous.is_drawing;
-  const current = (outbox[gameId] || {} as OutboxEntry).turn || {} as Turn;
-  const drawing = previousIsDrawing ?
-      drawingOrDefault(previous) :
-      drawingOrDefault(current);
-  const label = !previousIsDrawing ?
-      labelOrDefault(previous) :
-      labelOrDefault(current);
+  const current = (outbox[gameId] || ({} as OutboxEntry)).turn || ({} as Turn);
+  const drawing = previousIsDrawing
+    ? drawingOrDefault(previous)
+    : drawingOrDefault(current);
+  const label = !previousIsDrawing
+    ? labelOrDefault(previous)
+    : labelOrDefault(current);
   const sendPending = apiStatus.pendingTurns[gameId];
   return {
     drawing,
@@ -61,15 +64,19 @@ function mapStateToProps(
   } as Props;
 }
 
-const mapDispatchToProps =
-    (dispatch: WebDispatch, {gameId}: ExternalProps) => ({
+const mapDispatchToProps = (
+  dispatch: WebDispatch,
+  { gameId }: ExternalProps
+) => ({
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
   onShowDrawing: (showDrawing: boolean) =>
-      dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
+    dispatch(push(showDrawing ? `/draw/${gameId}` : '/')),
   onSubmit: (id: string, turn: Turn) => {
-    dispatch(turn.is_drawing === true ?
-        playDrawingTurn(id, turn.drawing) :
-        playLabelTurn(id, turn.label));
+    dispatch(
+      turn.is_drawing === true
+        ? playDrawingTurn(id, turn.drawing)
+        : playLabelTurn(id, turn.label)
+    );
   },
 });
 

@@ -24,30 +24,35 @@ interface Props {
 }
 
 const InboxDrawingCard = ({
-    gameId, label, drawing, onChange, onSubmit, sendPending,
-    expirationTime}: Props) => {
-  const onChangeCallback =
-      (event: React.ChangeEvent<HTMLInputElement>) => onChange({
-        is_drawing: false,
-        label: event.target.value,
-      });
-  const onClickCallback = () => onSubmit(gameId, {
-    is_drawing: false,
-    label,
-  });
+  gameId,
+  label,
+  drawing,
+  onChange,
+  onSubmit,
+  sendPending,
+  expirationTime,
+}: Props) => {
+  const onChangeCallback = (event: React.ChangeEvent<HTMLInputElement>) =>
+    onChange({
+      is_drawing: false,
+      label: event.target.value,
+    });
+  const onClickCallback = () =>
+    onSubmit(gameId, {
+      is_drawing: false,
+      label,
+    });
   const sendButton = (
     <IconButton onClick={onClickCallback}>
       <SendIcon />
     </IconButton>
   );
-  const loading = (
-    <CircularProgress color='secondary' />
-  );
+  const loading = <CircularProgress color="secondary" />;
   const action = sendPending ? loading : sendButton;
   return (
-    <Card style={{margin: '8px'}}>
+    <Card style={{ margin: '8px' }}>
       <CardContent>
-        <Typography variant='caption' align='right'>
+        <Typography variant="caption" align="right">
           Expires at {new Date(expirationTime * 1000).toLocaleString()}
         </Typography>
       </CardContent>
@@ -55,10 +60,10 @@ const InboxDrawingCard = ({
       <Divider />
       <CardActions>
         <TextField
-            onChange={sendPending ? undefined : onChangeCallback}
-            label='Description'
-            value={label}
-            fullWidth={true}
+          onChange={sendPending ? undefined : onChangeCallback}
+          label="Description"
+          value={label}
+          fullWidth={true}
         />
         {action}
       </CardActions>

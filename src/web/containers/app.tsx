@@ -74,66 +74,67 @@ class AppComponent extends React.Component<Props, any> {
     };
   }
 
-  public handleToggleDrawer = () => this.setState({
-    showDrawer: !this.state.showDrawer,
-  })
+  public handleToggleDrawer = () =>
+    this.setState({
+      showDrawer: !this.state.showDrawer,
+    });
 
-  public handleShowDrawer =
-      (showDrawer: boolean) => this.setState({showDrawer})
+  public handleShowDrawer = (showDrawer: boolean) =>
+    this.setState({ showDrawer });
 
   public handleClickAccount = () => {
     this.props.dispatch(gotoAccount());
     this.handleShowDrawer(false);
-  }
+  };
 
   public handleClickInbox = () => {
     this.props.dispatch(gotoInbox());
     this.handleShowDrawer(false);
-  }
+  };
 
   public handleClickHistory = () => {
     this.props.dispatch(filterHistory(''));
     this.props.dispatch(gotoHistory());
     this.handleShowDrawer(false);
-  }
+  };
 
   public handleClickContacts = () => {
     this.props.dispatch(gotoContacts());
     this.handleShowDrawer(false);
-  }
+  };
 
   public handleShowNewGame = () => {
     this.props.dispatch(push('/new'));
     this.handleShowDrawer(false);
-  }
+  };
 
   public handleStats = () => {
     window.location.href = '/stats';
-  }
+  };
 
   public handleLogout = () => {
     this.props.dispatch(logout());
-  }
+  };
 
   public handleHistoryQuery = (query: string) => {
     this.props.dispatch(filterHistory(query));
-  }
+  };
 
   public handleExportGame = (gameId: string) => {
     domtoimage
-        .toBlob(this.gameRef, {
-          bgcolor: '#CFD8DC',
-          style: {
-            margin: '0px',
-            padding: '0px',
-          },
-        })
-        .then((blob: Blob) => FileSaver.saveAs(blob, `${gameId}.png`));
-  }
+      .toBlob(this.gameRef, {
+        bgcolor: '#CFD8DC',
+        style: {
+          margin: '0px',
+          padding: '0px',
+        },
+      })
+      .then((blob: Blob) => FileSaver.saveAs(blob, `${gameId}.png`));
+  };
 
   public render() {
     if (!this.props.isLoggedIn) {
-      return (<LoginRedirect />);
+      return <LoginRedirect />;
     }
     const fabStyle: any = {
       bottom: '32px',
@@ -151,53 +152,62 @@ class AppComponent extends React.Component<Props, any> {
     };
     const appBar = (title: string, button?: JSX.Element) => (
       <div>
-      <AppBar position='fixed'>
-        <Toolbar>
-          <IconButton
+        <AppBar position="fixed">
+          <Toolbar>
+            <IconButton
               onClick={this.handleToggleDrawer}
-              color='inherit'
-              aria-label='Menu'
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant='h6' style={{flex: '1 1 auto'}} color='inherit'>
-            {title}
-          </Typography>
-          {button}
-        </Toolbar>
-      </AppBar>
-      <AppBar style={{visibility: 'hidden'}} position='static'>
-        <Toolbar />
-      </AppBar>
+              color="inherit"
+              aria-label="Menu"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              style={{ flex: '1 1 auto' }}
+              color="inherit"
+            >
+              {title}
+            </Typography>
+            {button}
+          </Toolbar>
+        </AppBar>
+        <AppBar style={{ visibility: 'hidden' }} position="static">
+          <Toolbar />
+        </AppBar>
       </div>
     );
     const gameExport = (gameId: string) => (
       <IconButton
-          onClick={() => this.handleExportGame(gameId)}
-          color='inherit'
-          aria-label='Menu'
+        onClick={() => this.handleExportGame(gameId)}
+        color="inherit"
+        aria-label="Menu"
       >
         <DownloadIcon />
       </IconButton>
     );
-    const gameView = ({match}: any) => (
+    const gameView = ({ match }: any) => (
       <div>
         {appBar('Game', gameExport(match.params.id))}
         <Game
-          gameRef={(gameRef: HTMLElement) => {this.gameRef = gameRef; }}
+          gameRef={(gameRef: HTMLElement) => {
+            this.gameRef = gameRef;
+          }}
           gameId={match.params.id}
         />
       </div>
     );
-    const drawView = ({match}: any) => (
-      <div style={{display: 'flex', flex: '1 0 auto', flexDirection: 'column'}}>
+    const drawView = ({ match }: any) => (
+      <div
+        style={{ display: 'flex', flex: '1 0 auto', flexDirection: 'column' }}
+      >
         {appBar('Inbox')}
         <DrawReply gameId={match.params.gameId} />
       </div>
     );
-    const newGameButton = this.props.newGameInProgress ?
-      (<CircularProgress color='secondary' />) : (
-      <Button color='inherit' onClick={this.handleShowNewGame}>
+    const newGameButton = this.props.newGameInProgress ? (
+      <CircularProgress color="secondary" />
+    ) : (
+      <Button color="inherit" onClick={this.handleShowNewGame}>
         New Game
       </Button>
     );
@@ -206,9 +216,9 @@ class AppComponent extends React.Component<Props, any> {
         <div className={styles.historySearch}>
           <SearchIcon />
           <TextField
-              onChange={(event) => this.handleHistoryQuery(event.target.value)}
-              value={this.props.historyQuery}
-              margin='normal'
+            onChange={(event) => this.handleHistoryQuery(event.target.value)}
+            value={this.props.historyQuery}
+            margin="normal"
           />
         </div>
       </div>
@@ -216,94 +226,100 @@ class AppComponent extends React.Component<Props, any> {
     return (
       <div style={rootStyle}>
         <Switch>
-          <Route path='/account' render={() => (
-            <div>
-              {appBar('Account')}
-              <Account />
-            </div>
-          )}>
-          </Route>
-          <Route path='/history' render={() => (
-            <div>
-              {appBar('History', historySearch)}
-              <ResizeAware>
-                <History />
-              </ResizeAware>
-            </div>
-          )}>
-          </Route>
-          <Route path='/game/:id' render={gameView}>
-          </Route>
-          <Route path='/draw/:gameId' render={drawView}>
-          </Route>
-          <Route path='/contacts' render={() => (
-            <div>
-              {appBar('Contacts')}
-              <Contacts />
-            </div>
-          )}>
-          </Route>
-          <Route path='/' render={() => (
-            <div>
-              {appBar('Inbox', newGameButton)}
-              <Inbox />
-              <Switch>
-                <Route path='/new'>
-                  <NewGameDialog />
-                </Route>
-              </Switch>
-            </div>
-          )}>
-          </Route>
+          <Route
+            path="/account"
+            render={() => (
+              <div>
+                {appBar('Account')}
+                <Account />
+              </div>
+            )}
+          />
+          <Route
+            path="/history"
+            render={() => (
+              <div>
+                {appBar('History', historySearch)}
+                <ResizeAware>
+                  <History />
+                </ResizeAware>
+              </div>
+            )}
+          />
+          <Route path="/game/:id" render={gameView} />
+          <Route path="/draw/:gameId" render={drawView} />
+          <Route
+            path="/contacts"
+            render={() => (
+              <div>
+                {appBar('Contacts')}
+                <Contacts />
+              </div>
+            )}
+          />
+          <Route
+            path="/"
+            render={() => (
+              <div>
+                {appBar('Inbox', newGameButton)}
+                <Inbox />
+                <Switch>
+                  <Route path="/new">
+                    <NewGameDialog />
+                  </Route>
+                </Switch>
+              </div>
+            )}
+          />
         </Switch>
 
         <Drawer
-            variant='temporary'
-            anchor='left'
-            open={this.state.showDrawer}
-            onClose={this.handleToggleDrawer}
+          variant="temporary"
+          anchor="left"
+          open={this.state.showDrawer}
+          onClose={this.handleToggleDrawer}
         >
-          <div style={{width: '240px'}} />
-          <List style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{ width: '240px' }} />
+          <List style={{ display: 'flex', flexDirection: 'column' }}>
             <ListItem button={true} onClick={this.handleClickAccount}>
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary='Account' />
+              <ListItemText primary="Account" />
             </ListItem>
             <ListItem button={true} onClick={this.handleClickInbox}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary='Inbox' />
+              <ListItemText primary="Inbox" />
             </ListItem>
             <ListItem button={true} onClick={this.handleClickContacts}>
               <ListItemIcon>
                 <ContactsIcon />
               </ListItemIcon>
-              <ListItemText primary='Contacts' />
+              <ListItemText primary="Contacts" />
             </ListItem>
             <ListItem button={true} onClick={this.handleClickHistory}>
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>
-              <ListItemText primary='History' />
+              <ListItemText primary="History" />
             </ListItem>
             <ListItem button={true} onClick={this.handleStats}>
               <ListItemIcon>
                 <ChartIcon />
               </ListItemIcon>
-              <ListItemText primary='Stats' />
+              <ListItemText primary="Stats" />
             </ListItem>
             <ListItem
-                style={{marginTop: 'auto'}}
-                button={true}
-                onClick={this.handleLogout}
+              style={{ marginTop: 'auto' }}
+              button={true}
+              onClick={this.handleLogout}
             >
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary='Logout' />
+              <ListItemText primary="Logout" />
             </ListItem>
           </List>
         </Drawer>
@@ -312,7 +328,7 @@ class AppComponent extends React.Component<Props, any> {
   }
 }
 
-const mapStateToProps = ({ui, auth, apiStatus}: State) => ({
+const mapStateToProps = ({ ui, auth, apiStatus }: State) => ({
   historyQuery: ui.history.query,
   isLoggedIn: !!auth,
   newGameInProgress: apiStatus.inProgress.NEW_GAME,

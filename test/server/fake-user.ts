@@ -27,19 +27,22 @@ export default class FakeUser {
 }
 
 export async function newUser(
-    app: SuperTest<Test>,
-    user: string,
-    password = '12345678',
-    email = ''): Promise<FakeUser> {
-  const token = await app.post('/api/2/account/register')
-      .send({user: {display_name: user, password}})
-      .expect(200)
-      .then((response: any) => response.body.meta.auth);
+  app: SuperTest<Test>,
+  user: string,
+  password = '12345678',
+  email = ''
+): Promise<FakeUser> {
+  const token = await app
+    .post('/api/2/account/register')
+    .send({ user: { display_name: user, password } })
+    .expect(200)
+    .then((response: any) => response.body.meta.auth);
   const fakeUser = new FakeUser(app, token);
   if (email) {
-    await fakeUser.put('/api/2/account')
-        .send({user: {email}})
-        .expect(200);
+    await fakeUser
+      .put('/api/2/account')
+      .send({ user: { email } })
+      .expect(200);
   }
   return fakeUser;
 }

@@ -8,7 +8,7 @@ import { Action as ReduxAction } from 'redux';
 import { reducers } from './reducers';
 import { State } from './state';
 import { ActionType } from './actions';
-import { connectRouter, routerMiddleware } from 'connected-react-router'
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 
 import {
   applyMiddleware,
@@ -28,42 +28,48 @@ const middlewares = [thunk, routerMiddleware(history)];
 // TODO(will): Disable the logger in production...
 middlewares.push(logger);
 
-const reducer = storage.reducer(combineReducers({
-  ...reducers,
-  router: connectRouter(history),
-}));
-const idbEngine =
-    require('redux-storage-engine-indexed-db').default('my-save-key');
+const reducer = storage.reducer(
+  combineReducers({
+    ...reducers,
+    router: connectRouter(history),
+  })
+);
+const idbEngine = require('redux-storage-engine-indexed-db').default(
+  'my-save-key'
+);
 const debouncedEngine = debounce(
-    filter(
-        decorateEngineWithMigrations({
-          load: () => idbEngine.load().then((state: any) => state || {}),
-          save: (state) => idbEngine.save(state),
-        }),
-        [], [
-          // Blacklisted state.
-          ['apiStatus'],
-          ['entities', 'gameCache'],
-          ['ui', 'errors'],
-        ]),
-    1500);
+  filter(
+    decorateEngineWithMigrations({
+      load: () => idbEngine.load().then((state: any) => state || {}),
+      save: (state) => idbEngine.save(state),
+    }),
+    [],
+    [
+      // Blacklisted state.
+      ['apiStatus'],
+      ['entities', 'gameCache'],
+      ['ui', 'errors'],
+    ]
+  ),
+  1500
+);
 middlewares.push(storage.createMiddleware(debouncedEngine));
-const createStoreWithMiddleware =
-    applyMiddleware(...middlewares)(createStore);
+const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 const store = createStoreWithMiddleware(reducer, {});
 
 export type WebDispatch = ThunkDispatch<
-    State,
-    unknown,
-    ReduxAction<ActionType>
+  State,
+  unknown,
+  ReduxAction<ActionType>
 >;
 
 export function createPifuxelckStore() {
-  return storage.createLoader(debouncedEngine)(store).then(() => store);
+  return storage
+    .createLoader(debouncedEngine)(store)
+    .then(() => store);
 }
 
-function decorateEngineWithMigrations(
-    engine: storage.StorageEngine) {
+function decorateEngineWithMigrations(engine: storage.StorageEngine) {
   const decoratedEngine = migrate(engine, 1);
   decoratedEngine.addMigration(1, (state: any) => ({}));
   return decoratedEngine;

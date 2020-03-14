@@ -32,30 +32,27 @@ interface Props {
 }
 
 const InboxLabelCard = ({
-    gameId, label, drawing, onShowDrawing, sendPending,
-    expirationTime}: Props) => {
-  const drawButton = (
-    <Button onClick={() => onShowDrawing(true)}>
-      Draw
-    </Button>
-  );
-  const loading = (
-    <CircularProgress color='secondary' />
-  );
+  gameId,
+  label,
+  drawing,
+  onShowDrawing,
+  sendPending,
+  expirationTime,
+}: Props) => {
+  const drawButton = <Button onClick={() => onShowDrawing(true)}>Draw</Button>;
+  const loading = <CircularProgress color="secondary" />;
   const action = sendPending ? loading : drawButton;
   return (
-    <Card style={{margin: '8px'}}>
+    <Card style={{ margin: '8px' }}>
       <CardContent>
-        <Typography variant='caption' align='right'>
+        <Typography variant="caption" align="right">
           Expires at {new Date(expirationTime * 1000).toLocaleString()}
         </Typography>
-        <Typography variant='h5' component='h2'>
+        <Typography variant="h5" component="h2">
           {label}
         </Typography>
       </CardContent>
-      <CardActions>
-        {action}
-      </CardActions>
+      <CardActions>{action}</CardActions>
     </Card>
   );
 };

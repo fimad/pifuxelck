@@ -6,8 +6,8 @@
   "author": "Will Coster <willcoster@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "tslint --project .",
-    "fix": "tslint --fix --project .",
+    "lint": "prettier --write '{src,test}/**/*.ts*'",
+    "fix": "prettier --write '{src,test}/**/*.ts*'",
     "test": "nyc mocha",
     "pretest": "run-s clean _server-build",
     "clean": "run-s _server-clean _web-clean",
@@ -76,6 +76,7 @@
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
+    "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
     "source-map-loader": "^0.2.4",
     "source-map-support": "^0.5.16",

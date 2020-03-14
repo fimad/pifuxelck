@@ -22,7 +22,7 @@ export default function(config: Config) {
   const app = express();
   app.use(cors());
   app.use(compression());
-  app.use(express.json({type: '*/*'}));
+  app.use(express.json({ type: '*/*' }));
   app.use(log());
   app.use(models());
   app.use(success());

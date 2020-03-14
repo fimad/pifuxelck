@@ -15,7 +15,10 @@ import {
 const stats = Router();
 
 async function getStats<T>(
-    db: Connection, sql: string, f: (row: any) => T): Promise<T[]> {
+  db: Connection,
+  sql: string,
+  f: (row: any) => T
+): Promise<T[]> {
   const results = await query(db, sql);
   const result = [] as T[];
   for (let i = 0; i < results.length; i++) {
@@ -25,24 +28,28 @@ async function getStats<T>(
 }
 
 async function getActiveGames(db: Connection): Promise<GameStats> {
-  return (await getStats<GameStats>(
-    db,
-    `
+  return (
+    await getStats<GameStats>(
+      db,
+      `
     SELECT
       SUM(completed_at_id IS NULL) AS pending,
       SUM(completed_at_id IS NOT NULL) AS complete,
       SUM(1) AS total
     FROM Games
     `,
-    ({total, pending, complete}) => ({
-      complete,
-      pending,
-      total,
-    })))[0];
+      ({ total, pending, complete }) => ({
+        complete,
+        pending,
+        total,
+      })
+    )
+  )[0];
 }
 
 async function getGameSizeHistogram(
-    db: Connection): Promise<GameSizeHistogram> {
+  db: Connection
+): Promise<GameSizeHistogram> {
   return getStats(
     db,
     `
@@ -63,16 +70,18 @@ async function getGameSizeHistogram(
     GROUP BY game_size
     ORDER BY game_size ASC
     `,
-    ({game_size, complete, pending, total}) => ({
+    ({ game_size, complete, pending, total }) => ({
       complete,
       pending,
       size: game_size,
       total,
-    }));
+    })
+  );
 }
 
 async function getGameDurationHistogram(
-    db: Connection): Promise<GameDurationHistogram> {
+  db: Connection
+): Promise<GameDurationHistogram> {
   return getStats(
     db,
     `
@@ -91,7 +100,8 @@ async function getGameDurationHistogram(
     GROUP BY 1
     ORDER BY 1 ASC;
     `,
-    ({gameDurationDays, count}) => ({gameDurationDays, count}));
+    ({ gameDurationDays, count }) => ({ gameDurationDays, count })
+  );
 }
 
 async function getUserStats(db: Connection): Promise<UserStats> {
@@ -141,7 +151,8 @@ async function getUserStats(db: Connection): Promise<UserStats> {
       pendingGames: row.pending_games,
       skips: row.skips,
       startedGames: row.started_games,
-    }));
+    })
+  );
 }
 
 async function getGamesOverTime(db: Connection): Promise<GamesOverTime> {
@@ -179,19 +190,25 @@ async function getGamesOverTime(db: Connection): Promise<GamesOverTime> {
     GROUP BY timestamp
     ORDER BY timestamp ASC
     `,
-    ({timestamp, pendingGames}) => ({timestamp, pendingGames}));
+    ({ timestamp, pendingGames }) => ({ timestamp, pendingGames })
+  );
 }
 
-stats.get('/', asyncRoute(async (req, res) => {
-  const allStats = {
-    gameDurations: await getGameDurationHistogram(req.db),
-    gameSizes: await getGameSizeHistogram(req.db),
-    gameStats: await getActiveGames(req.db),
-    gamesOverTime: await getGamesOverTime(req.db),
-    userStats: await getUserStats(req.db),
-  };
-  res.status(200).type('text/html').send(
-    `
+stats.get(
+  '/',
+  asyncRoute(async (req, res) => {
+    const allStats = {
+      gameDurations: await getGameDurationHistogram(req.db),
+      gameSizes: await getGameSizeHistogram(req.db),
+      gameStats: await getActiveGames(req.db),
+      gamesOverTime: await getGamesOverTime(req.db),
+      userStats: await getUserStats(req.db),
+    };
+    res
+      .status(200)
+      .type('text/html')
+      .send(
+        `
 <!DOCTYPE html>
 <html>
   <head>
@@ -233,7 +250,8 @@ stats.get('/', asyncRoute(async (req, res) => {
     <script>startStats(${JSON.stringify(allStats)});</script>
   </body>
 </html>
-    `,
-  );
-}));
+    `
+      );
+  })
+);
 export default stats;

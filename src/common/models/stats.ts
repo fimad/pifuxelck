@@ -13,28 +13,28 @@ export interface GameStats {
 }
 
 export type GameSizeHistogram = {
-  size: number
-  total: number
-  pending: number
-  complete: number,
+  size: number;
+  total: number;
+  pending: number;
+  complete: number;
 }[];
 
 export type GameDurationHistogram = {
-  gameDurationDays: number,
-  count: number,
+  gameDurationDays: number;
+  count: number;
 }[];
 
 export type UserStats = {
-  displayName: string
-  drawings: number
-  inboxSize: number
-  labels: number,
-  pendingGames: number
-  skips: number,
-  startedGames: number,
+  displayName: string;
+  drawings: number;
+  inboxSize: number;
+  labels: number;
+  pendingGames: number;
+  skips: number;
+  startedGames: number;
 }[];
 
 export type GamesOverTime = {
-  timestamp: number
-  pendingGames: number,
+  timestamp: number;
+  pendingGames: number;
 }[];

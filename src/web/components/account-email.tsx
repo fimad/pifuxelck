@@ -19,41 +19,45 @@ interface Props {
   sendInProgress: boolean;
 }
 
-export default (
-    {email, onEmailUpdate, onEmailSubmit, sendInProgress}: Props) => {
+export default ({
+  email,
+  onEmailUpdate,
+  onEmailSubmit,
+  sendInProgress,
+}: Props) => {
   const myOnEmailUpdate = (event: React.SyntheticEvent) =>
-      onEmailUpdate((event.target as HTMLInputElement).value);
+    onEmailUpdate((event.target as HTMLInputElement).value);
   return (
     <div className={cx(styles.container, styles.email)}>
       <Paper className={styles.paper}>
-          <Typography variant='h6' classes={{root: styles.title}}>
-            Email Notifications
-          </Typography>
-          <Typography variant='caption' classes={{root: styles.caption}}>
-            Providing an email address is optional and allows pifuxelck to
-            notify you when it is your turn a game an when a game you are a
-            participant in finishes.
-          </Typography>
-          <TextField
-              classes={{root: styles.text}}
-              disabled={sendInProgress}
-              onChange={myOnEmailUpdate}
-              onSubmit={() => onEmailSubmit(email)}
-              label='Email'
-              value={email}
-              fullWidth={true}
-          />
-          <div className={styles.buttonContainer}>
-            <Button
-                disabled={sendInProgress}
-                onClick={() => onEmailSubmit(email)}
-                variant='contained'
-                color='secondary'
-                classes={{root: styles.button}}
-            >
-              Update
-            </Button>
-          </div>
+        <Typography variant="h6" classes={{ root: styles.title }}>
+          Email Notifications
+        </Typography>
+        <Typography variant="caption" classes={{ root: styles.caption }}>
+          Providing an email address is optional and allows pifuxelck to notify
+          you when it is your turn a game an when a game you are a participant
+          in finishes.
+        </Typography>
+        <TextField
+          classes={{ root: styles.text }}
+          disabled={sendInProgress}
+          onChange={myOnEmailUpdate}
+          onSubmit={() => onEmailSubmit(email)}
+          label="Email"
+          value={email}
+          fullWidth={true}
+        />
+        <div className={styles.buttonContainer}>
+          <Button
+            disabled={sendInProgress}
+            onClick={() => onEmailSubmit(email)}
+            variant="contained"
+            color="secondary"
+            classes={{ root: styles.button }}
+          >
+            Update
+          </Button>
+        </div>
       </Paper>
     </div>
   );

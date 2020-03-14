@@ -19,9 +19,16 @@ type Props = SuggestedContact & {
   onIgnore: () => void;
 };
 
-const EntryComponent = (
-    {actionPending, display_name, common_contacts, onAdd, onIgnore}: Props) => {
-  const actions = actionPending ? (<CircularProgress color='secondary' />) : (
+const EntryComponent = ({
+  actionPending,
+  display_name,
+  common_contacts,
+  onAdd,
+  onIgnore,
+}: Props) => {
+  const actions = actionPending ? (
+    <CircularProgress color="secondary" />
+  ) : (
     <div>
       <Button onClick={onAdd}>Add</Button>
       <Button onClick={onIgnore}>Ignore</Button>
@@ -30,40 +37,42 @@ const EntryComponent = (
   let contactsInCommon = '';
   if (common_contacts > 0) {
     const suffix = common_contacts === 1 ? '' : 's';
-    contactsInCommon =
-        `You have ${common_contacts} contact${suffix} in common.`;
+    contactsInCommon = `You have ${common_contacts} contact${suffix} in common.`;
   }
   return (
-    <Card style={{margin: '8px'}}>
+    <Card style={{ margin: '8px' }}>
       <CardContent>
-        <Typography variant='caption' align='right'>
+        <Typography variant="caption" align="right">
           Suggested contact
         </Typography>
-        <Typography variant='h5' component='h2'>
-          <span style={{color: '#f50057'}}>{display_name} </span>
+        <Typography variant="h5" component="h2">
+          <span style={{ color: '#f50057' }}>{display_name} </span>
           added you! {contactsInCommon}
         </Typography>
       </CardContent>
-      <CardActions>
-        {actions}
-      </CardActions>
+      <CardActions>{actions}</CardActions>
     </Card>
   );
 };
 
-const mapStateToProps = ({apiStatus}: State, {id}: SuggestedContact) => ({
-  actionPending: apiStatus.pendingContactAdds[id] ||
+const mapStateToProps = ({ apiStatus }: State, { id }: SuggestedContact) =>
+  ({
+    actionPending:
+      apiStatus.pendingContactAdds[id] ||
       apiStatus.pendingSuggestionIgnores[id],
-}) as Props;
+  } as Props);
 
-const mapDispatchToProps =
-    (dispatch: WebDispatch, {id}: SuggestedContact) => ({
+const mapDispatchToProps = (
+  dispatch: WebDispatch,
+  { id }: SuggestedContact
+) => ({
   onAdd: () => dispatch(addContact(id)),
   onIgnore: () => dispatch(ignoreSuggestedContacts(id)),
 });
 
 const InboxContactEntry = connect(
-    mapStateToProps,
-    mapDispatchToProps)(EntryComponent);
+  mapStateToProps,
+  mapDispatchToProps
+)(EntryComponent);
 
 export default InboxContactEntry;

@@ -14,14 +14,16 @@ export default async function fakeServer() {
       ...dbConfig,
       multipleStatements: true,
     });
-    connection.connect((err) => err ? reject(err) : resolve(connection));
+    connection.connect((err) => (err ? reject(err) : resolve(connection)));
   });
   const schema = await new Promise((resolve, reject) =>
-      readFile(
-          'sql/schema-current.sql', 'utf8',
-          (err, val) => err ? reject(err) : resolve(val)));
+    readFile('sql/schema-current.sql', 'utf8', (err, val) =>
+      err ? reject(err) : resolve(val)
+    )
+  );
   await new Promise((resolve, reject) =>
-      sqlDb.query(schema.toString(), (err) => err ? reject(err) : resolve()));
+    sqlDb.query(schema.toString(), (err) => (err ? reject(err) : resolve()))
+  );
   sqlDb.end();
 
   const sentMail = [] as SendMailParams[];

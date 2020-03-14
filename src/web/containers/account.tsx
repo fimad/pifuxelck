@@ -55,8 +55,11 @@ const firstNonNull = (list: any[]) => {
 };
 
 const mapStateToProps = (state: State) => ({
-  email:
-      firstNonNull([state.ui.account.email, state.entities.account.email, '']),
+  email: firstNonNull([
+    state.ui.account.email,
+    state.entities.account.email,
+    '',
+  ]),
   loading: state.apiStatus.inProgress.GET_ACCOUNT,
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
@@ -65,7 +68,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: WebDispatch) => ({
-  onEmailSubmit: (email: string) => dispatch(updateAccount({email})),
+  onEmailSubmit: (email: string) => dispatch(updateAccount({ email })),
   onEmailUpdate: (email: string) => dispatch(updateEmail(email)),
   onPasswordConfirmationUpdate: (passwordConfirmation: string) => {
     dispatch(setAccountPasswordError(''));
@@ -76,7 +79,7 @@ const mapDispatchToProps = (dispatch: WebDispatch) => ({
       dispatch(setAccountPasswordError('Passwords do not match.'));
     } else {
       dispatch(setAccountPasswordError(''));
-      dispatch(updateAccount({password}));
+      dispatch(updateAccount({ password }));
     }
   },
   onPasswordUpdate: (password: string) => {
@@ -85,7 +88,6 @@ const mapDispatchToProps = (dispatch: WebDispatch) => ({
   },
 });
 
-const Account =
-    connect(mapStateToProps, mapDispatchToProps)(AccountComponent);
+const Account = connect(mapStateToProps, mapDispatchToProps)(AccountComponent);
 
 export default Account;

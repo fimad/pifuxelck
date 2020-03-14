@@ -35,33 +35,41 @@ import {
 const styles = require('./new-game-dialog.css');
 
 type Props = WithWidthProps & {
-  players: User[]
-  contacts: User[]
-  fullScreen: boolean
-  topic: string
-  onCancel: () => void
-  onStart: (topic: string, playerIds: string[]) => void
-  onAddPlayer: (playerId: string) => void
-  onRemovePlayer: (playerId: string) => void
-  onChangeTopic: (topic: string) => void,
+  players: User[];
+  contacts: User[];
+  fullScreen: boolean;
+  topic: string;
+  onCancel: () => void;
+  onStart: (topic: string, playerIds: string[]) => void;
+  onAddPlayer: (playerId: string) => void;
+  onRemovePlayer: (playerId: string) => void;
+  onChangeTopic: (topic: string) => void;
 };
 
 const NewGameDialog = ({
-    contacts, fullScreen, topic, players, onCancel, onStart,
-    onAddPlayer, onRemovePlayer, onChangeTopic}: Props) => {
+  contacts,
+  fullScreen,
+  topic,
+  players,
+  onCancel,
+  onStart,
+  onAddPlayer,
+  onRemovePlayer,
+  onChangeTopic,
+}: Props) => {
   const playerToChip = (player: User) => (
     <Chip
-        key={player.id}
-        label={player.display_name}
-        onDelete={() => onRemovePlayer(player.id)}
+      key={player.id}
+      label={player.display_name}
+      onDelete={() => onRemovePlayer(player.id)}
     />
   );
   const contactToListEntry = (c: User) => (
     <ListItem
-        key={`contact-${c.id}`}
-        disabled={players.filter(({id}) => c.id === id).length > 0}
-        button={true}
-        onClick={() => onAddPlayer(c.id)}
+      key={`contact-${c.id}`}
+      disabled={players.filter(({ id }) => c.id === id).length > 0}
+      button={true}
+      onClick={() => onAddPlayer(c.id)}
     >
       <ListItemIcon>
         <AddIcon />
@@ -70,17 +78,13 @@ const NewGameDialog = ({
     </ListItem>
   );
   return (
-    <Dialog
-        fullScreen={fullScreen}
-        open={true}
-        onClose={onCancel}
-    >
+    <Dialog fullScreen={fullScreen} open={true} onClose={onCancel}>
       <DialogTitle>
         <TextField
-            value={topic}
-            onChange={(event) => onChangeTopic(event.target.value)}
-            fullWidth={true}
-            label='Topic'
+          value={topic}
+          onChange={(event) => onChangeTopic(event.target.value)}
+          fullWidth={true}
+          label="Topic"
         />
         <div className={styles.activePlayerList}>
           {players.map(playerToChip)}
@@ -90,18 +94,21 @@ const NewGameDialog = ({
         <DialogContentText>
           Choose which players you would like to participate in this game.
         </DialogContentText>
-        <List>
-          {contacts.map(contactToListEntry)}
-        </List>
+        <List>{contacts.map(contactToListEntry)}</List>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} color='primary'>
+        <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
         <Button
-            onClick={() => onStart(topic, players.map((p) => p.id))}
-            color='primary'
-            autoFocus={true}
+          onClick={() =>
+            onStart(
+              topic,
+              players.map((p) => p.id)
+            )
+          }
+          color="primary"
+          autoFocus={true}
         >
           Start
         </Button>
@@ -110,18 +117,19 @@ const NewGameDialog = ({
   );
 };
 
-const userMapToList = (users: {[id: string]: User}) => Object.keys(users)
+const userMapToList = (users: { [id: string]: User }) =>
+  Object.keys(users)
     .map((id) => users[id])
     .sort(compareUserByName);
 
-const compareUserByName =
-    (a: User, b: User) => a.display_name.localeCompare(b.display_name);
+const compareUserByName = (a: User, b: User) =>
+  a.display_name.localeCompare(b.display_name);
 
 const mapStateToProps = (state: State) => ({
   contacts: userMapToList(state.entities.contacts),
   players: state.ui.newGame.users
-      .map((id) => state.entities.contacts[id])
-      .sort(compareUserByName),
+    .map((id) => state.entities.contacts[id])
+    .sort(compareUserByName),
   topic: state.ui.newGame.topic,
 });
 
@@ -142,5 +150,6 @@ const mapDispatchToProps = (dispatch: WebDispatch) => ({
   },
 });
 
-export default withMobileDialog({breakpoint: 'xs'})(
-    connect(mapStateToProps, mapDispatchToProps)(NewGameDialog));
+export default withMobileDialog({ breakpoint: 'xs' })(
+  connect(mapStateToProps, mapDispatchToProps)(NewGameDialog)
+);

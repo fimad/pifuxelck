@@ -45,14 +45,14 @@ interface Props {
 }
 
 type MouseOrTouch =
-    React.MouseEvent<HTMLDivElement> |
-    React.TouchEvent<HTMLDivElement>;
+  | React.MouseEvent<HTMLDivElement>
+  | React.TouchEvent<HTMLDivElement>;
 
-const passPointTo =
-    (appendLine: (point: models.Point) => void, stopLine: () => void) =>
-    (event: MouseOrTouch) => {
-  const boundingBox =
-      (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+const passPointTo = (
+  appendLine: (point: models.Point) => void,
+  stopLine: () => void
+) => (event: MouseOrTouch) => {
+  const boundingBox = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
   const size = Math.min(boundingBox.width, boundingBox.height);
   // The svg element may actually be a rectangle even though only the square in
   // the center of the element is valid for drawing.
@@ -60,12 +60,12 @@ const passPointTo =
   const xAdjustment = sizeDifference > 0 ? sizeDifference * 0.5 : 0;
   const yAdjustment = sizeDifference < 0 ? sizeDifference * -0.5 : 0;
   const touches = (event as React.TouchEvent<HTMLDivElement>).touches;
-  const mouseEvent = (event as React.MouseEvent<HTMLDivElement>);
+  const mouseEvent = event as React.MouseEvent<HTMLDivElement>;
   const clientX = touches ? touches[0].clientX : mouseEvent.clientX;
   const clientY = touches ? touches[0].clientY : mouseEvent.clientY;
   const x = (clientX - boundingBox.left - xAdjustment) / size;
   const y = (clientY - boundingBox.top - yAdjustment) / size;
-  appendLine({x, y});
+  appendLine({ x, y });
 };
 
 interface State {
@@ -74,7 +74,7 @@ interface State {
   drawKey: number;
 }
 
-const ColorBadge = ({color}: {color: models.Color}) => {
+const ColorBadge = ({ color }: { color: models.Color }) => {
   const backgroundColor = `rgb(
       ${color.red * 255},
       ${color.green * 255},
@@ -91,11 +91,10 @@ const ColorBadge = ({color}: {color: models.Color}) => {
     top: '8px',
     width: '8px',
   } as React.CSSProperties;
-  return (<div style={style} />);
+  return <div style={style} />;
 };
 
 class Draw extends React.Component {
-
   public divNode: HTMLDivElement;
   public props: Props;
   public state: State;
@@ -103,76 +102,92 @@ class Draw extends React.Component {
 
   constructor(props: Props) {
     super(props);
-    this.state = {drawKey: 0};
+    this.state = { drawKey: 0 };
     this.mobileDetect = new MobileDetect(window.navigator.userAgent);
   }
 
   public componentDidMount() {
-    (this.divNode as any).addEventListener(
-        'touchend', this.onTouchEnd, {passive: false});
-    (this.divNode as any).addEventListener(
-        'touchstart', this.onTouchStart, {passive: false});
-    (this.divNode as any).addEventListener(
-        'touchmove', this.onTouchMove, {passive: false});
+    (this.divNode as any).addEventListener('touchend', this.onTouchEnd, {
+      passive: false,
+    });
+    (this.divNode as any).addEventListener('touchstart', this.onTouchStart, {
+      passive: false,
+    });
+    (this.divNode as any).addEventListener('touchmove', this.onTouchMove, {
+      passive: false,
+    });
   }
 
   public onTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
     if (this.props.lineInProgress) {
       this.props.stopLine();
       if (this.mobileDetect.os() === 'iOS') {
-        this.setState({drawKey: this.state.drawKey + 1});
+        this.setState({ drawKey: this.state.drawKey + 1 });
       }
     }
     event.preventDefault();
-  }
+  };
 
   public onTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     if (this.props.lineInProgress) {
       this.props.stopLine();
       if (this.mobileDetect.os() === 'iOS') {
-        this.setState({drawKey: this.state.drawKey + 1});
+        this.setState({ drawKey: this.state.drawKey + 1 });
       }
     } else {
       passPointTo(this.props.startLine, this.props.stopLine)(event);
     }
     event.preventDefault();
-  }
+  };
 
   public onTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
     if (this.props.lineInProgress) {
       passPointTo(this.props.appendLine, this.props.stopLine)(event);
     }
     event.preventDefault();
-  }
+  };
 
   public render() {
     const {
-      gameId, label, drawing, showBrushColorDialog, showBrushSizeDialog,
-      showBackgroundColorDialog, startLine, appendLine, stopLine, undoLastLine,
-      redoLastLine, lineInProgress, onSubmit, brushColor,
+      gameId,
+      label,
+      drawing,
+      showBrushColorDialog,
+      showBrushSizeDialog,
+      showBackgroundColorDialog,
+      startLine,
+      appendLine,
+      stopLine,
+      undoLastLine,
+      redoLastLine,
+      lineInProgress,
+      onSubmit,
+      brushColor,
     } = this.props;
     const onMouseUp = lineInProgress ? stopLine : undefined;
     const onMouseLeave = lineInProgress ? stopLine : undefined;
-    const onMouseDown =
-        lineInProgress ?  stopLine : passPointTo(startLine, stopLine);
-    const onMouseMove =
-        lineInProgress ?  passPointTo(appendLine, stopLine) : undefined;
+    const onMouseDown = lineInProgress
+      ? stopLine
+      : passPointTo(startLine, stopLine);
+    const onMouseMove = lineInProgress
+      ? passPointTo(appendLine, stopLine)
+      : undefined;
     const undoLastLineAndIncKey = () => {
       undoLastLine();
-      this.setState({drawKey: this.state.drawKey + 1});
+      this.setState({ drawKey: this.state.drawKey + 1 });
     };
     const redoLastLineAndIncKey = () => {
       redoLastLine();
-      this.setState({drawKey: this.state.drawKey + 1});
+      this.setState({ drawKey: this.state.drawKey + 1 });
     };
     return (
       <div className={styles.drawingReplyContainer}>
         <Card className={styles.labelCard}>
           <CardContent>
             <Typography
-                className={styles.labelTypography}
-                variant='h5'
-                component='h2'
+              className={styles.labelTypography}
+              variant="h5"
+              component="h2"
             >
               {label}
             </Typography>
@@ -180,17 +195,19 @@ class Draw extends React.Component {
         </Card>
         <div className={styles.drawingWrapper}>
           <div
-              className={styles.drawingContainer}
-              ref={(node) => { this.divNode = node; }}
-              onMouseUp={onMouseUp}
-              onMouseLeave={onMouseLeave}
-              onMouseDown={onMouseDown}
-              onMouseMove={onMouseMove}
+            className={styles.drawingContainer}
+            ref={(node) => {
+              this.divNode = node;
+            }}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
           >
             <Drawing
-                key={`draw-${this.state.drawKey}`}
-                className={styles.drawing}
-                drawing={drawing}
+              key={`draw-${this.state.drawKey}`}
+              className={styles.drawing}
+              drawing={drawing}
             />
           </div>
         </div>

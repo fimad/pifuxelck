@@ -14,19 +14,20 @@ const db = (config: DbConfig) => {
   // closed, unit tests will hang. This should be fine for the medium term as
   // this is deployed as a cloud function which would have a new instance per
   // request anyway.
-  const dbPromise = () => new Promise<Connection>((resolve, reject) => {
-    const connection = createConnection(config);
-    connection.connect((err: Error) => {
-      if (err) {
-        reject(err);
-        winston.error('Unable to connect to DB: ' + err.stack);
-        return;
-      }
+  const dbPromise = () =>
+    new Promise<Connection>((resolve, reject) => {
+      const connection = createConnection(config);
+      connection.connect((err: Error) => {
+        if (err) {
+          reject(err);
+          winston.error('Unable to connect to DB: ' + err.stack);
+          return;
+        }
 
-      winston.info('Connected to DB');
-      resolve(connection);
+        winston.info('Connected to DB');
+        resolve(connection);
+      });
     });
-  });
   return (req: Request, res: Response, next: NextFunction) => {
     const resolvedDb = dbPromise();
     onFinished(res, () => {
@@ -35,7 +36,8 @@ const db = (config: DbConfig) => {
         winston.info('Disconnected from DB');
       });
     });
-    resolvedDb.then((connection) => req.db = connection)
+    resolvedDb
+      .then((connection) => (req.db = connection))
       .then(() => next())
       .catch((error) => {
         if (req.db) {

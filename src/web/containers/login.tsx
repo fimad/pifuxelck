@@ -7,12 +7,7 @@ import { login, register } from '../actions';
 import { State } from '../state';
 import { WebDispatch } from '../store';
 
-import {
-  Button,
-  Paper,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, Paper, TextField, Typography } from '@material-ui/core';
 
 interface Props {
   auth?: string;
@@ -27,8 +22,7 @@ const style: any = {
   width: 'fit-content',
 };
 
-class LoginComponent extends React.Component<Props, {[key: string]: string}> {
-
+class LoginComponent extends React.Component<Props, { [key: string]: string }> {
   private dispatchLogin: (e: any) => void;
   private dispatchRegister: () => void;
 
@@ -49,13 +43,13 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
 
   public onChange(key: string) {
     return (event: any) => {
-      this.setState({[key]: event.target.value});
+      this.setState({ [key]: event.target.value });
     };
   }
 
   public render() {
     if (this.props.auth) {
-      return (<Redirect to='/' />);
+      return <Redirect to="/" />;
     }
     const textStyle = {
       marginBottom: '4px',
@@ -68,39 +62,39 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
     return (
       <form onSubmit={this.dispatchLogin}>
         <Paper style={style}>
-          <Typography variant='h4' style={{textAlign: 'center'}}>
+          <Typography variant="h4" style={{ textAlign: 'center' }}>
             pifuxelck
           </Typography>
           <TextField
-              autoFocus={true}
-              style={textStyle}
-              onChange={this.onChange('user')}
-              value={this.state.user}
-              label='Username'
+            autoFocus={true}
+            style={textStyle}
+            onChange={this.onChange('user')}
+            value={this.state.user}
+            label="Username"
           />
           <TextField
-              style={textStyle}
-              onChange={this.onChange('password')}
-              value={this.state.password}
-              label='Password'
-              type='password'
+            style={textStyle}
+            onChange={this.onChange('password')}
+            value={this.state.password}
+            label="Password"
+            type="password"
           />
           <Button
-              type='submit'
-              variant='contained'
-              disabled={this.props.inProgress}
-              color='primary'
-              onClick={this.dispatchLogin}
-              style={buttonStyle}
+            type="submit"
+            variant="contained"
+            disabled={this.props.inProgress}
+            color="primary"
+            onClick={this.dispatchLogin}
+            style={buttonStyle}
           >
             Login
           </Button>
-          <Typography variant='caption'>
+          <Typography variant="caption">
             Don't have an account?
             <Button
-                onClick={this.dispatchRegister}
-                disabled={this.props.inProgress}
-                color='secondary'
+              onClick={this.dispatchRegister}
+              disabled={this.props.inProgress}
+              color="secondary"
             >
               Register
             </Button>
@@ -111,7 +105,7 @@ class LoginComponent extends React.Component<Props, {[key: string]: string}> {
   }
 }
 
-const mapStateToProps = ({auth, apiStatus}: State) => ({
+const mapStateToProps = ({ auth, apiStatus }: State) => ({
   auth,
   inProgress: apiStatus.inProgress.LOGIN || apiStatus.inProgress.REGISTER,
 });

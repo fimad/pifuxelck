@@ -76,7 +76,7 @@ export function getGame(id: string): WebThunkAction {
     idbKeyval.get(key).then((game) => {
       if (game) {
         dispatch({
-          message: {game},
+          message: { game },
           type: 'GET_GAME_SUCCESS',
         });
       } else {
@@ -123,7 +123,7 @@ export function getInbox() {
 
 export function newGame(players: string[], label: string) {
   return api.post({
-    body: {new_game: {label, players}},
+    body: { new_game: { label, players } },
     errorMessage: 'Unable to create game.',
     failure: 'NEW_GAME_FAILURE',
     name: 'NEW_GAME',
@@ -135,34 +135,38 @@ export function newGame(players: string[], label: string) {
 }
 
 export function playDrawingTurn(
-    gameId: string, drawing: Drawing): WebThunkAction {
-  return (dispatch, getState, extra) => api.put({
-    body: {turn: {is_drawing: true, drawing}},
-    errorMessage: 'Unable to send reply.',
-    extra: {gameId},
-    failure: 'PLAY_GAME_FAILURE',
-    name: 'PLAY_GAME',
-    onSuccess: () => dispatch(getInbox()),
-    requireAuth: true,
-    start: 'PLAY_GAME_START',
-    success: 'PLAY_GAME_SUCCESS',
-    url: `/api/2/games/play/${gameId}`,
-  })(dispatch, getState, extra);
+  gameId: string,
+  drawing: Drawing
+): WebThunkAction {
+  return (dispatch, getState, extra) =>
+    api.put({
+      body: { turn: { is_drawing: true, drawing } },
+      errorMessage: 'Unable to send reply.',
+      extra: { gameId },
+      failure: 'PLAY_GAME_FAILURE',
+      name: 'PLAY_GAME',
+      onSuccess: () => dispatch(getInbox()),
+      requireAuth: true,
+      start: 'PLAY_GAME_START',
+      success: 'PLAY_GAME_SUCCESS',
+      url: `/api/2/games/play/${gameId}`,
+    })(dispatch, getState, extra);
 }
 
 export function playLabelTurn(gameId: string, label: string): WebThunkAction {
-  return (dispatch, getState, extra) => api.put({
-    body: {turn: {is_drawing: false, label}},
-    errorMessage: 'Unable to send reply.',
-    extra: {gameId},
-    failure: 'PLAY_GAME_FAILURE',
-    name: 'PLAY_GAME',
-    onSuccess: () => dispatch(getInbox()),
-    requireAuth: true,
-    start: 'PLAY_GAME_START',
-    success: 'PLAY_GAME_SUCCESS',
-    url: `/api/2/games/play/${gameId}`,
-  })(dispatch, getState, extra);
+  return (dispatch, getState, extra) =>
+    api.put({
+      body: { turn: { is_drawing: false, label } },
+      errorMessage: 'Unable to send reply.',
+      extra: { gameId },
+      failure: 'PLAY_GAME_FAILURE',
+      name: 'PLAY_GAME',
+      onSuccess: () => dispatch(getInbox()),
+      requireAuth: true,
+      start: 'PLAY_GAME_START',
+      success: 'PLAY_GAME_SUCCESS',
+      url: `/api/2/games/play/${gameId}`,
+    })(dispatch, getState, extra);
 }
 
 export function getContacts() {
@@ -177,33 +181,35 @@ export function getContacts() {
 }
 
 export function addContact(contactId: string): WebThunkAction {
-  return (dispatch, getState, extra) => api.put({
-    allowConcurrent: true,
-    errorMessage: 'Unable to add contact.',
-    extra: {contactId},
-    failure: 'ADD_CONTACT_FAILURE',
-    name: 'ADD_CONTACT',
-    onSuccess: () => dispatch(getContacts()),
-    requireAuth: true,
-    start: 'ADD_CONTACT_START',
-    success: 'ADD_CONTACT_SUCCESS',
-    url: `/api/2/contacts/${contactId}`,
-  })(dispatch, getState, extra);
+  return (dispatch, getState, extra) =>
+    api.put({
+      allowConcurrent: true,
+      errorMessage: 'Unable to add contact.',
+      extra: { contactId },
+      failure: 'ADD_CONTACT_FAILURE',
+      name: 'ADD_CONTACT',
+      onSuccess: () => dispatch(getContacts()),
+      requireAuth: true,
+      start: 'ADD_CONTACT_START',
+      success: 'ADD_CONTACT_SUCCESS',
+      url: `/api/2/contacts/${contactId}`,
+    })(dispatch, getState, extra);
 }
 
 export function removeContact(contactId: string): WebThunkAction {
-  return (dispatch, getState, extra) => api.del({
-    allowConcurrent: true,
-    errorMessage: 'Unable to remove contact.',
-    extra: {contactId},
-    failure: 'REMOVE_CONTACT_FAILURE',
-    name: 'REMOVE_CONTACT',
-    onSuccess: () => dispatch(getContacts()),
-    requireAuth: true,
-    start: 'REMOVE_CONTACT_START',
-    success: 'REMOVE_CONTACT_SUCCESS',
-    url: `/api/2/contacts/${contactId}`,
-  })(dispatch, getState, extra);
+  return (dispatch, getState, extra) =>
+    api.del({
+      allowConcurrent: true,
+      errorMessage: 'Unable to remove contact.',
+      extra: { contactId },
+      failure: 'REMOVE_CONTACT_FAILURE',
+      name: 'REMOVE_CONTACT',
+      onSuccess: () => dispatch(getContacts()),
+      requireAuth: true,
+      start: 'REMOVE_CONTACT_START',
+      success: 'REMOVE_CONTACT_SUCCESS',
+      url: `/api/2/contacts/${contactId}`,
+    })(dispatch, getState, extra);
 }
 
 export function getContactGroups() {
@@ -219,7 +225,7 @@ export function getContactGroups() {
 
 export function createContactGroup(name: string) {
   return api.post({
-    body: {contact_group: {name}},
+    body: { contact_group: { name } },
     failure: 'CREATE_CONTACT_GROUP_FAILURE',
     name: 'CREATE_CONTACT_GROUP',
     requireAuth: true,
@@ -236,8 +242,9 @@ export function addContactToGroup(group: string, contact: string) {
     requireAuth: true,
     start: 'ADD_CONTACT_TO_GROUP_START',
     success: 'ADD_CONTACT_TO_GROUP_SUCCESS',
-    url: `/api/2/contacts/group/` +
-        `${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
+    url:
+      `/api/2/contacts/group/` +
+      `${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
   });
 }
 
@@ -248,14 +255,15 @@ export function removeContactToGroup(group: string, contact: string) {
     requireAuth: true,
     start: 'REMOVE_CONTACT_TO_GROUP_START',
     success: 'REMOVE_CONTACT_TO_GROUP_SUCCESS',
-    url: `/api/2/contacts/group/` +
-        `${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
+    url:
+      `/api/2/contacts/group/` +
+      `${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
   });
 }
 
 export function updateAccount(user: User) {
   return api.put({
-    body: {user},
+    body: { user },
     errorMessage: 'Unable to update account info',
     failure: 'UPDATE_ACCOUNT_FAILURE',
     name: 'UPDATE_ACCOUNT',
@@ -278,18 +286,19 @@ export function getAccount() {
 }
 
 export function ignoreSuggestedContacts(contactId: string): WebThunkAction {
-  return (dispatch, getState, extra) => api.put({
-    allowConcurrent: true,
-    errorMessage: 'Unable to ignore suggestion.',
-    extra: {contactId},
-    failure: 'IGNORE_SUGGESTION_FAILURE',
-    name: 'IGNORE_SUGGESTION',
-    onSuccess: () => dispatch(getContacts()),
-    requireAuth: true,
-    start: 'IGNORE_SUGGESTION_START',
-    success: 'IGNORE_SUGGESTION_SUCCESS',
-    url: `/api/2/contacts/nothanks/${contactId}`,
-  })(dispatch, getState, extra);
+  return (dispatch, getState, extra) =>
+    api.put({
+      allowConcurrent: true,
+      errorMessage: 'Unable to ignore suggestion.',
+      extra: { contactId },
+      failure: 'IGNORE_SUGGESTION_FAILURE',
+      name: 'IGNORE_SUGGESTION',
+      onSuccess: () => dispatch(getContacts()),
+      requireAuth: true,
+      start: 'IGNORE_SUGGESTION_START',
+      success: 'IGNORE_SUGGESTION_SUCCESS',
+      url: `/api/2/contacts/nothanks/${contactId}`,
+    })(dispatch, getState, extra);
 }
 
 export function getAllData(): WebThunkAction {

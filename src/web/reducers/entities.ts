@@ -33,9 +33,9 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
     case 'IGNORE_SUGGESTION_SUCCESS':
       return {
         ...state,
-        suggestedContacts: objectWithoutKeys(
-          state.suggestedContacts,
-          [action.contactId]),
+        suggestedContacts: objectWithoutKeys(state.suggestedContacts, [
+          action.contactId,
+        ]),
       };
     case 'PLAY_GAME_SUCCESS':
       return {
@@ -85,7 +85,7 @@ function handleApiResult(state: Entities, action: Action) {
         return {
           ...state,
           inbox: {
-              ...mapFrom(action.message.inbox_entries, (x) => x.game_id),
+            ...mapFrom(action.message.inbox_entries, (x) => x.game_id),
           },
         };
       }
@@ -95,8 +95,10 @@ function handleApiResult(state: Entities, action: Action) {
         return {
           ...state,
           contacts: mapFrom(action.message.contacts, (x) => x.id),
-          suggestedContacts:
-              mapFrom(action.message.suggested_contacts, (x) => x.id),
+          suggestedContacts: mapFrom(
+            action.message.suggested_contacts,
+            (x) => x.id
+          ),
         };
       }
       break;
@@ -113,9 +115,11 @@ function handleApiResult(state: Entities, action: Action) {
       return initialState;
     default:
       // If the user is logged out clear all state.
-      if ((action as ActionMessage).message &&
-          (action as ActionMessage).message.errors &&
-          (action as ActionMessage).message.errors.auth) {
+      if (
+        (action as ActionMessage).message &&
+        (action as ActionMessage).message.errors &&
+        (action as ActionMessage).message.errors.auth
+      ) {
         return initialState;
       }
   }

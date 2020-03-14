@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Route, Switch } from 'react-router';
 import { Dispatch } from 'redux';
-import { Color, Drawing, Point} from '../../common/models/drawing';
+import { Color, Drawing, Point } from '../../common/models/drawing';
 import BrushSizePicker from '../components/brush-size-picker';
 import ColorPicker from '../components/color-picker';
 import Draw from '../components/draw';
@@ -40,57 +40,60 @@ interface ExternalProps {
 }
 
 type Props = ExternalProps & {
-  redirectToInbox: boolean
-  drawing: Drawing
-  label: string
-  onSubmit: (gameId: string, drawing: Drawing) => void
-  onChange: (turn: Turn) => void
-  hideDialog: () => void
-  showBrushSizeDialog: () => void
-  showBrushColorDialog: () => void
-  showBackgroundColorDialog: () => void
-  startLine: (point: Point) => void
-  appendLine: (point: Point) => void
-  stopLine: () => void
-  undoLastLine: () => void
-  redoLastLine: () => void
-  lineInProgress: boolean
-  brushColor: Color
-  onPickBrushSize: (size: number) => void
-  onPickBrushColor: (color: Color) => void
-  onPickBackgroundColor: (color: Color) => void,
+  redirectToInbox: boolean;
+  drawing: Drawing;
+  label: string;
+  onSubmit: (gameId: string, drawing: Drawing) => void;
+  onChange: (turn: Turn) => void;
+  hideDialog: () => void;
+  showBrushSizeDialog: () => void;
+  showBrushColorDialog: () => void;
+  showBackgroundColorDialog: () => void;
+  startLine: (point: Point) => void;
+  appendLine: (point: Point) => void;
+  stopLine: () => void;
+  undoLastLine: () => void;
+  redoLastLine: () => void;
+  lineInProgress: boolean;
+  brushColor: Color;
+  onPickBrushSize: (size: number) => void;
+  onPickBrushColor: (color: Color) => void;
+  onPickBackgroundColor: (color: Color) => void;
 };
 
 const DrawComponent = (props: Props) =>
-  props.redirectToInbox === true ?
-      (<Redirect to='/' />) :
-      (
-        <div style={{flex: '1 1', display: 'flex', flexDirection: 'column'}}>
-          <Draw {...props} />
-          <Switch>
-            <Route exact={true} path='/draw/:id/brush/size'>
-              <BrushSizePicker
-                  color={props.brushColor}
-                  onPickSize={props.onPickBrushSize}
-              />
-            </Route>
-            <Route exact={true} path='/draw/:id/brush/color'>
-              <ColorPicker onPickColor={props.onPickBrushColor} />
-            </Route>
-            <Route exact={true} path='/draw/:id/bg/color'>
-              <ColorPicker onPickColor={props.onPickBackgroundColor} />
-            </Route>
-          </Switch>
-        </div>
-      );
+  props.redirectToInbox === true ? (
+    <Redirect to="/" />
+  ) : (
+    <div style={{ flex: '1 1', display: 'flex', flexDirection: 'column' }}>
+      <Draw {...props} />
+      <Switch>
+        <Route exact={true} path="/draw/:id/brush/size">
+          <BrushSizePicker
+            color={props.brushColor}
+            onPickSize={props.onPickBrushSize}
+          />
+        </Route>
+        <Route exact={true} path="/draw/:id/brush/color">
+          <ColorPicker onPickColor={props.onPickBrushColor} />
+        </Route>
+        <Route exact={true} path="/draw/:id/bg/color">
+          <ColorPicker onPickColor={props.onPickBackgroundColor} />
+        </Route>
+      </Switch>
+    </div>
+  );
 
 function mapStateToProps(
-    {entities: {inbox}, ui}: State, {gameId}: ExternalProps) {
+  { entities: { inbox }, ui }: State,
+  { gameId }: ExternalProps
+) {
   const previous = inbox[gameId].previous_turn;
   if (!previous || previous.is_drawing) {
-    return {redirectToInbox: true} as Props;
+    return { redirectToInbox: true } as Props;
   }
-  const current = (ui.outbox[gameId] || {} as OutboxEntry).turn || {} as Turn;
+  const current =
+    (ui.outbox[gameId] || ({} as OutboxEntry)).turn || ({} as Turn);
   return {
     brushColor: ui.drawing.brushColor,
     drawing: drawingOrDefault(current),
@@ -100,8 +103,10 @@ function mapStateToProps(
   } as Props;
 }
 
-const mapDispatchToProps =
-    (dispatch: WebDispatch, {gameId}: ExternalProps) => ({
+const mapDispatchToProps = (
+  dispatch: WebDispatch,
+  { gameId }: ExternalProps
+) => ({
   appendLine: (point: Point) => dispatch(appendDrawingLine(gameId, point)),
   hideDialog: () => dispatch(push(`/draw/${gameId}`)),
   onChange: (turn: Turn) => dispatch(updateOutbox(gameId, turn)),
@@ -130,7 +135,8 @@ const mapDispatchToProps =
   undoLastLine: () => dispatch(undoDrawingLine(gameId)),
 });
 
-const DrawReply = connect(
-    mapStateToProps, mapDispatchToProps, null, {pure: false})(DrawComponent);
+const DrawReply = connect(mapStateToProps, mapDispatchToProps, null, {
+  pure: false,
+})(DrawComponent);
 
 export default DrawReply;
