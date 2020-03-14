@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { SuggestedContact } from '../../common/models/contacts';
@@ -15,8 +16,6 @@ import {
   labelOrDefault,
   Turn,
 } from '../../common/models/turn';
-
-const { push } = require('react-router-redux');
 
 interface ExternalProps {
   gameId: string;

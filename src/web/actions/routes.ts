@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import { State } from '../state';
 import { WebThunkAction } from '../actions';
+import { push } from 'connected-react-router';
 
 import {
   getAccount,
@@ -9,8 +10,6 @@ import {
   getHistory,
   getInbox,
 } from './api-actions';
-
-const { push } = require('react-router-redux');
 
 export function gotoHistory(): WebThunkAction {
   return (dispatch) => {

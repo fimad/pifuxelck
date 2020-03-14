@@ -10,7 +10,8 @@ import ErrorSnaks from './containers/error-snaks';
 import Login from './containers/login';
 import Register from './containers/register';
 import startStats from './stats-index';
-import { createPifuxelckStore } from './store';
+import { createPifuxelckStore, history } from './store';
+import { ConnectedRouter } from 'connected-react-router'
 
 import {
   applyMiddleware,
@@ -19,12 +20,6 @@ import {
   createStore,
   Reducer,
 } from 'redux';
-
-const {
-  ConnectedRouter,
-  routerReducer,
-  routerMiddleware,
-} = require('react-router-redux');
 
 (window as any).startStats = startStats;
 (window as any).startApp = () => {
@@ -38,25 +33,23 @@ const {
       return store;
     })
     .then((store: any) => {
-      ReactDOM.render(
-        (
-          <MuiThemeProvider theme={createMuiTheme()}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <ScrollToTop>
-                  <div>
-                    <Switch>
-                      <Route path='/login' component={Login} />
-                      <Route path='/register' component={Register} />
-                      <Route path='/' component={App} />
-                    </Switch>
-                    <ErrorSnaks />
-                  </div>
-                </ScrollToTop>
-              </ConnectedRouter>
-            </Provider>
-          </MuiThemeProvider>
-        ),
+      ReactDOM.render((
+        <MuiThemeProvider theme={createMuiTheme()}>
+          <Provider store={store}>
+            <ConnectedRouter history={history}>
+              <ScrollToTop>
+                <div>
+                  <Switch>
+                    <Route path='/login' component={Login} />
+                    <Route path='/register' component={Register} />
+                    <Route path='/' component={App} />
+                  </Switch>
+                  <ErrorSnaks />
+                </div>
+              </ScrollToTop>
+            </ConnectedRouter>
+          </Provider>
+        </MuiThemeProvider>),
         document.getElementById('content'),
       );
     });

@@ -1,4 +1,5 @@
 import { IconButton } from '@material-ui/core';
+import { push } from 'connected-react-router';
 import { StarBorder } from '@material-ui/icons';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -21,7 +22,6 @@ import { WebDispatch } from '../store';
 
 const Delay = require('react-delay').default;
 const Infinite = require('react-infinite');
-const { push } = require('react-router-redux');
 
 const styles = require('./history.css');
 

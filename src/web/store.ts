@@ -8,6 +8,7 @@ import { Action as ReduxAction } from 'redux';
 import { reducers } from './reducers';
 import { State } from './state';
 import { ActionType } from './actions';
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 
 import {
   applyMiddleware,
@@ -17,24 +18,19 @@ import {
   Reducer,
 } from 'redux';
 
-const {
-  routerReducer,
-  routerMiddleware,
-} = require('react-router-redux');
-
 const debounce = require('redux-storage-decorator-debounce').default;
 const migrate = require('redux-storage-decorator-migrate').default;
 
 // Create a history of your choosing (we're using a browser history in this
 // case).
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 const middlewares = [thunk, routerMiddleware(history)];
 // TODO(will): Disable the logger in production...
 middlewares.push(logger);
 
 const reducer = storage.reducer(combineReducers({
   ...reducers,
-  routing: routerReducer as Reducer<any>,
+  router: connectRouter(history),
 }));
 const idbEngine =
     require('redux-storage-engine-indexed-db').default('my-save-key');

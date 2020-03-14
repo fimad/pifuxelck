@@ -58,7 +58,8 @@ export type ApiAction = {
 });
 
 export type Action = (ApiAction | {
-  type: 'LOGOUT' | '@@router/LOCATION_CHANGE' | 'UI_STOP_DRAWING_LINE',
+  type: 'LOGOUT' | '@@router/LOCATION_CHANGE' | 'UI_STOP_DRAWING_LINE' |
+      '@@router/CALL_HISTORY_METHOD',
 } | {
   type: 'UI_UPDATE_OUTBOX'
   gameId: string

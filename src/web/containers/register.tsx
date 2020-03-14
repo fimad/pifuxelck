@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
 import { login, register } from '../actions';
@@ -12,8 +13,6 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-
-const { push } = require('react-router-redux');
 
 interface Props {
   auth?: string;

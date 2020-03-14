@@ -30,6 +30,7 @@ import History from './history';
 import Inbox from './inbox';
 import LoginRedirect from './login-redirect';
 import { WebDispatch } from '../store';
+import { push } from 'connected-react-router';
 
 import {
   filterHistory,
@@ -55,7 +56,6 @@ import {
 const domtoimage = require('dom-to-image');
 const styles = require('./app.css');
 const ResizeAware = require('react-resize-aware').default;
-const { push } = require('react-router-redux');
 
 interface Props {
   dispatch: WebDispatch;

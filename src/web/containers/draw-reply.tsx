@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Route, Switch } from 'react-router';
@@ -33,8 +34,6 @@ import {
   updateBackgroundColor,
   updateOutbox,
 } from '../actions';
-
-const { push } = require('react-router-redux');
 
 interface ExternalProps {
   gameId: string;
