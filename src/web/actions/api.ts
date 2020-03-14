@@ -1,7 +1,7 @@
 import { Message } from '../../common/models/message';
 
 const API_HOST =
-  location.hostname === 'canary.everythingissauce'
+  location.hostname === 'canary.everythingissauce.com'
     ? 'https://canary.everythingissauce.com'
     : 'https://everythingissauce.com';
 
