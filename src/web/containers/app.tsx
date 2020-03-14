@@ -216,33 +216,34 @@ class AppComponent extends React.Component<Props, any> {
     return (
       <div style={rootStyle}>
         <Switch>
-          <Route path='/account'>
+          <Route path='/account' render={() => (
             <div>
               {appBar('Account')}
               <Account />
             </div>
+          )}>
           </Route>
-          <Route path='/history'>
+          <Route path='/history' render={() => (
             <div>
               {appBar('History', historySearch)}
               <ResizeAware>
                 <History />
               </ResizeAware>
             </div>
+          )}>
           </Route>
-          <Route path='/game/:id'>
-            {gameView}
+          <Route path='/game/:id' render={gameView}>
           </Route>
-          <Route path='/draw/:gameId'>
-            {drawView}
+          <Route path='/draw/:gameId' render={drawView}>
           </Route>
-          <Route path='/contacts'>
+          <Route path='/contacts' render={() => (
             <div>
               {appBar('Contacts')}
               <Contacts />
             </div>
+          )}>
           </Route>
-          <Route path='/'>
+          <Route path='/' render={() => (
             <div>
               {appBar('Inbox', newGameButton)}
               <Inbox />
@@ -252,6 +253,7 @@ class AppComponent extends React.Component<Props, any> {
                 </Route>
               </Switch>
             </div>
+          )}>
           </Route>
         </Switch>
 

@@ -8439,10 +8439,10 @@ react-redux@^7.2.0:
     prop-types "^15.7.2"
     react-is "^16.9.0"
 
-react-resize-aware@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-resize-aware/-/react-resize-aware-3.0.0.tgz#fee9e1c61ac5bb2dd87c59e03703070d01601269"
-  integrity sha512-UyLk1KNbFHDye9AFLyr7HBGmzkRDGz2mYp6LDS+LCxM6DXGpviwS5Q4JRzXWdw0tk+n46UE/Kotku/cb8HCh0Q==
+react-resize-aware@2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/react-resize-aware/-/react-resize-aware-2.7.2.tgz#38a0040daaa28dfa9b88994889fbb1e2aa66df83"
+  integrity sha512-XyweQ3YTiZzNG1T5PNpCXvnpsI7mdy4A2oeySFToh8v02Yf+kOiUyWprvyp6T68fFB848w2F3RKfzH7KDk75JQ==
 
 react-resize-detector@^4.2.1:
   version "4.2.1"
