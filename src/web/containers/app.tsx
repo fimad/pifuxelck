@@ -155,7 +155,7 @@ class AppComponent extends React.Component<Props, any> {
         <Toolbar>
           <IconButton
               onClick={this.handleToggleDrawer}
-              color='secondary'
+              color='inherit'
               aria-label='Menu'
           >
             <MenuIcon />
@@ -174,7 +174,7 @@ class AppComponent extends React.Component<Props, any> {
     const gameExport = (gameId: string) => (
       <IconButton
           onClick={() => this.handleExportGame(gameId)}
-          color='secondary'
+          color='inherit'
           aria-label='Menu'
       >
         <DownloadIcon />
@@ -197,7 +197,7 @@ class AppComponent extends React.Component<Props, any> {
     );
     const newGameButton = this.props.newGameInProgress ?
       (<CircularProgress color='secondary' />) : (
-      <Button color='secondary' onClick={this.handleShowNewGame}>
+      <Button color='inherit' onClick={this.handleShowNewGame}>
         New Game
       </Button>
     );
