@@ -302,18 +302,19 @@ export function ignoreSuggestedContacts(contactId: string): WebThunkAction {
 }
 
 export function getAllData(): WebThunkAction {
-  return (dispatch, getState, extra) => api.get({
-    failure: 'CHECK_ACCOUNT_FAILURE',
-    name: 'CHECK_ACCOUNT',
-    requireAuth: true,
-    start: 'CHECK_ACCOUNT_START',
-    success: 'CHECK_ACCOUNT_SUCCESS',
-    onSuccess: () => {
-      dispatch(getAccount());
-      dispatch(getContacts());
-      dispatch(getInbox());
-      dispatch(getHistory());
-    },
-    url: `/api/2/account/check`,
-  })(dispatch, getState, extra);
+  return (dispatch, getState, extra) =>
+    api.get({
+      failure: 'CHECK_ACCOUNT_FAILURE',
+      name: 'CHECK_ACCOUNT',
+      requireAuth: true,
+      start: 'CHECK_ACCOUNT_START',
+      success: 'CHECK_ACCOUNT_SUCCESS',
+      onSuccess: () => {
+        dispatch(getAccount());
+        dispatch(getContacts());
+        dispatch(getInbox());
+        dispatch(getHistory());
+      },
+      url: `/api/2/account/check`,
+    })(dispatch, getState, extra);
 }
