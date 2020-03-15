@@ -279,7 +279,9 @@ class AppComponent extends React.Component<Props, any> {
           onClose={this.handleToggleDrawer}
         >
           <div style={{ width: '240px' }} />
-          <List style={{ display: 'flex', flexDirection: 'column' }}>
+          <List
+            style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+          >
             <ListItem button={true} onClick={this.handleClickAccount}>
               <ListItemIcon>
                 <PersonIcon />
