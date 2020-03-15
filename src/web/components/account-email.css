@@ -13,6 +13,7 @@
 
 .caption {
   margin: 8px !important;
+  display: block;
 }
 
 .text {
