@@ -83,10 +83,18 @@ const mapStateToProps = (
     game: gameCache[gameId] || {},
   } as Props);
 
-const mapStateToDispatch = (dispatch: WebDispatch, { gameId }: Props) =>
-  ({
-    loadGame: () => dispatch(getGame(gameId)),
-  } as Props);
+const mapStateToDispatch = (dispatch: WebDispatch, { gameId }: Props) => {
+  let fetchedGame = false;
+  return {
+    loadGame: () => {
+      if (fetchedGame) {
+        return;
+      }
+      fetchedGame = true;
+      dispatch(getGame(gameId));
+    },
+  } as Props;
+};
 
 const Game: any = connect(mapStateToProps, mapStateToDispatch)(GameComponent);
 
