@@ -5,6 +5,7 @@ import {
   addContactToGroup,
   contactLookup,
   createContactGroup,
+  editContactGroup,
   getContactGroups,
   getContacts,
   getSuggestedContacts,
@@ -87,6 +88,18 @@ contacts.post(
       contact_group: { name, description },
     } = await req.parseContactGroupMessage();
     await createContactGroup(req.db, userId, name, description);
+    res.success({});
+  })
+);
+
+contacts.put(
+  '/group/:group',
+  authRoute(async (userId, req, res) => {
+    const { group } = req.params;
+    const {
+      contact_group: { name, description },
+    } = await req.parseContactGroupMessage();
+    await editContactGroup(req.db, userId, group, name, description);
     res.success({});
   })
 );

@@ -198,6 +198,40 @@ export async function createContactGroup(
 }
 
 /**
+ * Edit the name and description of a contact group. The calling ID must be in
+ * the group.
+ */
+export async function editContactGroup(
+  db: Connection,
+  id: string,
+  groupId: string,
+  name: string,
+  description: string
+): Promise<void> {
+  await transact(db, async () => {
+    const results = await query(
+      db,
+      `SELECT 1
+       FROM ContactGroupMembers
+       WHERE group_id = ?
+         AND contact_id = ?`,
+      [groupId, id]
+    );
+    if (!results[0]) {
+      throw new Error('User is not a group member');
+    }
+
+    await query(
+      db,
+      `UPDATE ContactGroups
+       SET name = ?, description = ?
+       WHERE id = ?`,
+      [name, description, groupId]
+    );
+  });
+}
+
+/**
  * Adds a user to a contact group. This is only valid if the group specified by
  * `groupId` is owned by user with ID `id`. It is not valid to add oneself to a
  * group.

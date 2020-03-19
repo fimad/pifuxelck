@@ -289,6 +289,43 @@ describe('Contacts', () => {
         );
     });
 
+    it('should allow groups to be edited', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      await user1
+        .post('/api/2/contacts/group')
+        .send({
+          contact_group: { name: 'group name', description: 'the description' },
+        })
+        .expect(200);
+      await user1
+        .put('/api/2/contacts/group/1')
+        .send({
+          contact_group: { name: 'new name', description: 'new description' },
+        })
+        .expect(200);
+      await user1
+        .get('/api/2/contacts/group')
+        .expect(200)
+        .expect((res: any) =>
+          expect(res.body).to.deep.equal({
+            contact_groups: [
+              {
+                id: 1,
+                members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                ],
+                name: 'new name',
+                description: 'new description',
+              },
+            ],
+          })
+        );
+    });
+
     it('should allow groups to have members added', async () => {
       const app = agent(await server());
       const user1 = await newUser(app, 'user1');
