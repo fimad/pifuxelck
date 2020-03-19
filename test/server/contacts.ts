@@ -263,7 +263,9 @@ describe('Contacts', () => {
       await newUser(app, 'user2');
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group name' } })
+        .send({
+          contact_group: { name: 'group name', description: 'the description' },
+        })
         .expect(200);
       await user1
         .get('/api/2/contacts/group')
@@ -273,8 +275,14 @@ describe('Contacts', () => {
             contact_groups: [
               {
                 id: 1,
-                members: [],
+                members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                ],
                 name: 'group name',
+                description: 'the description',
               },
             ],
           })
@@ -287,7 +295,7 @@ describe('Contacts', () => {
       await newUser(app, 'user2');
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group name' } })
+        .send({ contact_group: { name: 'group name', description: '' } })
         .expect(200);
       await user1.put('/api/2/contacts/group/1/2').expect(200);
       await user1
@@ -300,11 +308,51 @@ describe('Contacts', () => {
                 id: 1,
                 members: [
                   {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                  {
                     display_name: 'user2',
                     id: 2,
                   },
                 ],
                 name: 'group name',
+                description: '',
+              },
+            ],
+          })
+        );
+    });
+
+    it('should allow all members to see groups', async () => {
+      const app = agent(await server());
+      const user1 = await newUser(app, 'user1');
+      const user2 = await newUser(app, 'user2');
+      await user1
+        .post('/api/2/contacts/group')
+        .send({ contact_group: { name: 'group name', description: '' } })
+        .expect(200);
+      await user1.put('/api/2/contacts/group/1/2').expect(200);
+      await user2
+        .get('/api/2/contacts/group')
+        .expect(200)
+        .expect((res: any) =>
+          expect(res.body).to.deep.equal({
+            contact_groups: [
+              {
+                id: 1,
+                members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                  {
+                    display_name: 'user2',
+                    id: 2,
+                  },
+                ],
+                name: 'group name',
+                description: '',
               },
             ],
           })
@@ -318,7 +366,7 @@ describe('Contacts', () => {
       await newUser(app, 'user3');
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group name' } })
+        .send({ contact_group: { name: 'group name', description: '' } })
         .expect(200);
       await user1.put('/api/2/contacts/group/1/2').expect(200);
       await user1.put('/api/2/contacts/group/1/3').expect(200);
@@ -332,6 +380,10 @@ describe('Contacts', () => {
                 id: 1,
                 members: [
                   {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                  {
                     display_name: 'user2',
                     id: 2,
                   },
@@ -341,6 +393,7 @@ describe('Contacts', () => {
                   },
                 ],
                 name: 'group name',
+                description: '',
               },
             ],
           })
@@ -356,11 +409,16 @@ describe('Contacts', () => {
                 id: 1,
                 members: [
                   {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                  {
                     display_name: 'user3',
                     id: 3,
                   },
                 ],
                 name: 'group name',
+                description: '',
               },
             ],
           })
@@ -373,7 +431,7 @@ describe('Contacts', () => {
       const user2 = await newUser(app, 'user2');
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group name' } })
+        .send({ contact_group: { name: 'group name', description: '' } })
         .expect(200);
       await user2.put('/api/2/contacts/group/1/2').expect(500);
       await user1
@@ -384,8 +442,14 @@ describe('Contacts', () => {
             contact_groups: [
               {
                 id: 1,
-                members: [],
+                members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
+                ],
                 name: 'group name',
+                description: '',
               },
             ],
           })
@@ -401,11 +465,11 @@ describe('Contacts', () => {
       await newUser(app, 'user5');
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group 1' } })
+        .send({ contact_group: { name: 'group 1', description: '' } })
         .expect(200);
       await user1
         .post('/api/2/contacts/group')
-        .send({ contact_group: { name: 'group 2' } })
+        .send({ contact_group: { name: 'group 2', description: '' } })
         .expect(200);
       await user1.put('/api/2/contacts/group/1/4').expect(200);
       await user1.put('/api/2/contacts/group/1/3').expect(200);
@@ -421,19 +485,29 @@ describe('Contacts', () => {
               {
                 id: 1,
                 members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
                   { display_name: 'user2', id: 2 },
                   { display_name: 'user3', id: 3 },
                   { display_name: 'user4', id: 4 },
                 ],
                 name: 'group 1',
+                description: '',
               },
               {
                 id: 2,
                 members: [
+                  {
+                    display_name: 'user1',
+                    id: 1,
+                  },
                   { display_name: 'user4', id: 4 },
                   { display_name: 'user5', id: 5 },
                 ],
                 name: 'group 2',
+                description: '',
               },
             ],
           })

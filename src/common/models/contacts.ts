@@ -7,6 +7,9 @@ export interface ContactGroup {
   /** The human readable group name. */
   name: string;
 
+  /** A description of the group. */
+  description: string;
+
   /**
    * An un-ordered list of account IDs that comprise the members of the group.
    */

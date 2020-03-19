@@ -3,7 +3,7 @@ import * as uuid from 'uuid';
 
 import { ContactGroup, SuggestedContact } from '../../common/models/contacts';
 import { User } from '../../common/models/user';
-import { query } from '../db-promise';
+import { query, transact } from '../db-promise';
 
 /** Looks up a user given a display name. */
 export async function contactLookup(
@@ -177,13 +177,14 @@ export async function getSuggestedContacts(
 export async function createContactGroup(
   db: Connection,
   id: string,
-  name: string
+  name: string,
+  description: string
 ): Promise<string> {
   const result = await query(
     db,
-    `INSERT INTO ContactGroups (account_id, name)
+    `INSERT INTO ContactGroups (name, description)
        VALUES (?, ?)`,
-    [id, name]
+    [name, description]
   );
   // To make the get query for contact groups workout, we need the group to be
   // non-empty. Therefore each group always the group owner as a member.
@@ -221,9 +222,9 @@ export async function addContactToGroup(
            AND ? = contact_id
        ) AND EXISTS (
          SELECT *
-         FROM ContactGroups
-         WHERE ? = id
-           AND ? = account_id
+         FROM ContactGroupMembers
+         WHERE ? = group_id
+           AND ? = contact_id
        )`,
     [groupId, contactId, groupId, contactId, groupId, id]
   );
@@ -241,18 +242,27 @@ export async function removeContactFromGroup(
   groupId: string,
   contactId: string
 ): Promise<void> {
-  const result = await query(
-    db,
-    `DELETE FROM ContactGroupMembers
-       WHERE EXISTS (
-         SELECT *
-         FROM ContactGroups
-         WHERE ? = group_id
-           AND ? = account_id
-       ) AND group_id = ?
+  await transact(db, async () => {
+    const results = await query(
+      db,
+      `SELECT 1
+       FROM ContactGroupMembers
+       WHERE group_id = ?
          AND contact_id = ?`,
-    [groupId, id, groupId, contactId]
-  );
+      [groupId, id]
+    );
+    if (!results[0]) {
+      throw new Error('User is not a group member');
+    }
+
+    await query(
+      db,
+      `DELETE FROM ContactGroupMembers
+       WHERE group_id = ?
+         AND contact_id = ?`,
+      [groupId, contactId]
+    );
+  });
 }
 
 /** Returns all of a user's contact groups. */
@@ -264,16 +274,21 @@ export async function getContactGroups(
     db,
     `SELECT
          ContactGroups.id AS group_id,
-         ContactGroups.account_id AS owner_id,
          ContactGroups.name AS name,
+         ContactGroups.description AS description,
          ContactGroupMembers.contact_id AS contact_id,
          Accounts.display_name AS display_name
        FROM ContactGroups
+       INNER JOIN (
+          SELECT group_id, contact_id
+          FROM ContactGroupMembers
+          WHERE contact_id = ?
+       ) ContactGroupMemberships
+       ON ContactGroups.id = ContactGroupMemberships.group_id
        INNER JOIN ContactGroupMembers
        ON ContactGroups.id = ContactGroupMembers.group_id
        INNER JOIN Accounts
        ON Accounts.id = ContactGroupMembers.contact_id
-       WHERE ContactGroups.account_id = ?
        ORDER BY ContactGroups.id ASC, Accounts.display_name ASC`,
     [id]
   );
@@ -286,13 +301,9 @@ export async function getContactGroups(
         id: groupId,
         members: [],
         name: results[i].name,
+        description: results[i].description,
       };
       groups[groupId] = group;
-    }
-    if (results[i].contact_id === results[i].owner_id) {
-      // Do not list the account owner as a member of the group. It is an
-      // implementation detail and would confuse users.
-      continue;
     }
     group.members.push({
       display_name: results[i].display_name,

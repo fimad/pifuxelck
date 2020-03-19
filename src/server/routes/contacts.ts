@@ -84,9 +84,9 @@ contacts.post(
   '/group',
   authRoute(async (userId, req, res) => {
     const {
-      contact_group: { name },
-    } = await req.parseUserMessage();
-    await createContactGroup(req.db, userId, name);
+      contact_group: { name, description },
+    } = await req.parseContactGroupMessage();
+    await createContactGroup(req.db, userId, name, description);
     res.success({});
   })
 );

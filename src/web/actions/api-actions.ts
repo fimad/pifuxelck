@@ -224,9 +224,9 @@ export function getContactGroups() {
   });
 }
 
-export function createContactGroup(name: string) {
+export function createContactGroup(name: string, description: string) {
   return api.post({
-    body: { contact_group: { name } },
+    body: { contact_group: { name, description: '' } },
     failure: 'CREATE_CONTACT_GROUP_FAILURE',
     name: 'CREATE_CONTACT_GROUP',
     requireAuth: true,
