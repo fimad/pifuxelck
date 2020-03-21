@@ -113,6 +113,7 @@
     "idb-keyval": "^3.2.0",
     "mailcomposer": "^4.0.2",
     "mailgun-js": "^0.22.0",
+    "material-ui-popup-state": "^1.5.3",
     "mobile-detect": "^1.4.1",
     "mysql": "^2.15.0",
     "offline-plugin": "^5.0.7",

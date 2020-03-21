@@ -22,6 +22,8 @@ import {
   removeContact,
   userLookup,
 } from '../actions';
+import ContactListCard from '../components/contact-list-card';
+import ContactLookupCard from '../components/contact-lookup-card';
 import Progress from '../components/progress';
 import { State } from '../state';
 import { WebDispatch } from '../store';
@@ -127,46 +129,13 @@ const ContactsComponent = ({
   return (
     <div>
       <Progress visible={loading} />
-      <div className={cx(styles.container, styles.contacts)}>
-        <Paper style={{ display: 'flex', flexDirection: 'row' }}>
-          <TextField
-            onChange={(event) => onLookupChange(event.target.value)}
-            label="Lookup contact"
-            value={lookup}
-            fullWidth={true}
-          />
-          <Button
-            onClick={() => (lookupId ? onAddContact(lookupId) : null)}
-            disabled={!addContactEnabled}
-            variant="contained"
-            color="secondary"
-          >
-            <AddIcon />
-          </Button>
-        </Paper>
-      </div>
-      <div className={styles.listContainerParent}>
-        <div className={styles.listContainer}>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            style={{ marginTop: '16px' }}
-          >
-            People you may know
-          </Typography>
-          {suggestedList}
-        </div>
-        <div className={cx(styles.listContainer)}>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            style={{ marginTop: '16px' }}
-          >
-            Your Contacts
-          </Typography>
-          {contactList}
-        </div>
-      </div>
+      <ContactLookupCard
+        lookup={lookup}
+        lookupId={lookupId}
+        onAddContact={onAddContact}
+        onLookupChange={onLookupChange}
+      />
+      <ContactListCard contacts={contacts} onRemoveContact={onRemoveContact} />
     </div>
   );
 };

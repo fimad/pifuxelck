@@ -1,0 +1,27 @@
+.paper {
+  margin: 8px;
+  padding: 8px;
+}
+
+.title {
+  margin: 8px !important;
+}
+
+.caption {
+  margin: 8px !important;
+  display: block;
+}
+
+.text {
+  margin: 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.button {
+  margin: 8px !important;
+}
