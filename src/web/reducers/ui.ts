@@ -419,9 +419,15 @@ export default function(state: Ui = initialState, action: Action) {
     };
   }
 
-  if (action.type === 'UI_NEW_GROUP_REMOVE_CONTACT' || action.type === 'REMOVE_CONTACT_SUCCESS') {
-    const contactId = action.type === 'UI_NEW_GROUP_REMOVE_CONTACT' ? action.contact : action.contactId;
-    const {[contactId]: _, ...newContacts} = state.contactGroups.contacts;
+  if (
+    action.type === 'UI_NEW_GROUP_REMOVE_CONTACT' ||
+    action.type === 'REMOVE_CONTACT_SUCCESS'
+  ) {
+    const contactId =
+      action.type === 'UI_NEW_GROUP_REMOVE_CONTACT'
+        ? action.contact
+        : action.contactId;
+    const { [contactId]: _, ...newContacts } = state.contactGroups.contacts;
     return {
       ...state,
       contactGroups: {

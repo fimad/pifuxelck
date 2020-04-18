@@ -85,15 +85,15 @@ export function filterHistory(query: string): Action {
 }
 
 export function showNewGroupDialog(): Action {
-  return { type: 'UI_NEW_GROUP_SHOW'};
+  return { type: 'UI_NEW_GROUP_SHOW' };
 }
 
 export function hideNewGroupDialog(): Action {
-  return { type: 'UI_NEW_GROUP_HIDE'};
+  return { type: 'UI_NEW_GROUP_HIDE' };
 }
 
 export function changeNewGroupName(name: string): Action {
-  return { type: 'UI_NEW_GROUP_CHANGE_NAME', name};
+  return { type: 'UI_NEW_GROUP_CHANGE_NAME', name };
 }
 
 export function changeNewGroupDescription(description: string): Action {

@@ -70,11 +70,7 @@ const NewContactGroupDialog = ({
   fullScreen,
 }: Props) => {
   const playerToChip = (player: SlimContact) => (
-    <Chip
-      key={player.id}
-      label={player.name}
-      onDelete={() => {}}
-    />
+    <Chip key={player.id} label={player.name} onDelete={() => {}} />
   );
   const contactToRemoveListEntry = (c: SlimContact) => (
     <ListItem
@@ -100,52 +96,50 @@ const NewContactGroupDialog = ({
       <ListItemText primary={c.name} />
     </ListItem>
   );
-  const contactSet = new Set(contactsInGroup.map(({id}) => id));
-  const contactsNotInGroup = allContacts.filter(({id}) => !contactSet.has(id));
+  const contactSet = new Set(contactsInGroup.map(({ id }) => id));
+  const contactsNotInGroup = allContacts.filter(
+    ({ id }) => !contactSet.has(id)
+  );
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={onCancel}>
-      <DialogTitle>
-        New Group
-      </DialogTitle>
+      <DialogTitle>New Group</DialogTitle>
       <DialogContent>
         <DialogContentText>
-        <TextField
-          value={name}
-          onChange={(event) => onUpdateName(event.target.value)}
-          fullWidth={true}
-          label="Name"
-        />
+          <TextField
+            value={name}
+            onChange={(event) => onUpdateName(event.target.value)}
+            fullWidth={true}
+            label="Name"
+          />
         </DialogContentText>
         <DialogContentText>
-        <TextField
-          value={description}
-          onChange={(event) => onUpdateDescription(event.target.value)}
-          fullWidth={true}
-          label="Description"
-        />
+          <TextField
+            value={description}
+            onChange={(event) => onUpdateDescription(event.target.value)}
+            fullWidth={true}
+            label="Description"
+          />
         </DialogContentText>
-        <DialogContentText style={{marginTop: '32px'}}>
+        <DialogContentText style={{ marginTop: '32px' }}>
           Add some players to this group?
         </DialogContentText>
-        <List>{
-          [
+        <List>
+          {[
             ...contactsInGroup.map(contactToRemoveListEntry),
-            (<Divider key="divider"/>),
+            <Divider key="divider" />,
             ...contactsNotInGroup.map(contactToAddListEntry),
-          ]
-        }</List>
+          ]}
+        </List>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} color="primary">
           Cancel
         </Button>
         <Button
-          onClick={
-            () => {
-                onCreate(name, description);
-                onCancel();
-            }
-          }
+          onClick={() => {
+            onCreate(name, description);
+            onCancel();
+          }}
           color="primary"
           autoFocus={true}
         >
@@ -156,4 +150,4 @@ const NewContactGroupDialog = ({
   );
 };
 
-export default withMobileDialog({ breakpoint: 'xs' })( NewContactGroupDialog);
+export default withMobileDialog({ breakpoint: 'xs' })(NewContactGroupDialog);

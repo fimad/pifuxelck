@@ -55,7 +55,7 @@ export interface Ui {
     open: boolean;
     name: string;
     description: string;
-    contacts: {[id: string]: boolean};
+    contacts: { [id: string]: boolean };
   };
   drawing: {
     brushSize: number;

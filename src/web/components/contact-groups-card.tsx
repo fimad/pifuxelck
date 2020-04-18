@@ -17,8 +17,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { State } from '../state';
 import { ContactGroup } from '../../common/models/contacts';
+import { State } from '../state';
 
 const styles = require('./contact-groups-card.css');
 
@@ -43,7 +43,10 @@ export default ({
     const menuId = `contacts/group/${id}`;
     return (
       <ListItem key={id}>
-        <ListItemText primary={name} secondary={members.map(({display_name}) => display_name).join(', ')} />
+        <ListItemText
+          primary={name}
+          secondary={members.map(({ display_name }) => display_name).join(', ')}
+        />
         <ListItemSecondaryAction>
           <PopupState variant="popover" popupId={menuId}>
             {(popupState) => (
@@ -78,14 +81,17 @@ export default ({
   return (
     <div className={cx(styles.container, styles.email)}>
       <Paper className={styles.paper}>
-        <div style={{display: "flex"}}>
+        <div style={{ display: 'flex' }}>
           <Typography variant="h6" classes={{ root: styles.title }}>
             Groups
           </Typography>
-          <PopupState variant="popover" popupId={"contacts/groups"}>
+          <PopupState variant="popover" popupId={'contacts/groups'}>
             {(popupState) => (
               <React.Fragment>
-                <IconButton style={{marginLeft: "auto"}} {...bindTrigger(popupState)}>
+                <IconButton
+                  style={{ marginLeft: 'auto' }}
+                  {...bindTrigger(popupState)}
+                >
                   <MoreVertIcon />
                 </IconButton>
                 <Menu {...bindMenu(popupState)}>

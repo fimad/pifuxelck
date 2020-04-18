@@ -15,32 +15,32 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { SuggestedContact , ContactGroup } from '../../common/models/contacts';
+import { ContactGroup, SuggestedContact } from '../../common/models/contacts';
+import { User } from '../../common/models/user';
 import {
   addContact,
   addContactToGroup,
+  addNewGroupContact,
   changeContactLookup,
+  changeNewGroupDescription,
+  changeNewGroupName,
   createContactGroup,
   editContactGroup,
+  hideNewGroupDialog,
+  leaveContactGroup,
   removeContact,
   removeContactFromGroup,
-  leaveContactGroup,
-  userLookup,
-  changeNewGroupName,
-  changeNewGroupDescription,
-  hideNewGroupDialog,
-  showNewGroupDialog,
-  addNewGroupContact,
   removeNewGroupContact,
+  showNewGroupDialog,
+  userLookup,
 } from '../actions';
-import { User } from '../../common/models/user';
+import ContactGroupsCard from '../components/contact-groups-card';
 import ContactListCard from '../components/contact-list-card';
 import ContactLookupCard from '../components/contact-lookup-card';
-import ContactGroupsCard from '../components/contact-groups-card';
+import NewContactGroupDialog from '../components/new-contact-group-dialog';
 import Progress from '../components/progress';
 import { State } from '../state';
 import { WebDispatch } from '../store';
-import NewContactGroupDialog from '../components/new-contact-group-dialog';
 
 const styles = require('./contacts.css');
 
@@ -240,13 +240,17 @@ const mapStateToProps = (state: State) => ({
       pendingAdd: state.apiStatus.pendingContactAdds[i],
     }))
     .sort(compareByAddedAndCommon),
-  groups: Object.keys(state.entities.contactGroups).sort().map((i) => state.entities.contactGroups[i]),
+  groups: Object.keys(state.entities.contactGroups)
+    .sort()
+    .map((i) => state.entities.contactGroups[i]),
   newGroupName: state.ui.contactGroups.name,
   newGroupDescription: state.ui.contactGroups.description,
-  newGroupContactsInGroup: Object.keys(state.ui.contactGroups.contacts).sort().map((id) => ({
-    id,
-    name: state.entities.contacts[id]?.display_name,
-  })),
+  newGroupContactsInGroup: Object.keys(state.ui.contactGroups.contacts)
+    .sort()
+    .map((id) => ({
+      id,
+      name: state.entities.contacts[id]?.display_name,
+    })),
   newGroupOpen: state.ui.contactGroups.open,
 });
 
