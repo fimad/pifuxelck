@@ -15,18 +15,32 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { SuggestedContact } from '../../common/models/contacts';
+import { SuggestedContact , ContactGroup } from '../../common/models/contacts';
 import {
   addContact,
+  addContactToGroup,
   changeContactLookup,
+  createContactGroup,
+  editContactGroup,
   removeContact,
+  removeContactFromGroup,
+  leaveContactGroup,
   userLookup,
+  changeNewGroupName,
+  changeNewGroupDescription,
+  hideNewGroupDialog,
+  showNewGroupDialog,
+  addNewGroupContact,
+  removeNewGroupContact,
 } from '../actions';
+import { User } from '../../common/models/user';
 import ContactListCard from '../components/contact-list-card';
 import ContactLookupCard from '../components/contact-lookup-card';
+import ContactGroupsCard from '../components/contact-groups-card';
 import Progress from '../components/progress';
 import { State } from '../state';
 import { WebDispatch } from '../store';
+import NewContactGroupDialog from '../components/new-contact-group-dialog';
 
 const styles = require('./contacts.css');
 
@@ -50,6 +64,22 @@ interface Props {
   onRemoveContact: (lookupId: string) => void;
   onLookupChange: (lookup: string) => void;
   suggestedContacts: SuggestedContact[];
+  groups: ContactGroup[];
+  onCreateGroup: (name: string, description: string) => void;
+  onEditGroup: (group: string, name: string, description: string) => void;
+  onAddContactToGroup: (group: string, contact: string) => void;
+  onRemoveContactFromGroup: (group: string, contact: string) => void;
+  onLeaveContactGroup: (group: string) => void;
+  newGroupName: string;
+  newGroupDescription: string;
+  newGroupContactsInGroup: SlimContact[];
+  onNewGroupUpdateName: (name: string) => void;
+  onNewGroupUpdateDescription: (description: string) => void;
+  onNewGroupCancel: () => void;
+  onNewGroupOpen: () => void;
+  onNewGroupAddContact: (contact: string) => void;
+  onNewGroupRemoveContact: (contact: string) => void;
+  newGroupOpen: boolean;
 }
 
 const ContactsComponent = ({
@@ -62,6 +92,22 @@ const ContactsComponent = ({
   onRemoveContact,
   loading,
   suggestedContacts,
+  groups,
+  onCreateGroup,
+  onEditGroup,
+  onAddContactToGroup,
+  onRemoveContactFromGroup,
+  onLeaveContactGroup,
+  newGroupName,
+  newGroupDescription,
+  newGroupContactsInGroup,
+  onNewGroupUpdateName,
+  onNewGroupUpdateDescription,
+  onNewGroupCancel,
+  onNewGroupOpen,
+  onNewGroupAddContact,
+  onNewGroupRemoveContact,
+  newGroupOpen,
 }: Props) => {
   const contactListItem = ({ name, id, pendingDelete }: SlimContact) => {
     const action = pendingDelete ? (
@@ -135,7 +181,28 @@ const ContactsComponent = ({
         onAddContact={onAddContact}
         onLookupChange={onLookupChange}
       />
+      <ContactGroupsCard
+        groups={groups}
+        onCreateGroup={onNewGroupOpen}
+        onEditGroup={() => {}}
+        onAddContactToGroup={onAddContactToGroup}
+        onRemoveContactFromGroup={onRemoveContactFromGroup}
+        onLeaveContactGroup={onLeaveContactGroup}
+      />
       <ContactListCard contacts={contacts} onRemoveContact={onRemoveContact} />
+      <NewContactGroupDialog
+        name={newGroupName}
+        description={newGroupDescription}
+        allContacts={contacts}
+        contactsInGroup={newGroupContactsInGroup}
+        onUpdateName={onNewGroupUpdateName}
+        onUpdateDescription={onNewGroupUpdateDescription}
+        onCancel={onNewGroupCancel}
+        onCreate={onCreateGroup}
+        onAddContact={onNewGroupAddContact}
+        onRemoveContact={onNewGroupRemoveContact}
+        open={newGroupOpen}
+      />
     </div>
   );
 };
@@ -173,6 +240,14 @@ const mapStateToProps = (state: State) => ({
       pendingAdd: state.apiStatus.pendingContactAdds[i],
     }))
     .sort(compareByAddedAndCommon),
+  groups: Object.keys(state.entities.contactGroups).sort().map((i) => state.entities.contactGroups[i]),
+  newGroupName: state.ui.contactGroups.name,
+  newGroupDescription: state.ui.contactGroups.description,
+  newGroupContactsInGroup: Object.keys(state.ui.contactGroups.contacts).sort().map((id) => ({
+    id,
+    name: state.entities.contacts[id]?.display_name,
+  })),
+  newGroupOpen: state.ui.contactGroups.open,
 });
 
 const mapDispatchToProps = (dispatch: WebDispatch) => ({
@@ -186,6 +261,40 @@ const mapDispatchToProps = (dispatch: WebDispatch) => ({
   },
   onRemoveContact: (lookupId: string) => {
     dispatch(removeContact(lookupId));
+  },
+  onCreateGroup: (name: string, description: string) => {
+    dispatch(createContactGroup(name, description));
+  },
+  onEditGroup: (group: string, name: string, description: string) => {
+    dispatch(editContactGroup(group, name, description));
+  },
+  onAddContactToGroup: (group: string, contact: string) => {
+    dispatch(addContactToGroup(group, contact));
+  },
+  onRemoveContactFromGroup: (group: string, contact: string) => {
+    dispatch(removeContactFromGroup(group, contact));
+  },
+  onLeaveContactGroup: (group: string) => {
+    dispatch(leaveContactGroup(group));
+  },
+  onNewGroupUpdateName: (name: string) => {
+    dispatch(changeNewGroupName(name));
+  },
+  onNewGroupUpdateDescription: (description: string) => {
+    dispatch(changeNewGroupDescription(description));
+  },
+  onNewGroupCancel: () => {
+    dispatch(hideNewGroupDialog());
+  },
+  onNewGroupCreate: (name: string, description: string) => {},
+  onNewGroupOpen: () => {
+    dispatch(showNewGroupDialog());
+  },
+  onNewGroupAddContact: (contact: string) => {
+    dispatch(addNewGroupContact(contact));
+  },
+  onNewGroupRemoveContact: (contact: string) => {
+    dispatch(removeNewGroupContact(contact));
   },
 });
 

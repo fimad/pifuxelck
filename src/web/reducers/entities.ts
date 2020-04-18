@@ -102,6 +102,14 @@ function handleApiResult(state: Entities, action: Action) {
         };
       }
       break;
+    case 'GET_CONTACT_GROUPS_SUCCESS':
+      if (action.message && action.message.contact_groups) {
+        return {
+          ...state,
+          contactGroups: mapFrom(action.message.contact_groups, (x) => x.id),
+        };
+      }
+      break;
     case 'GET_ACCOUNT_SUCCESS':
       if (action.message && action.message.user) {
         return {

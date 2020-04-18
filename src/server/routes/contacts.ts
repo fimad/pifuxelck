@@ -122,4 +122,13 @@ contacts.delete(
   })
 );
 
+contacts.delete(
+  '/group/:group',
+  authRoute(async (userId, req, res) => {
+    const { group, contact } = req.params;
+    await removeContactFromGroup(req.db, userId, group, userId);
+    res.success({});
+  })
+);
+
 export default contacts;

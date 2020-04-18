@@ -51,6 +51,12 @@ export interface Ui {
   contacts: {
     lookup: string;
   };
+  contactGroups: {
+    open: boolean;
+    name: string;
+    description: string;
+    contacts: {[id: string]: boolean};
+  };
   drawing: {
     brushSize: number;
     brushColor: Color;

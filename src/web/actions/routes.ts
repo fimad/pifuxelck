@@ -23,6 +23,7 @@ export function gotoInbox(): WebThunkAction {
     dispatch(push('/inbox'));
     dispatch(getInbox());
     dispatch(getContacts());
+    dispatch(getContactGroups());
   };
 }
 

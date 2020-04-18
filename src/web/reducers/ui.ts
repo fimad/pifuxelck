@@ -14,6 +14,12 @@ const initialState = {
   contacts: {
     lookup: '',
   },
+  contactGroups: {
+    open: false,
+    name: '',
+    description: '',
+    contacts: {},
+  },
   drawing: {
     brushColor: {
       alpha: 1,
@@ -361,6 +367,66 @@ export default function(state: Ui = initialState, action: Action) {
       history: {
         ...state.history,
         query: action.query,
+      },
+    };
+  }
+  if (action.type === 'UI_NEW_GROUP_SHOW') {
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        open: true,
+      },
+    };
+  }
+  if (action.type === 'UI_NEW_GROUP_HIDE') {
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        open: false,
+      },
+    };
+  }
+  if (action.type === 'UI_NEW_GROUP_CHANGE_NAME') {
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        name: action.name,
+      },
+    };
+  }
+  if (action.type === 'UI_NEW_GROUP_CHANGE_DESCRIPTION') {
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        description: action.description,
+      },
+    };
+  }
+  if (action.type === 'UI_NEW_GROUP_ADD_CONTACT') {
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        contacts: {
+          [action.contact]: true,
+          ...state.contactGroups.contacts,
+        },
+      },
+    };
+  }
+
+  if (action.type === 'UI_NEW_GROUP_REMOVE_CONTACT' || action.type === 'REMOVE_CONTACT_SUCCESS') {
+    const contactId = action.type === 'UI_NEW_GROUP_REMOVE_CONTACT' ? action.contact : action.contactId;
+    const {[contactId]: _, ...newContacts} = state.contactGroups.contacts;
+    return {
+      ...state,
+      contactGroups: {
+        ...state.contactGroups,
+        contacts: newContacts,
       },
     };
   }

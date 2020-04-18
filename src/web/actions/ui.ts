@@ -83,3 +83,27 @@ export function removeErrorSnak(errorId: string): Action {
 export function filterHistory(query: string): Action {
   return { type: 'UI_FILTER_HISTORY', query };
 }
+
+export function showNewGroupDialog(): Action {
+  return { type: 'UI_NEW_GROUP_SHOW'};
+}
+
+export function hideNewGroupDialog(): Action {
+  return { type: 'UI_NEW_GROUP_HIDE'};
+}
+
+export function changeNewGroupName(name: string): Action {
+  return { type: 'UI_NEW_GROUP_CHANGE_NAME', name};
+}
+
+export function changeNewGroupDescription(description: string): Action {
+  return { type: 'UI_NEW_GROUP_CHANGE_DESCRIPTION', description };
+}
+
+export function addNewGroupContact(contact: string): Action {
+  return { type: 'UI_NEW_GROUP_ADD_CONTACT', contact };
+}
+
+export function removeNewGroupContact(contact: string): Action {
+  return { type: 'UI_NEW_GROUP_REMOVE_CONTACT', contact };
+}

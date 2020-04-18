@@ -224,15 +224,29 @@ export function getContactGroups() {
   });
 }
 
-export function createContactGroup(name: string, description: string) {
-  return api.post({
-    body: { contact_group: { name, description: '' } },
+export function createContactGroup(name: string, description: string): WebThunkAction {
+  return (dispatch, getState, extra) =>
+    api.post({
+      body: { contact_group: { name, description } },
+      failure: 'CREATE_CONTACT_GROUP_FAILURE',
+      name: 'CREATE_CONTACT_GROUP',
+      requireAuth: true,
+      start: 'CREATE_CONTACT_GROUP_START',
+      success: 'CREATE_CONTACT_GROUP_SUCCESS',
+      onSuccess: () => dispatch(getContactGroups()),
+      url: `/api/2/contacts/group`,
+  })(dispatch, getState, extra);
+}
+
+export function editContactGroup(group: string, name: string, description: string) {
+  return api.put({
+    body: { contact_group: { name, description } },
     failure: 'CREATE_CONTACT_GROUP_FAILURE',
     name: 'CREATE_CONTACT_GROUP',
     requireAuth: true,
     start: 'CREATE_CONTACT_GROUP_START',
     success: 'CREATE_CONTACT_GROUP_SUCCESS',
-    url: `/api/2/contacts/group`,
+    url: `/api/2/contacts/group/${encodeURIComponent(group)}`,
   });
 }
 
@@ -249,7 +263,7 @@ export function addContactToGroup(group: string, contact: string) {
   });
 }
 
-export function removeContactToGroup(group: string, contact: string) {
+export function removeContactFromGroup(group: string, contact: string) {
   return api.del({
     failure: 'REMOVE_CONTACT_TO_GROUP_FAILURE',
     name: 'REMOVE_CONTACT_TO_GROUP',
@@ -260,6 +274,21 @@ export function removeContactToGroup(group: string, contact: string) {
       `/api/2/contacts/group/` +
       `${encodeURIComponent(group)}/${encodeURIComponent(contact)}`,
   });
+}
+
+export function leaveContactGroup(group: string): WebThunkAction {
+  return (dispatch, getState, extra) =>
+    api.del({
+      failure: 'LEAVE_CONTACT_GROUP_FAILURE',
+      name: 'LEAVE_CONTACT_GROUP',
+      requireAuth: true,
+      start: 'LEAVE_CONTACT_GROUP_START',
+      success: 'LEAVE_CONTACT_GROUP_SUCCESS',
+      onSuccess: () => dispatch(getContactGroups()),
+      url:
+        `/api/2/contacts/group/` +
+        `${encodeURIComponent(group)}`,
+  })(dispatch, getState, extra);
 }
 
 export function updateAccount(user: User) {
@@ -313,6 +342,7 @@ export function getAllData(): WebThunkAction {
       onSuccess: () => {
         dispatch(getAccount());
         dispatch(getContacts());
+        dispatch(getContactGroups());
         dispatch(getInbox());
         dispatch(getHistory());
       },

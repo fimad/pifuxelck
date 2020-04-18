@@ -399,8 +399,8 @@ describe('Contacts', () => {
     it('should allow groups to have members removed', async () => {
       const app = agent(await server());
       const user1 = await newUser(app, 'user1');
-      await newUser(app, 'user2');
-      await newUser(app, 'user3');
+      const user2 = await newUser(app, 'user2');
+      const user3 = await newUser(app, 'user3');
       await user1
         .post('/api/2/contacts/group')
         .send({ contact_group: { name: 'group name', description: '' } })
@@ -436,7 +436,8 @@ describe('Contacts', () => {
           })
         );
       await user1.delete('/api/2/contacts/group/1/2').expect(200);
-      await user1
+      await user1.delete('/api/2/contacts/group/1').expect(200);
+      await user3
         .get('/api/2/contacts/group')
         .expect(200)
         .expect((res: any) =>
@@ -445,10 +446,6 @@ describe('Contacts', () => {
               {
                 id: 1,
                 members: [
-                  {
-                    display_name: 'user1',
-                    id: 1,
-                  },
                   {
                     display_name: 'user3',
                     id: 3,

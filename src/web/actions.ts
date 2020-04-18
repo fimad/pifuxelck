@@ -52,7 +52,10 @@ export type ApiAction = {
         | 'NEW_GAME_FAILURE'
         | 'UPDATE_ACCOUNT_FAILURE'
         | 'UPDATE_ACCOUNT_START'
-        | 'UPDATE_ACCOUNT_SUCCESS';
+        | 'UPDATE_ACCOUNT_SUCCESS'
+        | 'LEAVE_CONTACT_GROUP_FAILURE'
+        | 'LEAVE_CONTACT_GROUP_START'
+        | 'LEAVE_CONTACT_GROUP_SUCCESS';
     }
   | {
       type: 'ADD_CONTACT_START' | 'ADD_CONTACT_FAILURE' | 'ADD_CONTACT_SUCCESS';
@@ -106,6 +109,8 @@ export type Action =
         | 'LOGOUT'
         | '@@router/LOCATION_CHANGE'
         | 'UI_STOP_DRAWING_LINE'
+        | 'UI_NEW_GROUP_SHOW'
+        | 'UI_NEW_GROUP_HIDE'
         | '@@router/CALL_HISTORY_METHOD';
     }
   | {
@@ -187,6 +192,22 @@ export type Action =
   | {
       type: 'UI_FILTER_HISTORY';
       query: string;
+    }
+  | {
+      type: 'UI_NEW_GROUP_CHANGE_NAME';
+      name: string;
+    }
+  | {
+      type: 'UI_NEW_GROUP_CHANGE_DESCRIPTION';
+      description: string;
+    }
+  | {
+      type: 'UI_NEW_GROUP_ADD_CONTACT';
+      contact: string;
+    }
+  | {
+      type: 'UI_NEW_GROUP_REMOVE_CONTACT';
+      contact: string;
     };
 
 const action = ({} as any) as Action;
