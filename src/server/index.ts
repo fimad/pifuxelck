@@ -1,4 +1,9 @@
 require('@google-cloud/trace-agent').start();
+require('@google-cloud/profiler')
+  .start()
+  .catch((err: any) => {
+    console.log(`Failed to start profiler: ${err}`);
+  });
 
 import { LoggingWinston } from '@google-cloud/logging-winston';
 import * as functions from 'firebase-functions';

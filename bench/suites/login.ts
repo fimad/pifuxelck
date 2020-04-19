@@ -102,5 +102,19 @@ export default suite(
     {
       ...options,
     }
+  ),
+
+  measure(
+    'Login and Fetch Data (One Query)',
+    async () => {
+      const app = await appWithRealData();
+      return async () => {
+        const user = await login(app, 'will', '12345678');
+        await user.get('/api/2/everything').expect(200);
+      };
+    },
+    {
+      ...options,
+    }
   )
 );
