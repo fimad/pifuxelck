@@ -36,12 +36,22 @@ export type Options = {
   sharedSetup: boolean;
 };
 
-export type Measure = {
+export type Suite = {
   name: string;
-  run: (bar: MultiBar) => Promise<Result>;
+  run: (bar: SingleBar) => Promise<SuiteResult>;
 };
 
-export type Result = {
+export type SuiteResult = {
+  name: string;
+  measures: MeasureResult[];
+};
+
+export type Measure = {
+  name: string;
+  run: (bar: SingleBar) => Promise<MeasureResult>;
+};
+
+export type MeasureResult = {
   name: string;
   average: number;
   standardDeviation: number;
@@ -67,31 +77,56 @@ function formatTime(nanoSeconds: number) {
   return `${(nanoSeconds / 1e9).toFixed(3)} s`;
 }
 
+export async function benchmark(...suites: Suite[]) {
+  const progress = new SingleBar(
+    {
+      clearOnComplete: true,
+      format: `{status} {suite} - {measure} [suite: {suiteValue}/{suiteTotal}, measure: {measureValue}/{measureTotal}, test: {value}/{total}] ...`,
+    },
+    Presets.shades_grey
+  );
+  progress.start(0, 0, {
+    status: 'Initializing',
+    suiteTotal: suites.length,
+    suiteValue: 1,
+  });
+  const results: SuiteResult[] = [];
+  for (let i = 0; i < suites.length; i++) {
+    results.push(await suites[i].run(progress));
+    progress.update(null, { suiteValue: i + 2 });
+  }
+  progress.stop();
+  for (let { name, measures } of results) {
+    console.log(`${name}`);
+    for (let { name, average, standardDeviation } of measures) {
+      console.log(`  ${name}`);
+      console.log(`    Average: ${formatTime(average)}`);
+      console.log(`    Std Dev: ${formatTime(standardDeviation)}`);
+    }
+  }
+}
+
 /**
  * Defines and executes a suite of benchmark measurements. Measurements are
  * created with the measure method.
  */
-export async function suite(name: string, ...measures: Measure[]) {
-  const multibar = new MultiBar(
-    {
-      clearOnComplete: false,
-      hideCursor: true,
-      format: `{bar} {percentage}% | {title} | ETA: {eta}s | {value}/{total}`,
+export function suite(name: string, ...measures: Measure[]): Suite {
+  return {
+    name,
+    run: async (progress) => {
+      const results: MeasureResult[] = [];
+      progress.update(null, {
+        suite: name,
+        measureTotal: measures.length,
+        measureValue: 1,
+      });
+      for (let i = 0; i < measures.length; i++) {
+        results.push(await measures[i].run(progress));
+        progress.update(null, { measureValue: i + 1 });
+      }
+      return { name, measures: results };
     },
-    Presets.shades_grey
-  );
-  const progress = multibar.create(measures.length, 0, { title: 'Overall' });
-  const results: Result[] = [];
-  for (let i = 0; i < measures.length; i++) {
-    results.push(await measures[i].run(multibar));
-    progress.update(i + 1);
-  }
-  multibar.stop();
-  for (let { name, average, standardDeviation } of results) {
-    console.log(`${name}`);
-    console.log(`  Average: ${formatTime(average)}`);
-    console.log(`  Std Dev: ${formatTime(standardDeviation)}`);
-  }
+  };
 }
 
 /**
@@ -107,7 +142,7 @@ export function measure(
 ): Measure {
   return {
     name,
-    run: async (multibar) => {
+    run: async (progress) => {
       options = { ...defaultOptions, ...options };
       const errorResults = {
         name,
@@ -115,24 +150,19 @@ export function measure(
         standardDeviation: NaN,
       };
 
-      const progress = multibar.create(
-        options.targetTestCount + options.skipCount,
-        0,
-        {
-          title: name,
-        }
-      );
-
       let elapsedTime = BigInt(0);
       const measures = [];
       let testNumber = 0;
       let test: () => Promise<void>;
+      progress.setTotal(options.targetTestCount + options.skipCount);
+      progress.update(1, { measure: name });
       while (
         elapsedTime <= options.maxTime * 1e9 &&
         testNumber < options.targetTestCount + options.skipCount
       ) {
         if (!test || !options.sharedSetup) {
           try {
+            progress.update(null, { status: 'Setting up' });
             test = await setup();
           } catch (e) {
             console.log(e);
@@ -141,6 +171,7 @@ export function measure(
         }
         const testStart = process.hrtime.bigint();
         try {
+          progress.update(null, { status: 'Running' });
           await test();
         } catch (e) {
           console.log(e);
@@ -153,9 +184,8 @@ export function measure(
           measures.push(Number(testTime));
         }
         testNumber++;
-        progress.update(testNumber);
+        progress.update(testNumber + 1);
       }
-      progress.stop();
       const sum = (l: number[]) => l.reduce((a, b) => a + b);
       const average = sum(measures) / measures.length;
       const standardDeviation = Math.sqrt(
