@@ -6,7 +6,7 @@ import { User, UserError } from '../../common/models/user';
 import { query } from '../db-promise';
 import ServerError from '../error';
 
-async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(password: string): Promise<string> {
   if (password.length < 8) {
     return Promise.reject(new Error('Password must be at least 8 characters.'));
   }

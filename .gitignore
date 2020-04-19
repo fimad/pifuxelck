@@ -1,5 +1,6 @@
 .firebase/
 .nyc_output/
+backups/
 coverage/
 dist-web/
 dist/

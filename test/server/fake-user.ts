@@ -35,6 +35,11 @@ export async function newUser(
   const token = await app
     .post('/api/2/account/register')
     .send({ user: { display_name: user, password } })
+    .expect(function(res) {
+      if (res.status != 200) {
+        console.log(JSON.stringify(res.body, null, 2));
+      }
+    })
     .expect(200)
     .then((response: any) => response.body.meta.auth);
   const fakeUser = new FakeUser(app, token);
@@ -42,7 +47,31 @@ export async function newUser(
     await fakeUser
       .put('/api/2/account')
       .send({ user: { email } })
+      .expect(function(res) {
+        if (res.status != 200) {
+          console.log(JSON.stringify(res.body, null, 2));
+        }
+      })
       .expect(200);
   }
+  return fakeUser;
+}
+
+export async function login(
+  app: SuperTest<Test>,
+  user: string,
+  password: string
+): Promise<FakeUser> {
+  const token = await app
+    .post('/api/2/account/login')
+    .send({ user: { display_name: user, password } })
+    .expect(function(res) {
+      if (res.status != 200) {
+        console.log(JSON.stringify(res.body, null, 2));
+      }
+    })
+    .expect(200)
+    .then((response: any) => response.body.meta.auth);
+  const fakeUser = new FakeUser(app, token);
   return fakeUser;
 }
