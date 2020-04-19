@@ -1,6 +1,7 @@
 import * as process from 'process';
 
 import { MultiBar, Presets, SingleBar } from 'cli-progress';
+import * as commandLineArgs from 'command-line-args';
 
 export type Test = () => Promise<() => Promise<void>>;
 
@@ -36,9 +37,50 @@ export type Options = {
   sharedSetup: boolean;
 };
 
+const optionDefinitions = [
+  {
+    name: 'include-measure',
+    alias: 'm',
+    type: String,
+    multiple: true,
+    defaultValue: <string[]>[],
+  },
+  {
+    name: 'exclude-measure',
+    alias: 'M',
+    type: String,
+    multiple: true,
+    defaultValue: <string[]>[],
+  },
+  {
+    name: 'include-suite',
+    alias: 's',
+    type: String,
+    multiple: true,
+    defaultValue: <string[]>[],
+  },
+  {
+    name: 'exclude-suite',
+    alias: 'S',
+    type: String,
+    multiple: true,
+    defaultValue: <string[]>[],
+  },
+];
+
+type CommandLineOptions = {
+  includeSuite: string[];
+  excludeSuite: string[];
+  includeMeasure: string[];
+  excludeMeasure: string[];
+};
+
 export type Suite = {
   name: string;
-  run: (bar: SingleBar) => Promise<SuiteResult>;
+  run: (
+    bar: SingleBar,
+    commandLineOptions: CommandLineOptions
+  ) => Promise<SuiteResult>;
 };
 
 export type SuiteResult = {
@@ -48,7 +90,10 @@ export type SuiteResult = {
 
 export type Measure = {
   name: string;
-  run: (bar: SingleBar) => Promise<MeasureResult>;
+  run: (
+    bar: SingleBar,
+    commandLineOptions: CommandLineOptions
+  ) => Promise<MeasureResult>;
 };
 
 export type MeasureResult = {
@@ -77,6 +122,24 @@ function formatTime(nanoSeconds: number) {
   return `${(nanoSeconds / 1e9).toFixed(3)} s`;
 }
 
+function filterByPatterns<E extends { name: string }>(
+  values: E[],
+  patterns: string[],
+  keepIfMatches: boolean
+): E[] {
+  if (patterns.length == 0) {
+    return values;
+  }
+  return values.filter(({ name }) => {
+    for (const pattern of patterns) {
+      if (name.match(pattern)) {
+        return keepIfMatches;
+      }
+    }
+    return !keepIfMatches;
+  });
+}
+
 export async function benchmark(...suites: Suite[]) {
   const progress = new SingleBar(
     {
@@ -85,14 +148,23 @@ export async function benchmark(...suites: Suite[]) {
     },
     Presets.shades_grey
   );
+  const options = <CommandLineOptions>(
+    commandLineArgs(optionDefinitions, { camelCase: true })
+  );
+  suites = filterByPatterns(suites, options.includeSuite, true);
+  suites = filterByPatterns(suites, options.excludeSuite, false);
   progress.start(0, 0, {
     status: 'Initializing',
     suiteTotal: suites.length,
     suiteValue: 1,
+    measureTotal: 0,
+    measureValue: 0,
+    suite: '',
+    measure: '',
   });
   const results: SuiteResult[] = [];
   for (let i = 0; i < suites.length; i++) {
-    results.push(await suites[i].run(progress));
+    results.push(await suites[i].run(progress, options));
     progress.update(null, { suiteValue: i + 2 });
   }
   progress.stop();
@@ -113,7 +185,10 @@ export async function benchmark(...suites: Suite[]) {
 export function suite(name: string, ...measures: Measure[]): Suite {
   return {
     name,
-    run: async (progress) => {
+    run: async (progress, commandLineOptions) => {
+      const { includeMeasure, excludeMeasure } = commandLineOptions;
+      measures = filterByPatterns(measures, includeMeasure, true);
+      measures = filterByPatterns(measures, excludeMeasure, false);
       const results: MeasureResult[] = [];
       progress.update(null, {
         suite: name,
@@ -121,7 +196,7 @@ export function suite(name: string, ...measures: Measure[]): Suite {
         measureValue: 1,
       });
       for (let i = 0; i < measures.length; i++) {
-        results.push(await measures[i].run(progress));
+        results.push(await measures[i].run(progress, commandLineOptions));
         progress.update(null, { measureValue: i + 1 });
       }
       return { name, measures: results };
@@ -142,7 +217,7 @@ export function measure(
 ): Measure {
   return {
     name,
-    run: async (progress) => {
+    run: async (progress, commandLineOptions) => {
       options = { ...defaultOptions, ...options };
       const errorResults = {
         name,
