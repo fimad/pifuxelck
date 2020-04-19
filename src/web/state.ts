@@ -24,7 +24,7 @@ export interface Entities {
     [displayName: string]: string;
   };
   account: {
-    email: string;
+    email?: string;
   };
 
   /**

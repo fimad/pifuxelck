@@ -305,17 +305,11 @@ export function ignoreSuggestedContacts(contactId: string): WebThunkAction {
 export function getAllData(): WebThunkAction {
   return (dispatch, getState, extra) =>
     api.get({
-      failure: 'CHECK_ACCOUNT_FAILURE',
-      name: 'CHECK_ACCOUNT',
+      failure: 'GET_ALL_DATA_FAILURE',
+      name: 'GET_ALL_DATA',
       requireAuth: true,
-      start: 'CHECK_ACCOUNT_START',
-      success: 'CHECK_ACCOUNT_SUCCESS',
-      onSuccess: () => {
-        dispatch(getAccount());
-        dispatch(getContacts());
-        dispatch(getInbox());
-        dispatch(getHistory());
-      },
-      url: `/api/2/account/check`,
+      start: 'GET_ALL_DATA_START',
+      success: 'GET_ALL_DATA_SUCCESS',
+      url: `/api/2/everything`,
     })(dispatch, getState, extra);
 }

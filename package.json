@@ -104,6 +104,7 @@
     "webpack-dev-server": "^3.1.11"
   },
   "dependencies": {
+    "@google-cloud/debug-agent": "^4.2.2",
     "@google-cloud/logging-winston": "^3.0.6",
     "@google-cloud/profiler": "^4.0.0",
     "@google-cloud/trace-agent": "^4.2.5",

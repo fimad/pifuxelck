@@ -26,6 +26,8 @@ export type ApiAction = {
         | 'GET_HISTORY_FAILURE'
         | 'GET_INBOX_START'
         | 'GET_INBOX_FAILURE'
+        | 'GET_ALL_DATA_START'
+        | 'GET_ALL_DATA_FAILURE'
         | 'CREATE_CONTACT_GROUP_SUCCESS'
         | 'GET_CONTACTS_START'
         | 'GET_CONTACTS_FAILURE'
@@ -85,16 +87,17 @@ export type ApiAction = {
     }
   | {
       type:
-        | 'LOGIN_SUCCESS'
-        | 'USER_LOOKUP_SUCCESS'
-        | 'GET_HISTORY_SUCCESS'
-        | 'GET_INBOX_SUCCESS'
-        | 'NEW_GAME_SUCCESS'
+        | 'GET_ACCOUNT_SUCCESS'
+        | 'GET_ALL_DATA_SUCCESS'
         | 'GET_CONTACTS_SUCCESS'
         | 'GET_CONTACT_GROUPS_SUCCESS'
-        | 'GET_ACCOUNT_SUCCESS'
+        | 'GET_GAME_SUCCESS'
+        | 'GET_HISTORY_SUCCESS'
+        | 'GET_INBOX_SUCCESS'
+        | 'LOGIN_SUCCESS'
+        | 'NEW_GAME_SUCCESS'
         | 'REGISTER_SUCCESS'
-        | 'GET_GAME_SUCCESS';
+        | 'USER_LOOKUP_SUCCESS';
       message: Message;
     }
 );
