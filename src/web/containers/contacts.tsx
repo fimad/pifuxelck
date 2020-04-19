@@ -195,7 +195,9 @@ const mapStateToProps = (state: State) => ({
       pendingDelete: state.apiStatus.pendingContactDeletes[i],
     }))
     .sort(compareByDisplayName),
-  loading: state.apiStatus.inProgress.GET_CONTACTS,
+  loading:
+    state.apiStatus.inProgress.GET_CONTACTS ||
+    state.apiStatus.inProgress.GET_ALL_DATA,
   lookup: state.ui.contacts.lookup,
   lookupId: state.entities.users[state.ui.contacts.lookup],
   suggestedContacts: Object.keys(state.entities.suggestedContacts)

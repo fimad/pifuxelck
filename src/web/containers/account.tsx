@@ -60,7 +60,9 @@ const mapStateToProps = (state: State) => ({
     state.entities.account.email,
     '',
   ]),
-  loading: state.apiStatus.inProgress.GET_ACCOUNT,
+  loading:
+    state.apiStatus.inProgress.GET_ACCOUNT ||
+    state.apiStatus.inProgress.GET_ALL_DATA,
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
   passwordError: state.ui.account.passwordError || '',

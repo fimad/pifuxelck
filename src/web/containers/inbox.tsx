@@ -43,7 +43,7 @@ const mapStateToProps = ({
   entries: Object.values(inbox)
     .sort(compareByExpiration)
     .map((entry) => entry.game_id),
-  loading: apiStatus.inProgress.GET_INBOX,
+  loading: apiStatus.inProgress.GET_INBOX || apiStatus.inProgress.GET_ALL_DATA,
   suggestedContacts: Object.values(suggestedContacts)
     .filter((x) => x.added_current_user && !x.no_thanks)
     .sort((a, b) => a.display_name.localeCompare(b.display_name)),

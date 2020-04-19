@@ -136,7 +136,8 @@ const mapStateToProps = ({
   ui,
 }: State) => ({
   filter: ui.history.query,
-  loading: apiStatus.inProgress.GET_HISTORY,
+  loading:
+    apiStatus.inProgress.GET_HISTORY || apiStatus.inProgress.GET_ALL_DATA,
   summaries: Object.values(history).sort(compareGameByCompletion),
 });
 
