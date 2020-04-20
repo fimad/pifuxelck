@@ -5,7 +5,7 @@ import { appWithRealData } from '../utils';
 const options = {
   maxTime: Number.MAX_VALUE,
   sharedSetup: true,
-  targetTestCount: 10,
+  targetTestCount: 25,
   skipCount: 1,
 };
 

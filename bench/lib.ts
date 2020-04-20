@@ -99,6 +99,8 @@ export type Measure = {
 export type MeasureResult = {
   name: string;
   average: number;
+  maximum: number;
+  minimum: number;
   standardDeviation: number;
 };
 
@@ -170,10 +172,18 @@ export async function benchmark(...suites: Suite[]) {
   progress.stop();
   for (let { name, measures } of results) {
     console.log(`${name}`);
-    for (let { name, average, standardDeviation } of measures) {
+    for (let {
+      name,
+      average,
+      maximum,
+      minimum,
+      standardDeviation,
+    } of measures) {
       console.log(`  ${name}`);
       console.log(`    Average: ${formatTime(average)}`);
       console.log(`    Std Dev: ${formatTime(standardDeviation)}`);
+      console.log(`    Maximum: ${formatTime(maximum)}`);
+      console.log(`    Minimum: ${formatTime(minimum)}`);
     }
   }
 }
@@ -222,6 +232,8 @@ export function measure(
       const errorResults = {
         name,
         average: NaN,
+        maximum: NaN,
+        minimum: NaN,
         standardDeviation: NaN,
       };
 
@@ -267,7 +279,13 @@ export function measure(
         sum(measures.map((x) => Math.pow(x - average, 2))) /
           (measures.length - 1)
       );
-      return { name, average, standardDeviation };
+      return {
+        name,
+        average,
+        maximum: Math.max(...measures),
+        minimum: Math.min(...measures),
+        standardDeviation,
+      };
     },
   };
 }
