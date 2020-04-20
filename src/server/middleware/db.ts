@@ -16,7 +16,10 @@ const db = (config: DbConfig) => {
   // request anyway.
   const dbPromise = () =>
     new Promise<Connection>((resolve, reject) => {
-      const connection = createConnection(config);
+      const connection = createConnection({
+        ...config,
+        multipleStatements: true,
+      });
       connection.connect((err: Error) => {
         if (err) {
           reject(err);

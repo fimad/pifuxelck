@@ -148,7 +148,8 @@ export async function updateDrawingTurn(
       SELECT MIN(id) as turnId
       FROM Turns
       WHERE is_complete = 0 AND game_id = ?`,
-      [gameId]);
+      [gameId]
+    );
     if (results.length !== 1) {
       throw new Error(`Unable to determine next turn for game ${gameId}`);
     }
@@ -169,7 +170,7 @@ export async function updateDrawingTurn(
            AND Turns.id = ?`,
       [drawingJson, userId, gameId, turnId]
     );
-  })
+  });
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
@@ -202,7 +203,8 @@ export async function updateLabelTurn(
       SELECT MIN(id) as turnId
       FROM Turns
       WHERE is_complete = 0 AND game_id = ?`,
-      [gameId]);
+      [gameId]
+    );
     if (results.length !== 1) {
       throw new Error(`Unable to determine next turn for game ${gameId}`);
     }
@@ -259,24 +261,22 @@ export async function sendEmailUpdatesForGameOver(
          ) AS CompletedGames ON CompletedGames.id = Turns.game_id
          INNER JOIN Accounts ON Accounts.id = Turns.account_id`;
     const queryResults = await query(db, gamesToNotifyQuery, []);
-    await query(
-      db,
-      `UPDATE Games
-         SET Games.did_notify = TRUE
-         WHERE Games.id IN (
-           SELECT X.game_id
-           FROM (${gamesToNotifyQuery}) AS X
-           GROUP BY 1
-         )`,
-      []
-    );
     const results = [];
+    let updateQuery = '';
+    const updateQueryArgs: string[] = [];
     for (let i = 0; i < queryResults.length; i++) {
       const game = queryResults[i].game_id;
       const email = queryResults[i].email;
       if (email) {
         results.push({ game, email });
       }
+      updateQuery += `UPDATE Games
+           SET Games.did_notify = TRUE
+           WHERE Games.id = ?; `;
+      updateQueryArgs.push(queryResults[i].game_id);
+    }
+    if (updateQuery !== '') {
+      await query(db, updateQuery, updateQueryArgs);
     }
     return results;
   });
@@ -313,16 +313,8 @@ export async function sendEmailUpdatesForNextTurn(
          INNER JOIN Accounts ON Accounts.id = Turns.account_id
          WHERE NOT did_notify`;
     const queryResults = await query(db, turnsToNotifyQuery, []);
-    await query(
-      db,
-      `UPDATE Turns
-         SET Turns.did_notify = TRUE
-         WHERE Turns.id IN (
-           SELECT X.turn_id
-           FROM (${turnsToNotifyQuery}) AS X
-         )`,
-      []
-    );
+    let updateQuery = '';
+    const updateQueryArgs: string[] = [];
     const results = [];
     for (let i = 0; i < queryResults.length; i++) {
       const game = queryResults[i].game_id;
@@ -330,6 +322,13 @@ export async function sendEmailUpdatesForNextTurn(
       if (email) {
         results.push({ game, email });
       }
+      (updateQuery += `UPDATE Turns
+         SET Turns.did_notify = TRUE
+         WHERE Turns.id = ?; `),
+        updateQueryArgs.push(queryResults[i].turn_id);
+    }
+    if (updateQuery !== '') {
+      await query(db, updateQuery, updateQueryArgs);
     }
     return results;
   });
