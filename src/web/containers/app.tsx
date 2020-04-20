@@ -15,6 +15,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import ArchiveIcon from '@material-ui/icons/Archive';
+import BugReportIcon from '@material-ui/icons/BugReport';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import LogoutIcon from '@material-ui/icons/Eject';
 import DownloadIcon from '@material-ui/icons/GetApp';
@@ -109,6 +110,10 @@ class AppComponent extends React.Component<Props, any> {
 
   public handleStats = () => {
     window.location.href = '/stats';
+  };
+
+  public handleBug = () => {
+    window.open('https://github.com/fimad/pifuxelck/issues/new', '_blank');
   };
 
   public handleLogout = () => {
@@ -311,6 +316,12 @@ class AppComponent extends React.Component<Props, any> {
                 <ChartIcon />
               </ListItemIcon>
               <ListItemText primary="Stats" />
+            </ListItem>
+            <ListItem button={true} onClick={this.handleBug}>
+              <ListItemIcon>
+                <BugReportIcon />
+              </ListItemIcon>
+              <ListItemText primary="Report Bug" />
             </ListItem>
             <ListItem
               style={{ marginTop: 'auto' }}
