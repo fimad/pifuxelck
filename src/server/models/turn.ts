@@ -141,24 +141,35 @@ export async function updateDrawingTurn(
   winston.info(`User ${userId} updating drawing in game ${gameId}.`);
   const drawingJson = JSON.stringify(drawing);
 
-  const results = await query(
-    db,
-    `UPDATE Turns, Games
-       SET
-          drawing = ?,
-          is_complete = 1,
-          completed_at = NOW(),
-          Games.next_expiration = NOW() + INTERVAL 2 DAY
-       WHERE Turns.game_id = Games.id
-         AND Turns.account_id = ?
-         AND Turns.game_id = ?
-         AND Turns.is_drawing = 1
-         AND Turns.id = (
-              SELECT MIN(T.id)
-              FROM (SELECT * FROM Turns) AS T
-              WHERE T.is_complete = 0 AND T.game_id = ?)`,
-    [drawingJson, userId, gameId, gameId]
-  );
+  const results = await transact(db, async () => {
+    const results = await query(
+      db,
+      `
+      SELECT MIN(id) as turnId
+      FROM Turns
+      WHERE is_complete = 0 AND game_id = ?`,
+      [gameId]);
+    if (results.length !== 1) {
+      throw new Error(`Unable to determine next turn for game ${gameId}`);
+    }
+    const turnId: number = results[0].turnId;
+
+    return await query(
+      db,
+      `UPDATE Turns, Games
+         SET
+            drawing = ?,
+            is_complete = 1,
+            completed_at = NOW(),
+            Games.next_expiration = NOW() + INTERVAL 2 DAY
+         WHERE Turns.game_id = Games.id
+           AND Turns.account_id = ?
+           AND Turns.game_id = ?
+           AND Turns.is_drawing = 1
+           AND Turns.id = ?`,
+      [drawingJson, userId, gameId, turnId]
+    );
+  })
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
@@ -184,24 +195,35 @@ export async function updateLabelTurn(
   if (!label || label === '') {
     throw new Error('Labels must not be empty.');
   }
-  const results = await query(
-    db,
-    `UPDATE Turns, Games
-       SET
-          Turns.label = ?,
-          Turns.is_complete = 1,
-          completed_at = NOW(),
-          Games.next_expiration = NOW() + INTERVAL 2 DAY
-       WHERE Turns.game_id = Games.id
-         AND Turns.account_id = ?
-         AND Turns.game_id = ?
-         AND Turns.is_drawing = 0
-         AND Turns.id = (
-              SELECT MIN(T.id)
-              FROM (SELECT * FROM Turns) AS T
-              WHERE T.is_complete = 0 AND T.game_id = ?)`,
-    [label, userId, gameId, gameId]
-  );
+  const results = await transact(db, async () => {
+    const results = await query(
+      db,
+      `
+      SELECT MIN(id) as turnId
+      FROM Turns
+      WHERE is_complete = 0 AND game_id = ?`,
+      [gameId]);
+    if (results.length !== 1) {
+      throw new Error(`Unable to determine next turn for game ${gameId}`);
+    }
+    const turnId: number = results[0].turnId;
+
+    return await query(
+      db,
+      `UPDATE Turns, Games
+         SET
+            Turns.label = ?,
+            Turns.is_complete = 1,
+            completed_at = NOW(),
+            Games.next_expiration = NOW() + INTERVAL 2 DAY
+         WHERE Turns.game_id = Games.id
+           AND Turns.account_id = ?
+           AND Turns.game_id = ?
+           AND Turns.is_drawing = 0
+           AND Turns.id = ?`,
+      [label, userId, gameId, turnId]
+    );
+  });
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
