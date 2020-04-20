@@ -35,7 +35,11 @@
   margin-bottom: 8px;
   padding: 2px;
   width: calc(100%);
-  overflow-x: scroll;
+  overflow-x: auto;
+}
+
+.caption {
+  display: block;
 }
 
 @media (--non-mobile) and (min-aspect-ratio: 3/4) {

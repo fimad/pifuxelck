@@ -68,7 +68,7 @@ const UserStats = ({ userStats }: Stats) => {
             <TableCell align="right">Inbox</TableCell>
             <TableCell align="right">Pending</TableCell>
             <TableCell align="right">Skips</TableCell>
-            <TableCell align="right">Games Started</TableCell>
+            <TableCell align="right">Started</TableCell>
             <TableCell align="right">Drawings</TableCell>
             <TableCell align="right">Labels</TableCell>
           </TableRow>
@@ -82,7 +82,7 @@ const UserStats = ({ userStats }: Stats) => {
 const GameSizes = ({ gameSizes }: Stats) => {
   return (
     <Paper className={styles.gameSizes}>
-      <Typography variant="caption" align="center">
+      <Typography variant="caption" align="center" className={styles.caption}>
         Players Per Game
       </Typography>
       <ResponsiveContainer height={200}>
@@ -93,7 +93,7 @@ const GameSizes = ({ gameSizes }: Stats) => {
           <Bar dataKey="total" fill={barColor1} />
         </BarChart>
       </ResponsiveContainer>
-      <Typography variant="caption" align="center">
+      <Typography variant="caption" align="center" className={styles.caption}>
         Players
       </Typography>
     </Paper>
@@ -103,7 +103,7 @@ const GameSizes = ({ gameSizes }: Stats) => {
 const GameDurations = ({ gameDurations }: Stats) => {
   return (
     <Paper className={styles.gameSizes}>
-      <Typography variant="caption" align="center">
+      <Typography variant="caption" align="center" className={styles.caption}>
         Completed Game Duration In Days
       </Typography>
       <ResponsiveContainer height={200}>
@@ -117,7 +117,7 @@ const GameDurations = ({ gameDurations }: Stats) => {
           <Bar dataKey="count" fill={barColor1} />
         </BarChart>
       </ResponsiveContainer>
-      <Typography variant="caption" align="center">
+      <Typography variant="caption" align="center" className={styles.caption}>
         Days
       </Typography>
     </Paper>
@@ -132,7 +132,7 @@ const GamesOverTime = ({ gamesOverTime }: Stats) => {
   const tickFormatter = (x: number) => new Date(x).toLocaleString();
   return (
     <Paper className={styles.gamesOverTime}>
-      <Typography variant="caption" align="center">
+      <Typography variant="caption" align="center" className={styles.caption}>
         Pending Games Over Time
       </Typography>
       <ResponsiveContainer height={200}>
@@ -176,7 +176,11 @@ export default function(stats: Stats) {
           <Typography variant="h5" align="center">
             {stats.gameStats.pending}
           </Typography>
-          <Typography variant="caption" align="center">
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Pending Games
           </Typography>
         </Paper>
@@ -184,7 +188,11 @@ export default function(stats: Stats) {
           <Typography variant="h5" align="center">
             {stats.gameStats.complete}
           </Typography>
-          <Typography variant="caption" align="center">
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Complete Games
           </Typography>
         </Paper>
@@ -192,7 +200,11 @@ export default function(stats: Stats) {
           <Typography variant="h5" align="center">
             {stats.gameStats.total}
           </Typography>
-          <Typography variant="caption" align="center">
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Total Games
           </Typography>
         </Paper>
