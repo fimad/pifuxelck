@@ -1,22 +1,17 @@
+import { Button, Paper, TextField, Typography } from '@material-ui/core';
+import { push } from 'connected-react-router';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
+
 import { login, register } from '../actions';
 import { State } from '../state';
-
-import {
-  Button,
-  Paper,
-  TextField,
-  Typography,
-} from 'material-ui';
-
-const { push } = require('react-router-redux');
+import { WebDispatch } from '../store';
 
 interface Props {
   auth?: string;
-  dispatch: Dispatch<State>;
+  dispatch: WebDispatch;
   inProgress: boolean;
 }
 
@@ -27,9 +22,10 @@ const style: any = {
   width: 'fit-content',
 };
 
-class RegisterComponent extends
-    React.Component<Props, {[key: string]: string}> {
-
+class RegisterComponent extends React.Component<
+  Props,
+  { [key: string]: string }
+> {
   private dispatchLogin: () => void;
   private dispatchRegister: (e: any) => void;
 
@@ -51,13 +47,13 @@ class RegisterComponent extends
 
   public onChange(key: string) {
     return (event: any) => {
-      this.setState({[key]: event.target.value});
+      this.setState({ [key]: event.target.value });
     };
   }
 
   public render() {
     if (this.props.auth) {
-      return (<Redirect to='/' />);
+      return <Redirect to="/" />;
     }
     const textStyle = {
       marginBottom: '4px',
@@ -70,46 +66,46 @@ class RegisterComponent extends
     return (
       <form onSubmit={this.dispatchRegister}>
         <Paper style={style}>
-          <Typography type='display1' style={{textAlign: 'center'}}>
+          <Typography variant="h4" style={{ textAlign: 'center' }}>
             pifuxelck
           </Typography>
           <TextField
-              autoFocus={true}
-              style={textStyle}
-              onChange={this.onChange('user')}
-              value={this.state.user}
-              label='Username'
+            autoFocus={true}
+            style={textStyle}
+            onChange={this.onChange('user')}
+            value={this.state.user}
+            label="Username"
           />
           <TextField
-              style={textStyle}
-              onChange={this.onChange('password')}
-              value={this.state.password}
-              label='Password'
-              type='password'
+            style={textStyle}
+            onChange={this.onChange('password')}
+            value={this.state.password}
+            label="Password"
+            type="password"
           />
           <TextField
-              style={textStyle}
-              onChange={this.onChange('passwordConfirmation')}
-              value={this.state.passwordConfirmation}
-              label='Confirm Password'
-              type='password'
+            style={textStyle}
+            onChange={this.onChange('passwordConfirmation')}
+            value={this.state.passwordConfirmation}
+            label="Confirm Password"
+            type="password"
           />
           <Button
-              type='submit'
-              raised={true}
-              disabled={this.props.inProgress}
-              color='primary'
-              onClick={this.dispatchRegister}
-              style={buttonStyle}
+            type="submit"
+            variant="contained"
+            disabled={this.props.inProgress}
+            color="primary"
+            onClick={this.dispatchRegister}
+            style={buttonStyle}
           >
             Register
           </Button>
-          <Typography type='caption'>
+          <Typography variant="caption">
             Already have an account?
             <Button
-                onClick={this.dispatchLogin}
-                disabled={this.props.inProgress}
-                color='accent'
+              onClick={this.dispatchLogin}
+              disabled={this.props.inProgress}
+              color="secondary"
             >
               Sign in
             </Button>
@@ -120,7 +116,7 @@ class RegisterComponent extends
   }
 }
 
-const mapStateToProps = ({auth, apiStatus}: State) => ({
+const mapStateToProps = ({ auth, apiStatus }: State) => ({
   auth,
   inProgress: apiStatus.inProgress.REGISTER,
 });

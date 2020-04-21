@@ -1,14 +1,14 @@
 import { Line } from '../../common/models/drawing';
-import { drawingOrDefault, Turn } from '../../common/models/turn';
+import { Turn, drawingOrDefault } from '../../common/models/turn';
 import { objectWithKeys, objectWithoutKeys } from '../../common/utils';
 import { Action } from '../actions';
 import { OutboxEntry, Ui } from '../state';
 
 const initialState = {
   account: {
-    email: null as (string | null),
-    password: null as (string | null),
-    passwordConfirmation: null as (string | null),
+    email: null as string | null,
+    password: null as string | null,
+    passwordConfirmation: null as string | null,
     passwordError: '',
   },
   contacts: {
@@ -21,7 +21,7 @@ const initialState = {
       green: 0,
       red: 0,
     },
-    brushSize: .0125,
+    brushSize: 0.0125,
     inProgress: false,
   },
   errors: {
@@ -29,7 +29,7 @@ const initialState = {
     nextId: 0,
   },
   history: {
-    query: null as (string | null),
+    query: null as string | null,
   },
   newGame: {
     topic: '',
@@ -50,12 +50,14 @@ const defaultOutbox = {
 
 export default function(state: Ui = initialState, action: Action) {
   const getRedo = (entry: OutboxEntry) => (entry || defaultOutbox).redo || [];
-  const getTurn =
-    (entry: OutboxEntry) => (entry || defaultOutbox).turn || defaultDrawingTurn;
+  const getTurn = (entry: OutboxEntry) =>
+    (entry || defaultOutbox).turn || defaultDrawingTurn;
 
-  if (action.type === 'LOGOUT' ||
-      action.type === 'LOGIN_START' ||
-      action.type === 'REGISTER_START') {
+  if (
+    action.type === 'LOGOUT' ||
+    action.type === 'LOGIN_START' ||
+    action.type === 'REGISTER_START'
+  ) {
     return initialState;
   }
   if (action.type === 'GET_INBOX_SUCCESS' && action.message.inbox_entries) {
@@ -63,7 +65,8 @@ export default function(state: Ui = initialState, action: Action) {
       ...state,
       outbox: objectWithKeys(
         state.outbox,
-        action.message.inbox_entries.map(({game_id}) => game_id)),
+        action.message.inbox_entries.map(({ game_id }) => game_id)
+      ),
     };
   }
   if (action.type === 'UI_UPDATE_OUTBOX') {
@@ -280,7 +283,7 @@ export default function(state: Ui = initialState, action: Action) {
       newGame: {
         ...state.newGame,
         users: [
-          ...(state.newGame.users.filter((x) => x !== action.playerId)),
+          ...state.newGame.users.filter((x) => x !== action.playerId),
           action.playerId,
         ],
       },
@@ -361,8 +364,10 @@ export default function(state: Ui = initialState, action: Action) {
       },
     };
   }
-  if (action.type === '@@router/LOCATION_CHANGE' ||
-      action.type === 'UI_STOP_DRAWING_LINE') {
+  if (
+    action.type === '@@router/LOCATION_CHANGE' ||
+    action.type === 'UI_STOP_DRAWING_LINE'
+  ) {
     return {
       ...state,
       account: {

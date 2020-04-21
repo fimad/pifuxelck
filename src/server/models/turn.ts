@@ -1,5 +1,6 @@
 import { Connection } from 'mysql';
 import * as winston from 'winston';
+
 import { Drawing } from '../../common/models/drawing';
 import { InboxEntry, Turn } from '../../common/models/turn';
 import { query, transact } from '../db-promise';
@@ -32,13 +33,14 @@ async function rowToInboxEntry(row: any): Promise<InboxEntry> {
 
 /** Returns an inbox entry for the given user and game id. */
 export async function getInboxEntryByGameId(
-    db: Connection,
-    userId: string,
-    gameId: string): Promise<InboxEntry> {
+  db: Connection,
+  userId: string,
+  gameId: string
+): Promise<InboxEntry> {
   winston.info(`Querying for all available inbox entries for ${userId}.`);
   const results = await query(
-      db,
-      `SELECT
+    db,
+    `SELECT
           T.id AS id,
           T.game_id AS game_id,
           T.drawing AS drawing,
@@ -67,7 +69,8 @@ export async function getInboxEntryByGameId(
        ) AS PT ON PT.previous_turn_id = T.id
        INNER JOIN Games ON T.game_id = Games.id
        WHERE CT.game_id = ? AND CT.current_turn_id = UT.user_turn_id`,
-      [userId, gameId]);
+    [userId, gameId]
+  );
   if (results.length < 1) {
     throw new Error('No entry for that ID.');
   }
@@ -80,12 +83,13 @@ export async function getInboxEntryByGameId(
  * currently take.
  */
 export async function getInboxEntriesForUser(
-    db: Connection,
-    userId: string): Promise<InboxEntry[]> {
+  db: Connection,
+  userId: string
+): Promise<InboxEntry[]> {
   winston.info(`Querying for all available inbox entries for ${userId}.`);
   const results = await query(
-      db,
-      `SELECT
+    db,
+    `SELECT
           T.id AS id,
           T.game_id AS game_id,
           T.drawing AS drawing,
@@ -114,7 +118,8 @@ export async function getInboxEntriesForUser(
        ) AS PT ON PT.previous_turn_id = T.id
        INNER JOIN Games ON T.game_id = Games.id
        WHERE CT.current_turn_id = UT.user_turn_id`,
-      [userId]);
+    [userId]
+  );
   const entries = [];
   for (let i = 0; i < results.length; i++) {
     entries.push(await rowToInboxEntry(results[i]));
@@ -127,31 +132,45 @@ export async function getInboxEntriesForUser(
  * user is not the next player, or if the next turn is not a label turn.
  */
 export async function updateDrawingTurn(
-    db: Connection,
-    sendMail: SendMail,
-    userId: string,
-    gameId: string,
-    drawing: Drawing): Promise<void> {
+  db: Connection,
+  sendMail: SendMail,
+  userId: string,
+  gameId: string,
+  drawing: Drawing
+): Promise<void> {
   winston.info(`User ${userId} updating drawing in game ${gameId}.`);
   const drawingJson = JSON.stringify(drawing);
 
-  const results = await query(
+  const results = await transact(db, async () => {
+    const results = await query(
+      db,
+      `
+      SELECT MIN(id) as turnId
+      FROM Turns
+      WHERE is_complete = 0 AND game_id = ?`,
+      [gameId]
+    );
+    if (results.length !== 1) {
+      throw new Error(`Unable to determine next turn for game ${gameId}`);
+    }
+    const turnId: number = results[0].turnId;
+
+    return await query(
       db,
       `UPDATE Turns, Games
-       SET
-          drawing = ?,
-          is_complete = 1,
-          completed_at = NOW(),
-          Games.next_expiration = NOW() + INTERVAL 2 DAY
-       WHERE Turns.game_id = Games.id
-         AND Turns.account_id = ?
-         AND Turns.game_id = ?
-         AND Turns.is_drawing = 1
-         AND Turns.id = (
-              SELECT MIN(T.id)
-              FROM (SELECT * FROM Turns) AS T
-              WHERE T.is_complete = 0 AND T.game_id = ?)`,
-      [drawingJson, userId, gameId, gameId]);
+         SET
+            drawing = ?,
+            is_complete = 1,
+            completed_at = NOW(),
+            Games.next_expiration = NOW() + INTERVAL 2 DAY
+         WHERE Turns.game_id = Games.id
+           AND Turns.account_id = ?
+           AND Turns.game_id = ?
+           AND Turns.is_drawing = 1
+           AND Turns.id = ?`,
+      [drawingJson, userId, gameId, turnId]
+    );
+  });
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
@@ -166,33 +185,47 @@ export async function updateDrawingTurn(
  * user is not the next player, or if the next turn is not a drawing turn.
  */
 export async function updateLabelTurn(
-    db: Connection,
-    sendMail: SendMail,
-    userId: string,
-    gameId: string,
-    rawLabel: string): Promise<void> {
+  db: Connection,
+  sendMail: SendMail,
+  userId: string,
+  gameId: string,
+  rawLabel: string
+): Promise<void> {
   winston.info(`User ${userId} updating label in game ${gameId}.`);
   const label = rawLabel.trim();
   if (!label || label === '') {
     throw new Error('Labels must not be empty.');
   }
-  const results = await query(
+  const results = await transact(db, async () => {
+    const results = await query(
+      db,
+      `
+      SELECT MIN(id) as turnId
+      FROM Turns
+      WHERE is_complete = 0 AND game_id = ?`,
+      [gameId]
+    );
+    if (results.length !== 1) {
+      throw new Error(`Unable to determine next turn for game ${gameId}`);
+    }
+    const turnId: number = results[0].turnId;
+
+    return await query(
       db,
       `UPDATE Turns, Games
-       SET
-          Turns.label = ?,
-          Turns.is_complete = 1,
-          completed_at = NOW(),
-          Games.next_expiration = NOW() + INTERVAL 2 DAY
-       WHERE Turns.game_id = Games.id
-         AND Turns.account_id = ?
-         AND Turns.game_id = ?
-         AND Turns.is_drawing = 0
-         AND Turns.id = (
-              SELECT MIN(T.id)
-              FROM (SELECT * FROM Turns) AS T
-              WHERE T.is_complete = 0 AND T.game_id = ?)`,
-      [label, userId, gameId, gameId]);
+         SET
+            Turns.label = ?,
+            Turns.is_complete = 1,
+            completed_at = NOW(),
+            Games.next_expiration = NOW() + INTERVAL 2 DAY
+         WHERE Turns.game_id = Games.id
+           AND Turns.account_id = ?
+           AND Turns.game_id = ?
+           AND Turns.is_drawing = 0
+           AND Turns.id = ?`,
+      [label, userId, gameId, turnId]
+    );
+  });
 
   const affectedRows = results.affectedRows;
   if (affectedRows <= 0) {
@@ -203,18 +236,21 @@ export async function updateLabelTurn(
 }
 
 export async function sendEmailUpdatesAfterTurn(
-    db: Connection, sendMail: SendMail): Promise<void> {
+  db: Connection,
+  sendMail: SendMail
+): Promise<void> {
   await Promise.all([
-      sendEmailUpdatesForGameOver(db, sendMail),
-      sendEmailUpdatesForNextTurn(db, sendMail),
+    sendEmailUpdatesForGameOver(db, sendMail),
+    sendEmailUpdatesForNextTurn(db, sendMail),
   ]);
 }
 
 export async function sendEmailUpdatesForGameOver(
-    db: Connection, sendMail: SendMail): Promise<void> {
+  db: Connection,
+  sendMail: SendMail
+): Promise<void> {
   const emailsAndGames = await transact(db, async () => {
-    const gamesToNotifyQuery =
-        `SELECT
+    const gamesToNotifyQuery = `SELECT
            Turns.game_id AS game_id,
            Accounts.email AS email
          FROM Turns
@@ -225,40 +261,43 @@ export async function sendEmailUpdatesForGameOver(
          ) AS CompletedGames ON CompletedGames.id = Turns.game_id
          INNER JOIN Accounts ON Accounts.id = Turns.account_id`;
     const queryResults = await query(db, gamesToNotifyQuery, []);
-    await query(
-        db,
-        `UPDATE Games
-         SET Games.did_notify = TRUE
-         WHERE Games.id IN (
-           SELECT X.game_id
-           FROM (${gamesToNotifyQuery}) AS X
-           GROUP BY 1
-         )`, []);
     const results = [];
+    let updateQuery = '';
+    const updateQueryArgs: string[] = [];
     for (let i = 0; i < queryResults.length; i++) {
       const game = queryResults[i].game_id;
       const email = queryResults[i].email;
       if (email) {
-        results.push({game, email});
+        results.push({ game, email });
       }
+      updateQuery += `UPDATE Games
+           SET Games.did_notify = TRUE
+           WHERE Games.id = ?; `;
+      updateQueryArgs.push(queryResults[i].game_id);
+    }
+    if (updateQuery !== '') {
+      await query(db, updateQuery, updateQueryArgs);
     }
     return results;
   });
 
-  await Promise.all(emailsAndGames.map(async ({email, game}) => {
-    await sendMail({
-      body: finshedGameEmail.replace('%GAMEID%', game),
-      subject: 'New completed game!',
-      to: email,
-    });
-  }));
+  await Promise.all(
+    emailsAndGames.map(async ({ email, game }) => {
+      await sendMail({
+        body: finshedGameEmail.replace('%GAMEID%', game),
+        subject: 'New completed game!',
+        to: email,
+      });
+    })
+  );
 }
 
 export async function sendEmailUpdatesForNextTurn(
-    db: Connection, sendMail: SendMail): Promise<void> {
+  db: Connection,
+  sendMail: SendMail
+): Promise<void> {
   const emailsAndGames = await transact(db, async () => {
-    const turnsToNotifyQuery =
-        `SELECT
+    const turnsToNotifyQuery = `SELECT
            Turns.id AS turn_id,
            Turns.game_id AS game_id,
            Accounts.email AS email
@@ -274,32 +313,35 @@ export async function sendEmailUpdatesForNextTurn(
          INNER JOIN Accounts ON Accounts.id = Turns.account_id
          WHERE NOT did_notify`;
     const queryResults = await query(db, turnsToNotifyQuery, []);
-    await query(
-        db,
-        `UPDATE Turns
-         SET Turns.did_notify = TRUE
-         WHERE Turns.id IN (
-           SELECT X.turn_id
-           FROM (${turnsToNotifyQuery}) AS X
-         )`, []);
+    let updateQuery = '';
+    const updateQueryArgs: string[] = [];
     const results = [];
     for (let i = 0; i < queryResults.length; i++) {
       const game = queryResults[i].game_id;
       const email = queryResults[i].email;
       if (email) {
-        results.push({game, email});
+        results.push({ game, email });
       }
+      (updateQuery += `UPDATE Turns
+         SET Turns.did_notify = TRUE
+         WHERE Turns.id = ?; `),
+        updateQueryArgs.push(queryResults[i].turn_id);
+    }
+    if (updateQuery !== '') {
+      await query(db, updateQuery, updateQueryArgs);
     }
     return results;
   });
 
-  await Promise.all(emailsAndGames.map(async ({email, game}) => {
-    await sendMail({
-      body: yourTurnEmail,
-      subject: 'It is your turn!',
-      to: email,
-    });
-  }));
+  await Promise.all(
+    emailsAndGames.map(async ({ email, game }) => {
+      await sendMail({
+        body: yourTurnEmail,
+        subject: 'It is your turn!',
+        to: email,
+      });
+    })
+  );
 }
 
 const yourTurnEmail = `

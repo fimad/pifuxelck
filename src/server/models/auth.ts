@@ -1,6 +1,7 @@
 import { Connection } from 'mysql';
 import * as uuid from 'uuid';
 import * as winston from 'winston';
+
 import { query } from '../db-promise';
 import ServerError from '../error';
 
@@ -10,16 +11,18 @@ import ServerError from '../error';
  * from the user with the given id.
  */
 export async function newAuthToken(
-    db: Connection,
-    userId: string): Promise<string> {
+  db: Connection,
+  userId: string
+): Promise<string> {
   await pruneAuthTokens(db);
   winston.info(`Generating new random token for user with ID ${userId}.`);
   const auth = uuid.v4();
   await query(
-      db,
-      `INSERT INTO Sessions (auth_token, account_id, created_at, accessed_at)
+    db,
+    `INSERT INTO Sessions (auth_token, account_id, created_at, accessed_at)
        VALUES (?, ?, NOW(), NOW())`,
-      [auth, userId]);
+    [auth, userId]
+  );
   return auth;
 }
 
@@ -29,16 +32,23 @@ export async function newAuthToken(
  * given token.
  */
 export async function authTokenLookup(
-    db: Connection,
-    auth: string): Promise<string> {
+  db: Connection,
+  auth: string
+): Promise<string> {
   await pruneAuthTokens(db);
   const results = await query(
-      db, 'SELECT account_id AS id FROM Sessions WHERE auth_token = ?', [auth]);
+    db,
+    'SELECT account_id AS id FROM Sessions WHERE auth_token = ?',
+    [auth]
+  );
   if (!results[0]) {
-    throw new ServerError({auth: 'Invalid authentication token'});
+    throw new ServerError({ auth: 'Invalid authentication token' });
   }
   await query(
-    db, 'UPDATE Sessions SET accessed_at = NOW() WHERE auth_token = ?', [auth]);
+    db,
+    'UPDATE Sessions SET accessed_at = NOW() WHERE auth_token = ?',
+    [auth]
+  );
   return results[0].id;
 }
 
@@ -46,5 +56,7 @@ export async function authTokenLookup(
 async function pruneAuthTokens(db: Connection): Promise<any> {
   winston.info('Pruning all expired authentication tokens.');
   await query(
-      db, 'DELETE FROM Sessions WHERE accessed_at < NOW() - INTERVAL 7 DAY');
+    db,
+    'DELETE FROM Sessions WHERE accessed_at < NOW() - INTERVAL 7 DAY'
+  );
 }

@@ -1,26 +1,35 @@
 import { Connection } from 'mysql';
 import * as uuid from 'uuid';
+
 import { ContactGroup, SuggestedContact } from '../../common/models/contacts';
 import { User } from '../../common/models/user';
 import { query } from '../db-promise';
 
 /** Looks up a user given a display name. */
 export async function contactLookup(
-    db: Connection, name: string): Promise<User> {
+  db: Connection,
+  name: string
+): Promise<User> {
   const results = await query(
-      db, 'SELECT id FROM Accounts WHERE display_name = ?', [name]);
+    db,
+    'SELECT id FROM Accounts WHERE display_name = ?',
+    [name]
+  );
   if (!results[0]) {
     throw new Error('No such error.');
   }
-  const {id} = results[0];
-  return {display_name: name, id} as User;
+  const { id } = results[0];
+  return { display_name: name, id } as User;
 }
 
 /**
  * Adds a new contact to the list of known contacts for the current user.
  */
 export async function addContact(
-    db: Connection, id: string, contactId: string): Promise<void> {
+  db: Connection,
+  id: string,
+  contactId: string
+): Promise<void> {
   await query(
     db,
     `INSERT INTO Contacts (account_id, contact_id)
@@ -31,12 +40,17 @@ export async function addContact(
        FROM Contacts
        WHERE ? = account_id
          AND ? = contact_id
-     )`, [id, contactId, id, contactId]);
+     )`,
+    [id, contactId, id, contactId]
+  );
 }
 
 /** Marks the user as not interested in the suggested contact. */
 export async function noThanksSuggestedContact(
-    db: Connection, id: string, contactId: string): Promise<void> {
+  db: Connection,
+  id: string,
+  contactId: string
+): Promise<void> {
   await query(
     db,
     `INSERT INTO SuggestedContactNoThanks (account_id, contact_id)
@@ -47,32 +61,39 @@ export async function noThanksSuggestedContact(
        FROM SuggestedContactNoThanks
        WHERE ? = account_id
          AND ? = contact_id
-     )`, [id, contactId, id, contactId]);
+     )`,
+    [id, contactId, id, contactId]
+  );
 }
 
 /**
  * Removes new contact from the list of known contacts for the current user.
  */
 export async function removeContact(
-    db: Connection, id: string, contactId: string): Promise<void> {
+  db: Connection,
+  id: string,
+  contactId: string
+): Promise<void> {
   await query(
     db,
     `DELETE FROM Contacts WHERE ? = account_id AND ? = contact_id`,
-    [id, contactId]);
+    [id, contactId]
+  );
 }
 
 /** Returns all of a user's contacts. */
-export async function getContacts(
-    db: Connection, id: string): Promise<User[]> {
+export async function getContacts(db: Connection, id: string): Promise<User[]> {
   const results = await query(
-      db,
-      `SELECT
+    db,
+    `SELECT
          Contacts.contact_id AS contact_id,
          Accounts.display_name AS display_name
        FROM Contacts
        INNER JOIN Accounts
        ON Accounts.id = Contacts.contact_id
-       WHERE Contacts.account_id = ?`, [id]);
+       WHERE Contacts.account_id = ?`,
+    [id]
+  );
   const contacts: User[] = [];
   for (let i = 0; i < results.length; i++) {
     contacts.push({
@@ -85,10 +106,12 @@ export async function getContacts(
 
 /** Returns all a list contacts that this user may know. */
 export async function getSuggestedContacts(
-    db: Connection, id: string): Promise<SuggestedContact[]> {
+  db: Connection,
+  id: string
+): Promise<SuggestedContact[]> {
   const results = await query(
-      db,
-      `
+    db,
+    `
       SELECT
         X.contact_id,
         display_name,
@@ -134,7 +157,9 @@ export async function getSuggestedContacts(
       GROUP BY 1, 2
       HAVING NOT already_added
       ORDER BY added_user DESC, contacts_in_common DESC, contact_id ASC
-      `, [id, id, id, id, id]);
+      `,
+    [id, id, id, id, id]
+  );
   const suggestedContacts: SuggestedContact[] = [];
   for (let i = 0; i < results.length; i++) {
     suggestedContacts.push({
@@ -150,17 +175,24 @@ export async function getSuggestedContacts(
 
 /** Creates a new contact group and returns the ID. */
 export async function createContactGroup(
-    db: Connection, id: string, name: string): Promise<string> {
+  db: Connection,
+  id: string,
+  name: string
+): Promise<string> {
   const result = await query(
-      db,
-      `INSERT INTO ContactGroups (account_id, name)
-       VALUES (?, ?)`, [id, name]);
+    db,
+    `INSERT INTO ContactGroups (account_id, name)
+       VALUES (?, ?)`,
+    [id, name]
+  );
   // To make the get query for contact groups workout, we need the group to be
   // non-empty. Therefore each group always the group owner as a member.
   await query(
-      db,
-      `INSERT INTO ContactGroupMembers (group_id, contact_id)
-       VALUES (?, ?)`, [result.insertId, id]);
+    db,
+    `INSERT INTO ContactGroupMembers (group_id, contact_id)
+       VALUES (?, ?)`,
+    [result.insertId, id]
+  );
   return result.insertId;
 }
 
@@ -170,13 +202,14 @@ export async function createContactGroup(
  * group.
  */
 export async function addContactToGroup(
-    db: Connection,
-    id: string,
-    groupId: string,
-    contactId: string): Promise<void> {
+  db: Connection,
+  id: string,
+  groupId: string,
+  contactId: string
+): Promise<void> {
   const result = await query(
-      db,
-      `INSERT INTO ContactGroupMembers (group_id, contact_id)
+    db,
+    `INSERT INTO ContactGroupMembers (group_id, contact_id)
        SELECT
           ? as group_id,
           ? as contact_id
@@ -191,7 +224,9 @@ export async function addContactToGroup(
          FROM ContactGroups
          WHERE ? = id
            AND ? = account_id
-       )`, [groupId, contactId, groupId, contactId, groupId, id]);
+       )`,
+    [groupId, contactId, groupId, contactId, groupId, id]
+  );
   if (result.affectedRows <= 0) {
     throw new Error('Unable to add user to group');
   }
@@ -201,28 +236,33 @@ export async function addContactToGroup(
  * Removes a contact from a group.
  */
 export async function removeContactFromGroup(
-    db: Connection,
-    id: string,
-    groupId: string,
-    contactId: string): Promise<void> {
+  db: Connection,
+  id: string,
+  groupId: string,
+  contactId: string
+): Promise<void> {
   const result = await query(
-      db,
-      `DELETE FROM ContactGroupMembers
+    db,
+    `DELETE FROM ContactGroupMembers
        WHERE EXISTS (
          SELECT *
          FROM ContactGroups
          WHERE ? = group_id
            AND ? = account_id
        ) AND group_id = ?
-         AND contact_id = ?`, [groupId, id, groupId, contactId]);
+         AND contact_id = ?`,
+    [groupId, id, groupId, contactId]
+  );
 }
 
 /** Returns all of a user's contact groups. */
 export async function getContactGroups(
-    db: Connection, id: string): Promise<ContactGroup[]> {
+  db: Connection,
+  id: string
+): Promise<ContactGroup[]> {
   const results = await query(
-      db,
-      `SELECT
+    db,
+    `SELECT
          ContactGroups.id AS group_id,
          ContactGroups.account_id AS owner_id,
          ContactGroups.name AS name,
@@ -234,8 +274,10 @@ export async function getContactGroups(
        INNER JOIN Accounts
        ON Accounts.id = ContactGroupMembers.contact_id
        WHERE ContactGroups.account_id = ?
-       ORDER BY ContactGroups.id ASC, Accounts.display_name ASC`, [id]);
-  const groups: {[id: string]: ContactGroup} = {};
+       ORDER BY ContactGroups.id ASC, Accounts.display_name ASC`,
+    [id]
+  );
+  const groups: { [id: string]: ContactGroup } = {};
   for (let i = 0; i < results.length; i++) {
     const groupId = results[i].group_id;
     let group = groups[groupId];

@@ -10,11 +10,11 @@
     },
     "include": [
         "./src/**/*",
-        "./test/**/*"
+        "./test/**/*",
+        "./bench/**/*"
     ],
     "files": [
       "./types/custom.d.ts",
-      "./types/mailgun-js.d.ts",
       "./types/sql-client.d.ts"
     ],
     "typeRoots": ["node_modules/@types"],

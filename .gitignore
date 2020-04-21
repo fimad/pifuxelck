@@ -1,5 +1,7 @@
+.firebase/
 .nyc_output/
+backups/
 coverage/
-dist/
 dist-web/
+dist/
 node_modules/

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+
 import { SuggestedContact } from '../../common/models/contacts';
 import * as models from '../../common/models/turn';
 import { compareStringsAsInts } from '../../common/utils';
@@ -18,28 +19,34 @@ interface Props {
   suggestedContacts: SuggestedContact[];
 }
 
-const InboxComponent = ({entries, loading, suggestedContacts}: Props) => (
+const InboxComponent = ({ entries, loading, suggestedContacts }: Props) => (
   <div>
     <Progress visible={loading} />
     <div className={styles.container}>
-      {suggestedContacts.map((c) => (<InboxContactEntry key={c.id} {...c} />))}
-      {entries.map((gameId) => (<InboxEntry key={gameId} gameId={gameId} />))}
+      {suggestedContacts.map((c) => (
+        <InboxContactEntry key={c.id} {...c} />
+      ))}
+      {entries.map((gameId) => (
+        <InboxEntry key={gameId} gameId={gameId} />
+      ))}
     </div>
   </div>
 );
 
 const compareByExpiration = (a: models.InboxEntry, b: models.InboxEntry) =>
-    a.expiration_time - b.expiration_time;
+  a.expiration_time - b.expiration_time;
 
-const mapStateToProps = (
-    {entities: {inbox, suggestedContacts}, apiStatus}: State) => ({
+const mapStateToProps = ({
+  entities: { inbox, suggestedContacts },
+  apiStatus,
+}: State) => ({
   entries: Object.values(inbox)
-      .sort(compareByExpiration)
-      .map((entry) => entry.game_id),
-  loading: apiStatus.inProgress.GET_INBOX,
+    .sort(compareByExpiration)
+    .map((entry) => entry.game_id),
+  loading: apiStatus.inProgress.GET_INBOX || apiStatus.inProgress.GET_ALL_DATA,
   suggestedContacts: Object.values(suggestedContacts)
-      .filter((x) => x.added_current_user && !x.no_thanks)
-      .sort((a, b) => a.display_name.localeCompare(b.display_name)),
+    .filter((x) => x.added_current_user && !x.no_thanks)
+    .sort((a, b) => a.display_name.localeCompare(b.display_name)),
 });
 
 const Inbox = connect(mapStateToProps)(InboxComponent);

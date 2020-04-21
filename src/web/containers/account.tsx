@@ -1,16 +1,12 @@
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
 import * as cx from 'classnames';
-import AddIcon from 'material-ui-icons/Add';
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import AccountEmail from '../components/account-email';
-import AccountPassword from '../components/account-password';
-import Progress from '../components/progress';
-import { State } from '../state';
 
 import {
   setAccountPasswordError,
@@ -19,6 +15,11 @@ import {
   updatePassword,
   updatePasswordConfirmation,
 } from '../actions';
+import AccountEmail from '../components/account-email';
+import AccountPassword from '../components/account-password';
+import Progress from '../components/progress';
+import { State } from '../state';
+import { WebDispatch } from '../store';
 
 interface Props {
   email: string;
@@ -54,17 +55,22 @@ const firstNonNull = (list: any[]) => {
 };
 
 const mapStateToProps = (state: State) => ({
-  email:
-      firstNonNull([state.ui.account.email, state.entities.account.email, '']),
-  loading: state.apiStatus.inProgress.GET_ACCOUNT,
+  email: firstNonNull([
+    state.ui.account.email,
+    state.entities.account.email,
+    '',
+  ]),
+  loading:
+    state.apiStatus.inProgress.GET_ACCOUNT ||
+    state.apiStatus.inProgress.GET_ALL_DATA,
   password: state.ui.account.password || '',
   passwordConfirmation: state.ui.account.passwordConfirmation || '',
   passwordError: state.ui.account.passwordError || '',
   sendInProgress: state.apiStatus.inProgress.UPDATE_ACCOUNT,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
-  onEmailSubmit: (email: string) => dispatch(updateAccount({email})),
+const mapDispatchToProps = (dispatch: WebDispatch) => ({
+  onEmailSubmit: (email: string) => dispatch(updateAccount({ email })),
   onEmailUpdate: (email: string) => dispatch(updateEmail(email)),
   onPasswordConfirmationUpdate: (passwordConfirmation: string) => {
     dispatch(setAccountPasswordError(''));
@@ -75,7 +81,7 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
       dispatch(setAccountPasswordError('Passwords do not match.'));
     } else {
       dispatch(setAccountPasswordError(''));
-      dispatch(updateAccount({password}));
+      dispatch(updateAccount({ password }));
     }
   },
   onPasswordUpdate: (password: string) => {
@@ -84,7 +90,6 @@ const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
   },
 });
 
-const Account =
-    connect(mapStateToProps, mapDispatchToProps)(AccountComponent);
+const Account = connect(mapStateToProps, mapDispatchToProps)(AccountComponent);
 
 export default Account;

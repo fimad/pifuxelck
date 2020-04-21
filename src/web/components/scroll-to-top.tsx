@@ -7,7 +7,6 @@ interface Props {
 }
 
 class ScrollToTop extends React.Component<Props, {}> {
-
   public componentDidUpdate(prevProps: Props) {
     if (this.props.location !== prevProps.location) {
       window.scrollTo(0, 0);

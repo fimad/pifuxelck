@@ -1,7 +1,6 @@
 import { User } from './user';
 
 export interface ContactGroup {
-
   /** The ID of the contact group. */
   id?: string;
 
@@ -15,7 +14,6 @@ export interface ContactGroup {
 }
 
 export interface SuggestedContact {
-
   /** The ID of the contact. */
   id: string;
 

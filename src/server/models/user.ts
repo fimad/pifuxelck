@@ -1,11 +1,12 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import { Connection } from 'mysql';
 import * as winston from 'winston';
+
 import { User, UserError } from '../../common/models/user';
 import { query } from '../db-promise';
 import ServerError from '../error';
 
-async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(password: string): Promise<string> {
   if (password.length < 8) {
     return Promise.reject(new Error('Password must be at least 8 characters.'));
   }
@@ -25,9 +26,10 @@ export async function createUser(db: Connection, user: User): Promise<User> {
 
   winston.info(`Request to register the new user ${user.display_name}.`);
   const res = await query(
-      db, 'INSERT INTO Accounts (display_name, password_hash) VALUES (?, ?)',
-      [user.display_name, hashedPassword])
-      .catch((error) => new Error('Display name already taken'));
+    db,
+    'INSERT INTO Accounts (display_name, password_hash) VALUES (?, ?)',
+    [user.display_name, hashedPassword]
+  ).catch((error) => new Error('Display name already taken'));
 
   return {
     display_name: user.display_name,
@@ -40,23 +42,29 @@ export async function createUser(db: Connection, user: User): Promise<User> {
  * name and password.
  */
 export async function lookupByPassword(
-    db: Connection, user: User): Promise<string> {
+  db: Connection,
+  user: User
+): Promise<string> {
   winston.info(`Retrieving password hash for user ${user.display_name}.`);
   const results = await query(
-      db, 'SELECT id, password_hash FROM Accounts WHERE display_name = ?',
-      [user.display_name]);
+    db,
+    'SELECT id, password_hash FROM Accounts WHERE display_name = ?',
+    [user.display_name]
+  );
 
   if (!results[0]) {
     winston.warn('Lookup failed for user.');
-    throw new ServerError({auth: 'Invalid user or password.'});
+    throw new ServerError({ auth: 'Invalid user or password.' });
   }
 
   const valid = await compare(
-      user.password, results[0].password_hash.toString());
+    user.password,
+    results[0].password_hash.toString()
+  );
 
   if (!valid) {
     winston.warn('Lookup failed, bad password.');
-    throw new ServerError({auth: 'Invalid user or password.'});
+    throw new ServerError({ auth: 'Invalid user or password.' });
   }
 
   winston.info('Lookup success!');
@@ -90,10 +98,14 @@ export async function updateUser(db: Connection, user: User): Promise<User> {
  * currently logged in user is authorized to access this user's meta-data.
  */
 export async function getUserById(
-    db: Connection, userId: string): Promise<User> {
+  db: Connection,
+  userId: string
+): Promise<User> {
   const results = await query(
-      db, 'SELECT id, display_name, email FROM Accounts WHERE id = ?',
-      [userId]);
+    db,
+    'SELECT id, display_name, email FROM Accounts WHERE id = ?',
+    [userId]
+  );
 
   if (!results[0]) {
     winston.warn('Lookup failed for user.');

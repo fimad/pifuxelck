@@ -33,9 +33,9 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
     case 'IGNORE_SUGGESTION_SUCCESS':
       return {
         ...state,
-        suggestedContacts: objectWithoutKeys(
-          state.suggestedContacts,
-          [action.contactId]),
+        suggestedContacts: objectWithoutKeys(state.suggestedContacts, [
+          action.contactId,
+        ]),
       };
     case 'PLAY_GAME_SUCCESS':
       return {
@@ -47,79 +47,103 @@ function handleOptimisticUpdate(state: Entities, action: Action) {
 }
 
 function handleApiResult(state: Entities, action: Action) {
-  switch (action.type) {
-    case 'USER_LOOKUP_SUCCESS':
-      if (action.message && action.message.user) {
-        return {
-          ...state,
-          users: {
-            ...state.users,
-            [action.message.user.display_name]: action.message.user.id,
-          },
-        };
-      }
-      break;
-    case 'GET_GAME_SUCCESS':
-      if (action.message && action.message.game) {
-        return {
-          ...state,
-          gameCache: {
-            ...state.gameCache,
-            [action.message.game.id]: action.message.game,
-          },
-        };
-      }
-      break;
-    case 'GET_HISTORY_SUCCESS':
-      if (action.message && action.message.game_summaries) {
-        return {
-          ...state,
-          history: {
-            ...mapFrom(action.message.game_summaries, (x) => x.id),
-          },
-        };
-      }
-      break;
-    case 'GET_INBOX_SUCCESS':
-      if (action.message && action.message.inbox_entries) {
-        return {
-          ...state,
-          inbox: {
-              ...mapFrom(action.message.inbox_entries, (x) => x.game_id),
-          },
-        };
-      }
-      break;
-    case 'GET_CONTACTS_SUCCESS':
-      if (action.message && action.message.contacts) {
-        return {
-          ...state,
-          contacts: mapFrom(action.message.contacts, (x) => x.id),
-          suggestedContacts:
-              mapFrom(action.message.suggested_contacts, (x) => x.id),
-        };
-      }
-      break;
-    case 'GET_ACCOUNT_SUCCESS':
-      if (action.message && action.message.user) {
-        return {
-          ...state,
-          account: action.message.user,
-        };
-      }
-      break;
-    case 'LOGOUT':
-    case 'LOGIN_START':
-      return initialState;
-    default:
-      // If the user is logged out clear all state.
-      if ((action as ActionMessage).message &&
-          (action as ActionMessage).message.errors &&
-          (action as ActionMessage).message.errors.auth) {
-        return initialState;
-      }
+  let newState: Entities;
+  if (action.type === 'USER_LOOKUP_SUCCESS') {
+    if (action.message && action.message.user) {
+      newState = {
+        ...state,
+        ...newState,
+        users: {
+          ...state.users,
+          [action.message.user.display_name]: action.message.user.id,
+        },
+      };
+    }
   }
-  return state;
+  if (action.type === 'GET_GAME_SUCCESS') {
+    if (action.message && action.message.game) {
+      newState = {
+        ...state,
+        ...newState,
+        gameCache: {
+          ...state.gameCache,
+          [action.message.game.id]: action.message.game,
+        },
+      };
+    }
+  }
+  if (action.type === 'GET_HISTORY_SUCCESS') {
+    if (action.message && action.message.game_summaries) {
+      newState = {
+        ...state,
+        ...newState,
+        history: {
+          ...mapFrom(action.message.game_summaries, (x) => x.id),
+        },
+      };
+    }
+  }
+  if (
+    action.type === 'GET_INBOX_SUCCESS' ||
+    action.type === 'GET_ALL_DATA_SUCCESS'
+  ) {
+    if (action.message && action.message.inbox_entries) {
+      newState = {
+        ...state,
+        ...newState,
+        inbox: {
+          ...mapFrom(action.message.inbox_entries, (x) => x.game_id),
+        },
+      };
+    }
+  }
+  if (
+    action.type === 'GET_CONTACTS_SUCCESS' ||
+    action.type === 'GET_ALL_DATA_SUCCESS'
+  ) {
+    if (action.message && action.message.contacts) {
+      newState = {
+        ...state,
+        ...newState,
+        contacts: mapFrom(action.message.contacts, (x) => x.id),
+      };
+    }
+    if (action.message && action.message.contacts) {
+      newState = {
+        ...state,
+        ...newState,
+        suggestedContacts: mapFrom(
+          action.message.suggested_contacts,
+          (x) => x.id
+        ),
+      };
+    }
+  }
+  if (
+    action.type === 'GET_ACCOUNT_SUCCESS' ||
+    action.type === 'GET_ALL_DATA_SUCCESS'
+  ) {
+    if (action.message && action.message.user) {
+      newState = {
+        ...state,
+        ...newState,
+        account: action.message.user,
+      };
+    }
+  }
+  if (action.type === 'LOGOUT' || action.type === 'LOGIN_START') {
+    return initialState;
+  }
+  if (newState === undefined) {
+    if (
+      (action as ActionMessage).message &&
+      (action as ActionMessage).message.errors &&
+      (action as ActionMessage).message.errors.auth
+    ) {
+      return initialState;
+    }
+  }
+  return newState || state;
 }
 
 export default function(state: Entities = initialState, action: Action) {

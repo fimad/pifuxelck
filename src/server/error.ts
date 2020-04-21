@@ -3,8 +3,8 @@ import { Errors } from '../common/models/message';
 class ServerError extends Error {
   public errors: Errors;
 
-  constructor(errors: Errors, ...params: any[]) {
-    super(JSON.stringify(errors), ...params);
+  constructor(errors: Errors) {
+    super(JSON.stringify(errors));
 
     // Maintains proper stack trace for where our error was thrown (only
     // available on V8).

@@ -1,24 +1,27 @@
-import AddIcon from 'material-ui-icons/Add';
-import ArchiveIcon from 'material-ui-icons/Archive';
-import BackIcon from 'material-ui-icons/ArrowBack';
-import ContactsIcon from 'material-ui-icons/Contacts';
-import LogoutIcon from 'material-ui-icons/Eject';
-import HistoryIcon from 'material-ui-icons/History';
-import InboxIcon from 'material-ui-icons/Inbox';
-import ChartIcon from 'material-ui-icons/InsertChart';
-import PersonIcon from 'material-ui-icons/Person';
-import AppBar from 'material-ui/AppBar';
-import { GridList, GridListTile } from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
-import Paper from 'material-ui/Paper';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Table from 'material-ui/Table';
-import { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
+import AppBar from '@material-ui/core/AppBar';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import BackIcon from '@material-ui/icons/ArrowBack';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import LogoutIcon from '@material-ui/icons/Eject';
+import HistoryIcon from '@material-ui/icons/History';
+import InboxIcon from '@material-ui/icons/Inbox';
+import ChartIcon from '@material-ui/icons/InsertChart';
+import PersonIcon from '@material-ui/icons/Person';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
 import {
   Area,
   AreaChart,
@@ -44,16 +47,16 @@ const styles = require('./stats-index.css');
 
 const barColor1 = '#ff4081';
 
-const UserStats = ({userStats}: Stats) => {
+const UserStats = ({ userStats }: Stats) => {
   const toRow = (stats: any) => (
     <TableRow key={stats.displayName}>
       <TableCell>{stats.displayName}</TableCell>
-      <TableCell numeric={true}>{stats.inboxSize}</TableCell>
-      <TableCell numeric={true}>{stats.pendingGames}</TableCell>
-      <TableCell numeric={true}>{stats.skips}</TableCell>
-      <TableCell numeric={true}>{stats.startedGames}</TableCell>
-      <TableCell numeric={true}>{stats.drawings}</TableCell>
-      <TableCell numeric={true}>{stats.labels}</TableCell>
+      <TableCell align="right">{stats.inboxSize}</TableCell>
+      <TableCell align="right">{stats.pendingGames}</TableCell>
+      <TableCell align="right">{stats.skips}</TableCell>
+      <TableCell align="right">{stats.startedGames}</TableCell>
+      <TableCell align="right">{stats.drawings}</TableCell>
+      <TableCell align="right">{stats.labels}</TableCell>
     </TableRow>
   );
   return (
@@ -62,85 +65,86 @@ const UserStats = ({userStats}: Stats) => {
         <TableHead>
           <TableRow>
             <TableCell>User</TableCell>
-            <TableCell numeric={true}>Inbox</TableCell>
-            <TableCell numeric={true}>Pending</TableCell>
-            <TableCell numeric={true}>Skips</TableCell>
-            <TableCell numeric={true}>Games Started</TableCell>
-            <TableCell numeric={true}>Drawings</TableCell>
-            <TableCell numeric={true}>Labels</TableCell>
+            <TableCell align="right">Inbox</TableCell>
+            <TableCell align="right">Pending</TableCell>
+            <TableCell align="right">Skips</TableCell>
+            <TableCell align="right">Started</TableCell>
+            <TableCell align="right">Drawings</TableCell>
+            <TableCell align="right">Labels</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {userStats.map(toRow)}
-        </TableBody>
+        <TableBody>{userStats.map(toRow)}</TableBody>
       </Table>
     </Paper>
   );
 };
 
-const GameSizes = ({gameSizes}: Stats) => {
+const GameSizes = ({ gameSizes }: Stats) => {
   return (
     <Paper className={styles.gameSizes}>
-      <Typography type='caption' align='center'>
+      <Typography variant="caption" align="center" className={styles.caption}>
         Players Per Game
       </Typography>
       <ResponsiveContainer height={200}>
-        <BarChart data={gameSizes} margin={{left: -20, right: 10, top: 10}}>
-          <XAxis dataKey='size' />
+        <BarChart data={gameSizes} margin={{ left: -20, right: 10, top: 10 }}>
+          <XAxis dataKey="size" />
           <YAxis />
           <CartesianGrid />
-          <Bar dataKey='total' fill={barColor1} />
+          <Bar dataKey="total" fill={barColor1} />
         </BarChart>
       </ResponsiveContainer>
-      <Typography type='caption' align='center'>
+      <Typography variant="caption" align="center" className={styles.caption}>
         Players
       </Typography>
     </Paper>
   );
 };
 
-const GameDurations = ({gameDurations}: Stats) => {
+const GameDurations = ({ gameDurations }: Stats) => {
   return (
     <Paper className={styles.gameSizes}>
-      <Typography type='caption' align='center'>
+      <Typography variant="caption" align="center" className={styles.caption}>
         Completed Game Duration In Days
       </Typography>
       <ResponsiveContainer height={200}>
-        <BarChart data={gameDurations} margin={{left: -20, right: 10, top: 10}}>
-          <XAxis dataKey='gameDurationDays' />
+        <BarChart
+          data={gameDurations}
+          margin={{ left: -20, right: 10, top: 10 }}
+        >
+          <XAxis dataKey="gameDurationDays" />
           <YAxis />
           <CartesianGrid />
-          <Bar dataKey='count' fill={barColor1} />
+          <Bar dataKey="count" fill={barColor1} />
         </BarChart>
       </ResponsiveContainer>
-      <Typography type='caption' align='center'>
+      <Typography variant="caption" align="center" className={styles.caption}>
         Days
       </Typography>
     </Paper>
   );
 };
 
-const GamesOverTime = ({gamesOverTime}: Stats) => {
-  const data = gamesOverTime.map(({timestamp, pendingGames}) => ({
+const GamesOverTime = ({ gamesOverTime }: Stats) => {
+  const data = gamesOverTime.map(({ timestamp, pendingGames }) => ({
     pendingGames,
     timestamp: timestamp * 1000,
   }));
   const tickFormatter = (x: number) => new Date(x).toLocaleString();
   return (
     <Paper className={styles.gamesOverTime}>
-      <Typography type='caption' align='center'>
+      <Typography variant="caption" align="center" className={styles.caption}>
         Pending Games Over Time
       </Typography>
       <ResponsiveContainer height={200}>
-        <AreaChart data={data} margin={{left: -20, right: 10, top: 10}}>
+        <AreaChart data={data} margin={{ left: -20, right: 10, top: 10 }}>
           <XAxis
-            scale='linear'
-            dataKey='timestamp'
+            scale="linear"
+            dataKey="timestamp"
             tickFormatter={tickFormatter}
           />
           <YAxis />
           <CartesianGrid />
-          <Area type='stepAfter' dataKey='pendingGames' fill={barColor1} />
+          <Area type="stepAfter" dataKey="pendingGames" fill={barColor1} />
         </AreaChart>
       </ResponsiveContainer>
     </Paper>
@@ -149,44 +153,58 @@ const GamesOverTime = ({gamesOverTime}: Stats) => {
 
 export default function(stats: Stats) {
   ReactDOM.render(
-    <MuiThemeProvider>
-      <AppBar position='fixed'>
+    <MuiThemeProvider theme={createMuiTheme()}>
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
-              onClick={() => window.history.back()}
-              color='contrast'
-              aria-label='Menu'
+            onClick={() => window.history.back()}
+            color="inherit"
+            aria-label="Menu"
           >
             <BackIcon />
           </IconButton>
-          <Typography type='title' style={{flex: '1 1 auto'}} color='inherit'>
+          <Typography variant="h6" style={{ flex: '1 1 auto' }} color="inherit">
             Game Stats
           </Typography>
         </Toolbar>
       </AppBar>
-      <AppBar position='static'><Toolbar /></AppBar>
+      <AppBar position="static">
+        <Toolbar />
+      </AppBar>
       <div className={styles.container}>
         <Paper className={styles.gameStat}>
-          <Typography type='headline' align='center'>
+          <Typography variant="h5" align="center">
             {stats.gameStats.pending}
           </Typography>
-          <Typography type='caption' align='center'>
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Pending Games
           </Typography>
         </Paper>
         <Paper className={styles.gameStat}>
-          <Typography type='headline' align='center'>
+          <Typography variant="h5" align="center">
             {stats.gameStats.complete}
           </Typography>
-          <Typography type='caption' align='center'>
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Complete Games
           </Typography>
         </Paper>
         <Paper className={styles.gameStat}>
-          <Typography type='headline' align='center'>
+          <Typography variant="h5" align="center">
             {stats.gameStats.total}
           </Typography>
-          <Typography type='caption' align='center'>
+          <Typography
+            variant="caption"
+            align="center"
+            className={styles.caption}
+          >
             Total Games
           </Typography>
         </Paper>
@@ -196,6 +214,6 @@ export default function(stats: Stats) {
         <UserStats {...stats} />
       </div>
     </MuiThemeProvider>,
-    document.getElementById('content'),
+    document.getElementById('content')
   );
 }

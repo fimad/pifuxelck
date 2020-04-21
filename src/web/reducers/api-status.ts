@@ -2,8 +2,10 @@ import { Action, ApiAction } from '../actions';
 import { ApiStatus } from '../state';
 
 function isApiAction(action: Action): action is ApiAction {
-  return (action as ApiAction).apiName !== undefined &&
-      (action as ApiAction).inProgress !== undefined;
+  return (
+    (action as ApiAction).apiName !== undefined &&
+    (action as ApiAction).inProgress !== undefined
+  );
 }
 
 const initialState: ApiStatus = {
@@ -29,9 +31,11 @@ function maybeUpdateProgress(state: ApiStatus, action: Action): ApiStatus {
 
 export default function(state: ApiStatus = initialState, action: Action) {
   const nextState = maybeUpdateProgress(state, action);
-  if (action.type === 'PLAY_GAME_START' ||
-      action.type === 'PLAY_GAME_SUCCESS' ||
-      action.type === 'PLAY_GAME_FAILURE') {
+  if (
+    action.type === 'PLAY_GAME_START' ||
+    action.type === 'PLAY_GAME_SUCCESS' ||
+    action.type === 'PLAY_GAME_FAILURE'
+  ) {
     return {
       ...nextState,
       pendingTurns: {
@@ -40,9 +44,11 @@ export default function(state: ApiStatus = initialState, action: Action) {
       },
     };
   }
-  if (action.type === 'REMOVE_CONTACT_START' ||
-      action.type === 'REMOVE_CONTACT_SUCCESS' ||
-      action.type === 'REMOVE_CONTACT_FAILURE') {
+  if (
+    action.type === 'REMOVE_CONTACT_START' ||
+    action.type === 'REMOVE_CONTACT_SUCCESS' ||
+    action.type === 'REMOVE_CONTACT_FAILURE'
+  ) {
     return {
       ...nextState,
       pendingContactDeletes: {
@@ -51,9 +57,11 @@ export default function(state: ApiStatus = initialState, action: Action) {
       },
     };
   }
-  if (action.type === 'ADD_CONTACT_START' ||
-      action.type === 'ADD_CONTACT_SUCCESS' ||
-      action.type === 'ADD_CONTACT_FAILURE') {
+  if (
+    action.type === 'ADD_CONTACT_START' ||
+    action.type === 'ADD_CONTACT_SUCCESS' ||
+    action.type === 'ADD_CONTACT_FAILURE'
+  ) {
     return {
       ...nextState,
       pendingContactAdds: {
@@ -62,9 +70,11 @@ export default function(state: ApiStatus = initialState, action: Action) {
       },
     };
   }
-  if (action.type === 'IGNORE_SUGGESTION_START' ||
-      action.type === 'IGNORE_SUGGESTION_SUCCESS' ||
-      action.type === 'IGNORE_SUGGESTION_FAILURE') {
+  if (
+    action.type === 'IGNORE_SUGGESTION_START' ||
+    action.type === 'IGNORE_SUGGESTION_SUCCESS' ||
+    action.type === 'IGNORE_SUGGESTION_FAILURE'
+  ) {
     return {
       ...nextState,
       pendingSuggestionIgnores: {

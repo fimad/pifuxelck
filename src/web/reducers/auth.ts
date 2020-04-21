@@ -17,9 +17,11 @@ export default function(auth = '', action: Action) {
     case 'LOGOUT':
       return '';
     default:
-      if ((action as ActionMessage).message &&
-          (action as ActionMessage).message.errors &&
-          (action as ActionMessage).message.errors.auth) {
+      if (
+        (action as ActionMessage).message &&
+        (action as ActionMessage).message.errors &&
+        (action as ActionMessage).message.errors.auth
+      ) {
         return '';
       }
       return auth;

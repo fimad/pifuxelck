@@ -6,25 +6,25 @@ import { User } from '../common/models/user';
 
 export interface Entities {
   history: {
-    [id: string]: GameSummary,
+    [id: string]: GameSummary;
   };
   inbox: {
-    [id: string]: InboxEntry,
+    [id: string]: InboxEntry;
   };
   contacts: {
-    [id: string]: User,
+    [id: string]: User;
   };
   suggestedContacts: {
-    [id: string]: SuggestedContact,
+    [id: string]: SuggestedContact;
   };
   contactGroups: {
-    [id: string]: ContactGroup,
+    [id: string]: ContactGroup;
   };
   users: {
-    [displayName: string]: string,
+    [displayName: string]: string;
   };
   account: {
-    email: string,
+    email?: string;
   };
 
   /**
@@ -32,7 +32,7 @@ export interface Entities {
    * Therefore only a small number are kept loaded in memory at a time.
    */
   gameCache: {
-    [id: string]: Game,
+    [id: string]: Game;
   };
 }
 
@@ -43,52 +43,52 @@ export interface OutboxEntry {
 
 export interface Ui {
   account: {
-    email: (string|null)
-    password: (string|null),
-    passwordConfirmation: (string|null),
-    passwordError: string,
+    email: string | null;
+    password: string | null;
+    passwordConfirmation: string | null;
+    passwordError: string;
   };
   contacts: {
-    lookup: string,
+    lookup: string;
   };
   drawing: {
-    brushSize: number
-    brushColor: Color
-    inProgress: boolean,
+    brushSize: number;
+    brushColor: Color;
+    inProgress: boolean;
   };
   errors: {
-    nextId: number,
+    nextId: number;
     messages: {
-      [id: string]: string,
-    },
+      [id: string]: string;
+    };
   };
   history: {
-    query: (string|null),
+    query: string | null;
   };
   newGame: {
-    topic: string
-    users: string[],
+    topic: string;
+    users: string[];
   };
   outbox: {
-    [gameId: string]: OutboxEntry,
+    [gameId: string]: OutboxEntry;
   };
 }
 
 export interface ApiStatus {
   inProgress: {
-    [api: string]: boolean,
+    [api: string]: boolean;
   };
   pendingTurns: {
-    [gameId: string]: boolean,
+    [gameId: string]: boolean;
   };
   pendingContactDeletes: {
-    [id: string]: boolean,
+    [id: string]: boolean;
   };
   pendingContactAdds: {
-    [id: string]: boolean,
+    [id: string]: boolean;
   };
   pendingSuggestionIgnores: {
-    [id: string]: boolean,
+    [id: string]: boolean;
   };
 }
 
