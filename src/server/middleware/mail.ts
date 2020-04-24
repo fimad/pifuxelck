@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import * as mailgun from 'mailgun-js';
 import * as winston from 'winston';
 
-const mailcomposer = require('mailcomposer');
+const mailgun = require('mailgun.js');
 
 export interface SendMailParams {
   to: string;
@@ -30,32 +29,18 @@ const mailMiddleware = (config?: MailConfig) => {
   if (config && (config as TestMailConfig).sendMail) {
     sendMail = (config as TestMailConfig).sendMail;
   } else if (config as ProdMailConfig) {
-    const mail = mailgun(config as ProdMailConfig);
+    const prodConfig = config as ProdMailConfig;
+    const mg = mailgun.client({ username: 'api', key: prodConfig.apiKey });
     sendMail = ({ to, subject, body }: SendMailParams) =>
-      new Promise((resolve) => {
-        const composer = mailcomposer({
+      mg.messages
+        .create(prodConfig.domain, {
           from: `noreply@${(config as ProdMailConfig).domain}`,
           html: body,
           subject,
           text: subject,
-          to,
-        });
-        composer.build((buildError: Error, message: any) => {
-          if (buildError) {
-            winston.error(`Unable to build mail ${buildError}`);
-            resolve();
-            return;
-          }
-
-          const dataToSend = { to, html: message.toString('ascii') };
-          mail.messages().send(dataToSend, (sendError) => {
-            if (sendError) {
-              winston.error(`Unable to send mail ${sendError}`);
-            }
-            resolve();
-          });
-        });
-      });
+          to: [to],
+        })
+        .catch((err: any) => winston.error(`Unable to send email ${err}`));
   }
 
   return (req: Request, res: Response, next: NextFunction) => {

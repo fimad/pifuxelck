@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import * as winston from 'winston';
 
 const log = () => (req: Request, res: Response, next: NextFunction) => {
   req.context = {
@@ -9,6 +10,7 @@ const log = () => (req: Request, res: Response, next: NextFunction) => {
       requestUrl: req.url,
     },
   };
+  winston.info(`Incoming request to [${req.method}] ${req.url}`, req.context);
   next();
 };
 
